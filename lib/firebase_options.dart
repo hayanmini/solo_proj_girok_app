@@ -65,4 +65,5 @@ class DefaultFirebaseOptions {
     storageBucket: 'flutter-girok-app.firebasestorage.app',
     iosBundleId: 'com.example.flutterGirokApp',
   );
+
 }

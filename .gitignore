@@ -46,4 +46,4 @@ app.*.map.json
 
 # Firebase configuration
 android/app/google-services.json
-ios/GoogleService-Info.plist
+ios/Runner/GoogleService-Info.plist

@@ -5,5 +5,5 @@ class UpdateRecord {
   UpdateRecord(this.repository);
 
   Future<void> call(String userId, Record record) =>
-      repository.deleteRecord(userId, record);
+      repository.updateRecord(userId, record);
 }

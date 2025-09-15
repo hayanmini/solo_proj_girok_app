@@ -1,7 +1,7 @@
 import 'package:flutter_girok_app/core/enums.dart';
-import 'package:flutter_girok_app/domain/models/record.dart';
+import 'package:flutter_girok_app/domain/models/record_model.dart';
 
-class Series extends Record {
+class Series extends RecordModel {
   final String folder;
   final String content;
 

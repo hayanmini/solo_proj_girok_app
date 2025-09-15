@@ -1,7 +1,7 @@
 // DTO 파이어베이스 전용 모델
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_girok_app/core/enums.dart';
-import 'package:flutter_girok_app/domain/models/record.dart';
+import 'package:flutter_girok_app/domain/models/record_model.dart';
 import 'package:flutter_girok_app/domain/models/checklist.dart';
 import 'package:flutter_girok_app/domain/models/daily.dart';
 import 'package:flutter_girok_app/domain/models/memo.dart';
@@ -26,7 +26,7 @@ class RecordDto {
     required this.extra,
   });
 
-  factory RecordDto.fromDomain(Record record) {
+  factory RecordDto.fromDomain(RecordModel record) {
     Map<String, dynamic> extra = {};
     switch (record.type) {
       case RecordType.checklist:
@@ -72,7 +72,7 @@ class RecordDto {
     "extra": extra,
   };
 
-  Record toDomain() {
+  RecordModel toDomain() {
     switch (type) {
       case RecordType.checklist:
         final itemsList = (extra["items"] as List<dynamic>?) ?? [];

@@ -1,6 +1,6 @@
 import 'package:flutter_girok_app/core/enums.dart';
 
-abstract class Record {
+abstract class RecordModel {
   final String id;
   final String title;
   final DateTime createdAt;
@@ -8,7 +8,7 @@ abstract class Record {
   final DateTime date;
   final RecordType type;
 
-  Record({
+  RecordModel({
     required this.id,
     required this.title,
     required this.createdAt,

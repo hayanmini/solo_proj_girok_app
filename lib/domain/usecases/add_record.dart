@@ -1,9 +1,10 @@
+import 'package:flutter_girok_app/domain/models/record_model.dart';
 import 'package:flutter_girok_app/domain/repositories/record_repository.dart';
 
 class AddRecord {
   final RecordRepository repository;
   AddRecord(this.repository);
 
-  Future<void> call(String userId, Record record) =>
+  Future<void> call(String userId, RecordModel record) =>
       repository.addRecord(userId, record);
 }

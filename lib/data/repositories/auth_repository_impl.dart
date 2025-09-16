@@ -6,13 +6,8 @@ class AuthRepositoryImpl implements AuthRepository {
   final fb.FirebaseAuth _auth;
   AuthRepositoryImpl(this._auth);
 
-  @override
-  Future<User?> signInWithGoogle() async {
-    final googleProvider = fb.GoogleAuthProvider();
-
-    // 구글 로그인
-    final userCredential = await _auth.signInWithProvider(googleProvider);
-    final fb.User? fbUser = userCredential.user;
+  // FirebaseUser -> Domain User 변환 공통 메서드
+  User? _mapUser(fb.User? fbUser) {
     if (fbUser == null) return null;
 
     return User(
@@ -21,6 +16,20 @@ class AuthRepositoryImpl implements AuthRepository {
       displayName: fbUser.displayName,
       photoUrl: fbUser.photoURL,
     );
+  }
+
+  @override
+  Future<User?> signInWithGoogle() async {
+    final googleProvider = fb.GoogleAuthProvider();
+    final userCredential = await _auth.signInWithProvider(googleProvider);
+    return _mapUser(userCredential.user);
+  }
+
+  @override
+  Future<User?> signInWithApple() async {
+    final appleProvider = fb.AppleAuthProvider();
+    final userCredential = await _auth.signInWithProvider(appleProvider);
+    return _mapUser(userCredential.user);
   }
 
   @override
@@ -29,15 +38,5 @@ class AuthRepositoryImpl implements AuthRepository {
   }
 
   @override
-  User? getCurrentUser() {
-    final fb.User? fbUser = _auth.currentUser;
-    if (fbUser == null) return null;
-
-    return User(
-      id: fbUser.uid,
-      email: fbUser.email ?? '',
-      displayName: fbUser.displayName,
-      photoUrl: fbUser.photoURL,
-    );
-  }
+  User? getCurrentUser() => _mapUser(_auth.currentUser);
 }

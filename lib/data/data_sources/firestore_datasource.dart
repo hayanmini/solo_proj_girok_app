@@ -8,7 +8,10 @@ class FirestoreDatasource {
 
   // User
   Future<void> addUser(UserDto user) async {
-    await firestore.collection("users").doc(user.id).set(user.toJson());
+    await firestore
+        .collection("users")
+        .doc(user.id)
+        .set(user.toJson(), SetOptions(merge: true));
   }
 
   Future<UserDto?> getUser(String userId) async {

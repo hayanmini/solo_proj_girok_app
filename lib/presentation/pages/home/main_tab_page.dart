@@ -1,4 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_girok_app/presentation/pages/home/tabs/analysis_tab.dart';
+import 'package:flutter_girok_app/presentation/pages/home/tabs/home_tab.dart';
+import 'package:flutter_girok_app/presentation/pages/home/tabs/mypage_tab.dart';
+import 'package:flutter_girok_app/presentation/pages/home/tabs/settings_tab.dart';
+import 'package:flutter_girok_app/presentation/pages/home/widgets/create_popup.dart';
 
 class MainTabPage extends StatefulWidget {
   const MainTabPage({super.key});
@@ -8,8 +13,88 @@ class MainTabPage extends StatefulWidget {
 }
 
 class _MainTabPageState extends State<MainTabPage> {
+  int _currentIndex = 0;
+
+  final List<ScrollController> _scrollControllers = List.generate(
+    4,
+    (_) => ScrollController(),
+  );
+
+  final List<Widget> _pages = [];
+
+  @override
+  void initState() {
+    super.initState();
+    _pages.addAll([
+      HomeTab(scrollController: _scrollControllers[0]),
+      AnalysisTab(scrollController: _scrollControllers[1]),
+      const SizedBox(),
+      MypageTab(scrollController: _scrollControllers[2]),
+      SettingsTab(scrollController: _scrollControllers[3]),
+    ]);
+  }
+
+  // 스크롤 초기화
+  @override
+  void dispose() {
+    for (final c in _scrollControllers) {
+      c.dispose();
+    }
+    super.dispose();
+  }
+
+  void _onTabTapped(int index) {
+    // Create 팝업
+    if (index == 2) {
+      showModalBottomSheet(
+        context: context,
+        builder: (_) => const CreatePopup(),
+      );
+      return;
+    }
+
+    // 동일한 탭에서 다시 터치 시 스크롤 최상단
+    if (_currentIndex == index) {
+      _scrollControllers[index > 2 ? index - 1 : index].animateTo(
+        0,
+        duration: const Duration(milliseconds: 300),
+        curve: Curves.easeOut,
+      );
+    } else {
+      setState(() {
+        _currentIndex = index;
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold();
+    return Scaffold(
+      body: IndexedStack(
+        index: _currentIndex == 2 ? 0 : _currentIndex,
+        children: _pages,
+      ),
+      bottomNavigationBar: BottomNavigationBar(
+        currentIndex: _currentIndex,
+        onTap: _onTabTapped,
+        type: BottomNavigationBarType.fixed,
+        items: const [
+          BottomNavigationBarItem(icon: Icon(Icons.home), label: "Home"),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.analytics),
+            label: "Analysis",
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.add_circle_outline),
+            label: "Create",
+          ),
+          BottomNavigationBarItem(icon: Icon(Icons.person), label: "MyPage"),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.settings),
+            label: "Settings",
+          ),
+        ],
+      ),
+    );
   }
 }

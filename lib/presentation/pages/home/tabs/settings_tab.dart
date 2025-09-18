@@ -15,6 +15,7 @@ class SettingsTab extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              // TODO : 기능 구현 및 연결
               // 작성 설정
               titleText("작성 설정"),
               settingItem(Icons.font_download_outlined, "폰트 설정", () {}),

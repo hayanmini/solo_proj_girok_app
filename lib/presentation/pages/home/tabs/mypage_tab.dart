@@ -6,6 +6,9 @@ class MypageTab extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Text("MypageTab");
+    return SingleChildScrollView(
+      controller: scrollController,
+      child: Column(children: [Text("mypage")]),
+    );
   }
 }

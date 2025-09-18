@@ -6,6 +6,9 @@ class AnalysisTab extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Text("AnalysisTab");
+    return SingleChildScrollView(
+      controller: scrollController,
+      child: Column(children: [Text("analysis")]),
+    );
   }
 }

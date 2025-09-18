@@ -31,7 +31,10 @@ class _MainTabPageState extends State<MainTabPage> {
   void initState() {
     super.initState();
     _pages.addAll([
-      HomeTab(scrollController: _scrollControllers[0]),
+      HomeTab(
+        scrollController: _scrollControllers[0],
+        onEmptyDateTap: _showCreatePopup,
+      ),
       AnalysisTab(scrollController: _scrollControllers[1]),
       const SizedBox(),
       MypageTab(scrollController: _scrollControllers[2]),
@@ -60,41 +63,57 @@ class _MainTabPageState extends State<MainTabPage> {
     }
   }
 
+  // HomeTab 빈 날짜 터치 시
+  void _showCreatePopup() {
+    if (_overlayEntry == null) {
+      _overlayEntry = _buildOverlayEntry();
+      Overlay.of(context).insert(_overlayEntry!);
+    }
+  }
+
   // 페이지 이동
   OverlayEntry _buildOverlayEntry() {
     final width = MediaQuery.of(context).size.width;
     return OverlayEntry(
-      builder: (context) => Positioned(
-        bottom: 95,
-        left: width / 2 - 125,
-        child: Material(
-          color: Colors.transparent,
-          child: CreatePopup(
-            onSelect: (type) {
-              if (type == "checkList") {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (_) => CheckListPage()),
-                );
-              } else if (type == "daily") {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (_) => DailyPage()),
-                );
-              } else if (type == "series") {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (_) => SeriesPage()),
-                );
-              } else {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (_) => MemoPage()),
-                );
-              }
-              _toggleCreatePopup();
-            },
-          ),
+      builder: (context) => GestureDetector(
+        onTap: _toggleCreatePopup,
+        behavior: HitTestBehavior.translucent,
+        child: Stack(
+          children: [
+            Positioned(
+              bottom: 95,
+              left: width / 2 - 125,
+              child: Material(
+                color: Colors.transparent,
+                child: CreatePopup(
+                  onSelect: (type) {
+                    if (type == "checkList") {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (_) => CheckListPage()),
+                      );
+                    } else if (type == "daily") {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (_) => DailyPage()),
+                      );
+                    } else if (type == "series") {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (_) => SeriesPage()),
+                      );
+                    } else {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (_) => MemoPage()),
+                      );
+                    }
+                    _toggleCreatePopup();
+                  },
+                ),
+              ),
+            ),
+          ],
         ),
       ),
     );

@@ -4,6 +4,10 @@ import 'package:flutter_girok_app/presentation/pages/home/tabs/home_tab.dart';
 import 'package:flutter_girok_app/presentation/pages/home/tabs/mypage_tab.dart';
 import 'package:flutter_girok_app/presentation/pages/home/tabs/settings_tab.dart';
 import 'package:flutter_girok_app/presentation/pages/home/widgets/create_popup.dart';
+import 'package:flutter_girok_app/presentation/pages/record/check_list_page.dart';
+import 'package:flutter_girok_app/presentation/pages/record/daily_page.dart';
+import 'package:flutter_girok_app/presentation/pages/record/memo_page.dart';
+import 'package:flutter_girok_app/presentation/pages/record/series_page.dart';
 
 class MainTabPage extends StatefulWidget {
   const MainTabPage({super.key});
@@ -14,6 +18,7 @@ class MainTabPage extends StatefulWidget {
 
 class _MainTabPageState extends State<MainTabPage> {
   int _currentIndex = 0;
+  OverlayEntry? _overlayEntry;
 
   final List<ScrollController> _scrollControllers = List.generate(
     4,
@@ -40,16 +45,66 @@ class _MainTabPageState extends State<MainTabPage> {
     for (final c in _scrollControllers) {
       c.dispose();
     }
+    _overlayEntry?.remove();
     super.dispose();
   }
 
+  // CreatePopup
+  void _toggleCreatePopup() {
+    if (_overlayEntry == null) {
+      _overlayEntry = _buildOverlayEntry();
+      Overlay.of(context).insert(_overlayEntry!);
+    } else {
+      _overlayEntry?.remove();
+      _overlayEntry = null;
+    }
+  }
+
+  // 페이지 이동
+  OverlayEntry _buildOverlayEntry() {
+    final width = MediaQuery.of(context).size.width;
+    return OverlayEntry(
+      builder: (context) => Positioned(
+        bottom: 95,
+        left: width / 2 - 125,
+        child: Material(
+          color: Colors.transparent,
+          child: CreatePopup(
+            onSelect: (type) {
+              if (type == "checkList") {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (_) => CheckListPage()),
+                );
+              } else if (type == "daily") {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (_) => DailyPage()),
+                );
+              } else if (type == "series") {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (_) => SeriesPage()),
+                );
+              } else {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (_) => MemoPage()),
+                );
+              }
+              _toggleCreatePopup();
+            },
+          ),
+        ),
+      ),
+    );
+  }
+
+  // Tab Tap 이벤트
   void _onTabTapped(int index) {
     // Create 팝업
     if (index == 2) {
-      showModalBottomSheet(
-        context: context,
-        builder: (_) => const CreatePopup(),
-      );
+      _toggleCreatePopup();
       return;
     }
 
@@ -67,6 +122,7 @@ class _MainTabPageState extends State<MainTabPage> {
     }
   }
 
+  // BottomNavigationBar UI
   @override
   Widget build(BuildContext context) {
     return Scaffold(

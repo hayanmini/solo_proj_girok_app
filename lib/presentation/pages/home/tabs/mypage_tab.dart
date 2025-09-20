@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_girok_app/core/constants.dart';
 
 class MypageTab extends StatelessWidget {
   final ScrollController scrollController;
@@ -21,12 +22,7 @@ class MypageTab extends StatelessWidget {
               Container(
                 width: double.infinity,
                 height: 100,
-                decoration: BoxDecoration(
-                  // TODO : Theme Color
-                  color: Colors.transparent,
-                  border: Border.all(color: Colors.white),
-                  borderRadius: BorderRadius.circular(10),
-                ),
+                decoration: BorderBoxDecoration.commonBox,
                 child: Row(
                   children: [
                     Container(
@@ -74,12 +70,7 @@ class MypageTab extends StatelessWidget {
                   Container(
                     width: 170,
                     height: 100,
-                    decoration: BoxDecoration(
-                      // TODO : Theme Color
-                      color: Colors.transparent,
-                      border: Border.all(color: Colors.white),
-                      borderRadius: BorderRadius.circular(10),
-                    ),
+                    decoration: BorderBoxDecoration.commonBox,
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.center,
                       // mainAxisAlignment: MainAxisAlignment.center,
@@ -145,12 +136,7 @@ class MypageTab extends StatelessWidget {
               Container(
                 width: double.infinity,
                 height: 500,
-                decoration: BoxDecoration(
-                  // TODO : Theme Color
-                  color: Colors.transparent,
-                  border: Border.all(color: Colors.white),
-                  borderRadius: BorderRadius.circular(10),
-                ),
+                decoration: BorderBoxDecoration.commonBox,
                 child: Padding(
                   padding: const EdgeInsets.all(10),
                   child: Column(
@@ -172,10 +158,7 @@ class MypageTab extends StatelessWidget {
 
   // 타이틀 속성
   Widget titleText(String title) {
-    return Text(
-      title,
-      style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
-    );
+    return Text(title, style: TitleTextStyle.titleBold16);
   }
 
   Widget _buildScheduleItem(String title) {

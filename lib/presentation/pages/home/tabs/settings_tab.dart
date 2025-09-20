@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_girok_app/core/constants.dart';
 
 class SettingsTab extends StatelessWidget {
   final ScrollController scrollController;
@@ -44,10 +45,7 @@ class SettingsTab extends StatelessWidget {
       SizedBox(width: 5),
       Padding(
         padding: const EdgeInsets.all(5),
-        child: Text(
-          title,
-          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
-        ),
+        child: Text(title, style: TitleTextStyle.titleBold16),
       ),
     ],
   );

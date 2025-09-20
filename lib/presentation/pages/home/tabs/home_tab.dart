@@ -83,8 +83,8 @@ class _HomeTabState extends State<HomeTab> {
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               Container(
-                                width: 36,
-                                height: 36,
+                                width: details.bounds.width * 0.7,
+                                height: details.bounds.height * 0.58,
                                 decoration: BoxDecoration(
                                   color: isSelected
                                       ? Colors.purple[100]

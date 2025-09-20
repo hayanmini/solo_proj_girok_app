@@ -4,7 +4,7 @@ class CreateFolder {
   final FolderRepository repository;
   CreateFolder(this.repository);
 
-  Future<String> call(String userId, String name) {
+  Future<void> call(String userId, String name) {
     return repository.createFolder(userId, name);
   }
 }

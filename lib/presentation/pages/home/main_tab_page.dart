@@ -87,10 +87,12 @@ class _MainTabPageState extends State<MainTabPage> {
                 color: Colors.transparent,
                 child: CreatePopup(
                   onSelect: (type) {
-                    if (type == "checkList") {
+                    if (type == "checklist") {
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (_) => CheckListPage()),
+                        MaterialPageRoute(
+                          builder: (context) => CheckListPage(),
+                        ),
                       );
                     } else if (type == "daily") {
                       Navigator.push(

@@ -1,10 +1,10 @@
 import 'package:flutter_girok_app/core/enums.dart';
 import 'package:flutter_girok_app/domain/models/record_model.dart';
 
-class Checklist extends RecordModel {
-  final List<ChecklistItem> items;
+class CheckList extends RecordModel {
+  final List<CheckListItem> items;
 
-  Checklist({
+  CheckList({
     required super.id,
     required super.title,
     required super.createdAt,
@@ -14,9 +14,9 @@ class Checklist extends RecordModel {
   }) : super(type: RecordType.checklist);
 }
 
-class ChecklistItem {
+class CheckListItem {
   final bool check;
   final String content;
 
-  ChecklistItem({required this.check, required this.content});
+  CheckListItem({required this.check, required this.content});
 }

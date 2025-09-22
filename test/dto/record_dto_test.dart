@@ -6,15 +6,15 @@ import 'package:flutter_test/flutter_test.dart';
 
 void main() {
   group('RecordDTO Test', () {
-    final checklist = Checklist(
+    final checklist = CheckList(
       id: 'rec1',
       title: 'Test Checklist',
       createdAt: DateTime.now(),
       updatedAt: DateTime.now(),
       date: DateTime(2025, 9, 12),
       items: [
-        ChecklistItem(check: true, content: 'Item1'),
-        ChecklistItem(check: false, content: 'Item2'),
+        CheckListItem(check: true, content: 'Item1'),
+        CheckListItem(check: false, content: 'Item2'),
       ],
     );
 
@@ -26,7 +26,7 @@ void main() {
       expect(fromJson.id, checklist.id);
       expect(fromJson.title, checklist.title);
       expect(fromJson.type, checklist.type);
-      expect((fromJson as Checklist).items.length, checklist.items.length);
+      expect((fromJson as CheckList).items.length, checklist.items.length);
       expect(fromJson.items[0].content, checklist.items[0].content);
     });
 

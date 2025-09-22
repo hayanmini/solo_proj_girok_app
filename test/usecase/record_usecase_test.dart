@@ -68,7 +68,7 @@ void main() {
     });
 
     test('AddRecord adds RecordModel', () async {
-      final record = Checklist(
+      final record = CheckList(
         id: 'r1',
         title: 'Test',
         createdAt: DateTime.now(),
@@ -84,7 +84,7 @@ void main() {
     });
 
     test('DeleteRecord removes RecordModel', () async {
-      final record = Checklist(
+      final record = CheckList(
         id: 'r1',
         title: 'To Delete',
         createdAt: DateTime.now(),
@@ -101,7 +101,7 @@ void main() {
     });
 
     test('UpdateRecord modifies existing RecordModel', () async {
-      final record = Checklist(
+      final record = CheckList(
         id: 'r1',
         title: 'Original',
         createdAt: DateTime.now(),
@@ -111,7 +111,7 @@ void main() {
       );
       fakeRepo.records.add(record);
 
-      final updatedRecord = Checklist(
+      final updatedRecord = CheckList(
         id: 'r1',
         title: 'Updated',
         createdAt: record.createdAt,
@@ -127,7 +127,7 @@ void main() {
     });
 
     test('GetRecords returns RecordModel for given date', () async {
-      final r1 = Checklist(
+      final r1 = CheckList(
         id: 'r1',
         title: 'A',
         createdAt: DateTime.now(),
@@ -135,7 +135,7 @@ void main() {
         date: DateTime(2025, 9, 12),
         items: [],
       );
-      final r2 = Checklist(
+      final r2 = CheckList(
         id: 'r2',
         title: 'B',
         createdAt: DateTime.now(),

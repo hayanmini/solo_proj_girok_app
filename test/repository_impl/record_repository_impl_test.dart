@@ -61,7 +61,7 @@ void main() {
   });
 
   test('addRecord stores DTO correctly', () async {
-    final record = Checklist(
+    final record = CheckList(
       id: 'rec1',
       title: 'Test Checklist',
       createdAt: DateTime.now(),
@@ -77,7 +77,7 @@ void main() {
   });
 
   test('updateRecord modifies existing record', () async {
-    final record = Checklist(
+    final record = CheckList(
       id: 'rec1',
       title: 'Original Title',
       createdAt: DateTime.now(),
@@ -89,7 +89,7 @@ void main() {
     await repository.addRecord('user1', record);
 
     // update
-    final updatedRecord = Checklist(
+    final updatedRecord = CheckList(
       id: 'rec1',
       title: 'Updated Title',
       createdAt: record.createdAt,
@@ -106,7 +106,7 @@ void main() {
   });
 
   test('deleteRecord removes the record', () async {
-    final record = Checklist(
+    final record = CheckList(
       id: 'rec1',
       title: 'Checklist',
       createdAt: DateTime.now(),
@@ -127,7 +127,7 @@ void main() {
 
   test('getRecordByDate returns only records for that date', () async {
     // given: 저장된 DTO 2개
-    final r1 = Checklist(
+    final r1 = CheckList(
       id: 'rec1',
       title: 'Checklist 1',
       createdAt: DateTime.now(),
@@ -136,7 +136,7 @@ void main() {
       items: [],
     );
 
-    final r2 = Checklist(
+    final r2 = CheckList(
       id: 'rec2',
       title: 'Checklist 2',
       createdAt: DateTime.now(),

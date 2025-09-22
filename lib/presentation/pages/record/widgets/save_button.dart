@@ -23,7 +23,7 @@ class SaveButton extends StatelessWidget {
                 child: Text("저장", style: TitleTextStyle.titleBold16),
               ),
             ),
-            SizedBox(height: bottomQuery),
+            SizedBox(height: bottomQuery + 10),
           ],
         ),
       ),

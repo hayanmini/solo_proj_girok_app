@@ -1,5 +1,7 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_girok_app/core/constants.dart';
+import 'package:flutter_girok_app/presentation/pages/login/login_page.dart';
 
 class SettingsTab extends StatelessWidget {
   final ScrollController scrollController;
@@ -31,7 +33,16 @@ class SettingsTab extends StatelessWidget {
 
               // 계정 설정
               titleText("계정 설정"),
-              settingItem(Icons.logout_outlined, "로그아웃", () {}),
+              settingItem(Icons.logout_outlined, "로그아웃", () async {
+                FirebaseAuth.instance.signOut();
+
+                if (context.mounted) {
+                  Navigator.of(context).pushAndRemoveUntil(
+                    MaterialPageRoute(builder: (_) => const LoginPage()),
+                    (route) => false,
+                  );
+                }
+              }),
             ],
           ),
         ),
@@ -53,9 +64,7 @@ class SettingsTab extends StatelessWidget {
   // 설정 아이템
   Widget settingItem(dynamic icon, String title, Function tap) {
     return GestureDetector(
-      onTap: () {
-        tap;
-      },
+      onTap: () async => await tap(),
       child: Row(
         children: [
           SizedBox(width: 50, height: 50, child: Icon(icon)),

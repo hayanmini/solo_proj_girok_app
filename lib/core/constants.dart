@@ -22,7 +22,7 @@ class TitleTextStyle {
   );
   static const TextStyle recordTitle = TextStyle(
     fontWeight: FontWeight.bold,
-    fontSize: 18,
-    color: Colors.white,
+    fontSize: 16,
+    color: Colors.grey,
   );
 }

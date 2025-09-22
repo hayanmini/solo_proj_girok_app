@@ -30,7 +30,7 @@ class RecordDto {
     Map<String, dynamic> extra = {};
     switch (record.type) {
       case RecordType.checklist:
-        final checklist = record as Checklist;
+        final checklist = record as CheckList;
         extra = {
           "items": checklist.items
               .map((e) => {"check": e.check, "content": e.content})
@@ -78,12 +78,12 @@ class RecordDto {
         final itemsList = (extra["items"] as List<dynamic>?) ?? [];
         final items = itemsList.map((e) {
           final map = Map<String, dynamic>.from(e as Map);
-          return ChecklistItem(
+          return CheckListItem(
             check: map["check"] as bool,
             content: map["content"] as String,
           );
         }).toList();
-        return Checklist(
+        return CheckList(
           id: id,
           title: title,
           createdAt: createdAt,

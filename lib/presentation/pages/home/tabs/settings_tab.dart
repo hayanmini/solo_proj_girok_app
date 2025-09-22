@@ -7,6 +7,26 @@ class SettingsTab extends StatelessWidget {
   final ScrollController scrollController;
   const SettingsTab({super.key, required this.scrollController});
 
+  Future<void> _handleLogout(BuildContext context) async {
+    try {
+      await FirebaseAuth.instance.signOut();
+      // 네비게이션 스택 초기화 & 로그인 페이지 이동
+      if (context.mounted) {
+        Navigator.of(context, rootNavigator: true).pushAndRemoveUntil(
+          MaterialPageRoute(builder: (_) => const LoginPage()),
+          (route) => false,
+        );
+      }
+    } catch (e) {
+      debugPrint("로그아웃 오류: $e");
+      if (context.mounted) {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text('로그아웃 실패: $e')));
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -33,16 +53,11 @@ class SettingsTab extends StatelessWidget {
 
               // 계정 설정
               titleText("계정 설정"),
-              settingItem(Icons.logout_outlined, "로그아웃", () async {
-                FirebaseAuth.instance.signOut();
-
-                if (context.mounted) {
-                  Navigator.of(context).pushAndRemoveUntil(
-                    MaterialPageRoute(builder: (_) => const LoginPage()),
-                    (route) => false,
-                  );
-                }
-              }),
+              settingItem(
+                Icons.logout_outlined,
+                "로그아웃",
+                () => _handleLogout(context),
+              ),
             ],
           ),
         ),
@@ -65,11 +80,15 @@ class SettingsTab extends StatelessWidget {
   Widget settingItem(dynamic icon, String title, Function tap) {
     return GestureDetector(
       onTap: () async => await tap(),
-      child: Row(
-        children: [
-          SizedBox(width: 50, height: 50, child: Icon(icon)),
-          Text(title),
-        ],
+      child: Container(
+        width: double.infinity,
+        color: Colors.transparent,
+        child: Row(
+          children: [
+            SizedBox(width: 50, height: 50, child: Icon(icon)),
+            Text(title),
+          ],
+        ),
       ),
     );
   }

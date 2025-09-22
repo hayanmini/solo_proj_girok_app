@@ -13,6 +13,16 @@ final currentUserProvider = StreamProvider<fb.User?>((ref) {
   return fb.FirebaseAuth.instance.authStateChanges();
 });
 
+// 로그인 상태 확인 Provider
+final isLoggedInProvider = Provider<bool>((ref) {
+  final userAsync = ref.watch(currentUserProvider);
+  return userAsync.when(
+    data: (user) => user != null,
+    loading: () => false,
+    error: (_, __) => false,
+  );
+});
+
 // domain User로 매핑된 유저 상태
 final domainUserProvider = FutureProvider<domain_user.User?>((ref) async {
   final fbUser = await ref.watch(currentUserProvider.future);

@@ -15,7 +15,8 @@ class LoginPage extends ConsumerStatefulWidget {
 
 class _LoginPageState extends ConsumerState<LoginPage> {
   bool _isLoggingIn = false;
-  bool _hasNavigated = false; // 네비게이션 중복 방지 플래그
+  // 네비게이션 중복 방지
+  bool _hasNavigated = false;
 
   Future<void> _signInWithGoogle() async {
     if (_isLoggingIn) {
@@ -41,7 +42,6 @@ class _LoginPageState extends ConsumerState<LoginPage> {
         );
         await userRepo.addUser(domainUser);
 
-        // 여기서는 네비게이션하지 않음 - authStateChanges가 자동으로 처리함
         _navigateToMain();
       }
     } catch (e) {
@@ -66,7 +66,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
     _hasNavigated = true;
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (mounted && !_hasNavigated) return; // 추가 보호
+      if (mounted && !_hasNavigated) return;
 
       Navigator.of(context).pushAndRemoveUntil(
         MaterialPageRoute(builder: (_) => const MainTabPage()),
@@ -93,7 +93,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
       body: SafeArea(
         child: currentUserAsync.when(
           data: (fb.User? user) {
-            // 이미 로그인된 상태라면 자동으로 메인으로 이동
+            // 로그인된 상태 - 메인으로 이동
             if (user != null && !_hasNavigated) {
               return const Center(
                 child: Column(
@@ -110,7 +110,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
               );
             }
 
-            // 네비게이션이 예약되었지만 아직 user가 있는 경우
+            // 네비게이션 예약되었지만 아직 user가 있는 경우
             if (user != null && _hasNavigated) {
               return const Center(
                 child: Column(

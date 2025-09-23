@@ -129,121 +129,121 @@ class _CheckListPageState extends ConsumerState<CheckListPage> {
         onTap: () => FocusScope.of(context).unfocus(),
         child: Column(
           children: [
-            SingleChildScrollView(
-              child: Padding(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 15,
-                  vertical: 8,
-                ),
-                child: Column(
-                  children: [
-                    // Title
-                    Container(
-                      width: double.infinity,
-                      height: 50,
-                      decoration: BorderBoxDecoration.commonBox,
-                      child: TextFormField(
-                        textAlign: TextAlign.center,
-                        cursorColor: Colors.white,
-                        controller: _titleController,
-                        decoration: InputDecoration(
-                          border: InputBorder.none,
-                          hintText: "제목을 입력하세요.",
-                          contentPadding: EdgeInsets.symmetric(horizontal: 8),
+            Expanded(
+              child: SingleChildScrollView(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 15,
+                    vertical: 8,
+                  ),
+                  child: Column(
+                    children: [
+                      // Title
+                      Container(
+                        width: double.infinity,
+                        height: 50,
+                        decoration: BorderBoxDecoration.commonBox,
+                        child: TextFormField(
+                          textAlign: TextAlign.center,
+                          cursorColor: Colors.white,
+                          controller: _titleController,
+                          decoration: InputDecoration(
+                            border: InputBorder.none,
+                            hintText: "제목을 입력하세요.",
+                            contentPadding: EdgeInsets.symmetric(horizontal: 8),
+                          ),
                         ),
                       ),
-                    ),
-                    const SizedBox(height: 10),
+                      const SizedBox(height: 10),
 
-                    // Check Item
-                    ...List.generate(_itemControllers.length, (i) {
-                      return Padding(
-                        padding: const EdgeInsets.only(bottom: 10),
-                        child: Row(
-                          children: [
-                            GestureDetector(
-                              onTap: () {
-                                setState(() {
-                                  _checkStates[i] = !_checkStates[i];
-                                });
-                              },
-                              child: Container(
-                                width: 50,
-                                height: 50,
-                                decoration: BorderBoxDecoration.commonBox,
-                                child: _checkStates[i]
-                                    ? const Icon(
-                                        Icons.check,
-                                        color: Colors.white,
-                                      )
-                                    : null,
+                      // Check Item
+                      ...List.generate(_itemControllers.length, (i) {
+                        return Padding(
+                          padding: const EdgeInsets.only(bottom: 10),
+                          child: Row(
+                            children: [
+                              GestureDetector(
+                                onTap: () {
+                                  setState(() {
+                                    _checkStates[i] = !_checkStates[i];
+                                  });
+                                },
+                                child: Container(
+                                  width: 50,
+                                  height: 50,
+                                  decoration: BorderBoxDecoration.commonBox,
+                                  child: _checkStates[i]
+                                      ? const Icon(
+                                          Icons.check,
+                                          color: Colors.white,
+                                        )
+                                      : null,
+                                ),
                               ),
-                            ),
-                            const SizedBox(width: 10),
-                            Expanded(
-                              child: Container(
-                                height: 50,
-                                decoration: BorderBoxDecoration.commonBox,
-                                child: TextFormField(
-                                  controller: _itemControllers[i],
-                                  cursorColor: Colors.white,
-                                  textAlignVertical: i != 0
-                                      ? TextAlignVertical.center
-                                      : TextAlignVertical.top,
-                                  decoration: InputDecoration(
-                                    border: InputBorder.none,
-                                    hintText: "할 일을 입력하세요.",
-                                    contentPadding: EdgeInsets.symmetric(
-                                      horizontal: 10,
+                              const SizedBox(width: 10),
+                              Expanded(
+                                child: Container(
+                                  height: 50,
+                                  decoration: BorderBoxDecoration.commonBox,
+                                  child: TextFormField(
+                                    controller: _itemControllers[i],
+                                    cursorColor: Colors.white,
+                                    textAlignVertical: i != 0
+                                        ? TextAlignVertical.center
+                                        : TextAlignVertical.top,
+                                    decoration: InputDecoration(
+                                      border: InputBorder.none,
+                                      hintText: "할 일을 입력하세요.",
+                                      contentPadding: EdgeInsets.symmetric(
+                                        horizontal: 10,
+                                      ),
+                                      suffixIcon: i != 0
+                                          ? IconButton(
+                                              onPressed: () {
+                                                setState(() {
+                                                  _itemControllers
+                                                      .removeAt(i)
+                                                      .dispose();
+                                                  _checkStates.removeAt(i);
+                                                });
+                                              },
+                                              icon: Icon(
+                                                Icons.close,
+                                                color: Colors.white,
+                                              ),
+                                            )
+                                          : null,
+                                      // focusedBorder: ,
                                     ),
-                                    suffixIcon: i != 0
-                                        ? IconButton(
-                                            onPressed: () {
-                                              setState(() {
-                                                _itemControllers
-                                                    .removeAt(i)
-                                                    .dispose();
-                                                _checkStates.removeAt(i);
-                                              });
-                                            },
-                                            icon: Icon(
-                                              Icons.close,
-                                              color: Colors.white,
-                                            ),
-                                          )
-                                        : null,
-                                    // focusedBorder: ,
                                   ),
                                 ),
                               ),
-                            ),
-                          ],
-                        ),
-                      );
-                    }),
+                            ],
+                          ),
+                        );
+                      }),
 
-                    // 추가 버튼
-                    GestureDetector(
-                      onTap: () {
-                        setState(() {
-                          _itemControllers.add(TextEditingController());
-                          _checkStates.add(false);
-                        });
-                      },
-                      child: Container(
-                        width: double.infinity,
-                        height: 30,
-                        decoration: BorderBoxDecoration.commonBox,
-                        child: Icon(Icons.add),
+                      // 추가 버튼
+                      GestureDetector(
+                        onTap: () {
+                          setState(() {
+                            _itemControllers.add(TextEditingController());
+                            _checkStates.add(false);
+                          });
+                        },
+                        child: Container(
+                          width: double.infinity,
+                          height: 30,
+                          decoration: BorderBoxDecoration.commonBox,
+                          child: Icon(Icons.add),
+                        ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
             ),
-            Spacer(),
-
-            // Button
+            SizedBox(height: 10),
             SaveButton(onPressed: _saveRecord),
           ],
         ),

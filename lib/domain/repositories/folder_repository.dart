@@ -10,5 +10,11 @@ abstract class FolderRepository {
     required String defaultFolderId,
   });
 
+  Future<void> updateFolderName({
+    required String userId,
+    required String folderId,
+    required String newName,
+  });
+
   Future<Map<String, int>> getFolderRecordCounts(String userId);
 }

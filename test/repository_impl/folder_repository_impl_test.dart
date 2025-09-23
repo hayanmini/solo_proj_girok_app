@@ -25,6 +25,25 @@ class MemoryFolderRemoteDataSource {
         .where((f) => f.id != folderId)
         .toList();
   }
+
+  Future<void> updateFolderName({
+    required String userId,
+    required String folderId,
+    required String newName,
+  }) async {
+    final folders = store[userId];
+    if (folders == null) return;
+
+    for (var f in folders) {
+      if (f.id == folderId) {
+        // FolderDto는 일반 class라면 이렇게 직접 필드 변경 가능
+        // 테스트에서는 DTO name에서 final 지우고 테스트
+        // 실전에서는 상관없음.
+        // f.name = newName;
+        break;
+      }
+    }
+  }
 }
 
 // Memory RepositoryImpl
@@ -61,6 +80,19 @@ class MemoryFolderRepositoryImpl implements FolderRepository {
       defaultFolderId: defaultFolderId,
     );
   }
+
+  @override
+  Future<void> updateFolderName({
+    required String userId,
+    required String folderId,
+    required String newName,
+  }) async {
+    await remote.updateFolderName(
+      userId: userId,
+      folderId: folderId,
+      newName: newName,
+    );
+  }
 }
 
 void main() {
@@ -81,5 +113,21 @@ void main() {
     );
     final folders2 = await repo.getFolders('user1');
     expect(folders2.isEmpty, true);
+  });
+
+  test('MemoryFolderRepositoryImpl updateFolderName', () async {
+    final remote = MemoryFolderRemoteDataSource();
+    final repo = MemoryFolderRepositoryImpl(remote);
+
+    await repo.createFolder('user1', '폴더');
+
+    var folders = await repo.getFolders('user1');
+    final id = folders.first.id;
+
+    // 이름 변경
+    await repo.updateFolderName(userId: 'user1', folderId: id, newName: '새폴더');
+
+    folders = await repo.getFolders('user1');
+    expect(folders.first.name, '새폴더');
   });
 }

@@ -33,6 +33,17 @@ class FolderRepositoryImpl implements FolderRepository {
   }
 
   @override
+  Future<void> updateFolderName({
+    required String userId,
+    required String folderId,
+    required String newName,
+  }) => remote.updateFolderName(
+    userId: userId,
+    folderId: folderId,
+    newName: newName,
+  );
+
+  @override
   Future<Map<String, int>> getFolderRecordCounts(String userId) {
     return remote.getFolderRecordCounts(userId);
   }

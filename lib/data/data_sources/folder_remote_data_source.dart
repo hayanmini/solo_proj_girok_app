@@ -67,6 +67,19 @@ class FolderRemoteDataSource {
     await batch.commit();
   }
 
+  Future<void> updateFolderName({
+    required String userId,
+    required String folderId,
+    required String newName,
+  }) async {
+    await firestore
+        .collection('users')
+        .doc(userId)
+        .collection('folders')
+        .doc(folderId)
+        .update({'name': newName});
+  }
+
   Future<Map<String, int>> getFolderRecordCounts(String userId) async {
     final folderSnapshot = await firestore
         .collection("users")

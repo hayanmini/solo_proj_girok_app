@@ -58,6 +58,13 @@ class FolderAsyncNotifier extends AsyncNotifier<List<Folder>> {
         );
     await refreshFolders();
   }
+
+  Future<void> updateFolderName(String folderId, String newName) async {
+    await ref
+        .read(folderRepositoryProvider)
+        .updateFolderName(userId: id, folderId: folderId, newName: newName);
+    await refreshFolders();
+  }
 }
 
 // Notifier Provider

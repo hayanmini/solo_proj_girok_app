@@ -26,7 +26,7 @@ class FirestoreDatasource {
         .collection("users")
         .doc(userId)
         .collection("records")
-        .doc(record.id)
+        .doc()
         .set(record.toJson());
   }
 

@@ -17,19 +17,31 @@ class CheckListPage extends ConsumerStatefulWidget {
 class _CheckListPageState extends ConsumerState<CheckListPage> {
   final TextEditingController _titleController = TextEditingController();
   final List<TextEditingController> _itemControllers = [];
+  final List<bool> _checkStates = [];
 
   @override
   void initState() {
     super.initState();
+
     if (widget.editingRecord != null) {
       _titleController.text = widget.editingRecord!.title;
       for (final item in widget.editingRecord!.items) {
-        final c = TextEditingController(text: item.content);
-        _itemControllers.add(c);
+        _itemControllers.add(TextEditingController(text: item.content));
+        _checkStates.add(item.check);
       }
     } else {
       _itemControllers.add(TextEditingController());
+      _checkStates.add(false);
     }
+
+    _titleController.addListener(_onChanged);
+    for (var controller in _itemControllers) {
+      controller.addListener(_onChanged);
+    }
+  }
+
+  void _onChanged() {
+    setState(() {});
   }
 
   @override
@@ -41,11 +53,25 @@ class _CheckListPageState extends ConsumerState<CheckListPage> {
     super.dispose();
   }
 
+  bool get _isSaveEnabled {
+    final titleNotEmpty = _titleController.text.trim().isNotEmpty;
+    final hasAtLeastOneItem = _itemControllers.any(
+      (c) => c.text.trim().isNotEmpty,
+    );
+    return titleNotEmpty && hasAtLeastOneItem;
+  }
+
   // 기록 저장 로직
   Future<void> _saveRecord() async {
-    final fbUser = fb.FirebaseAuth.instance.currentUser;
+    if (!_isSaveEnabled) {
+      // TODO :  디자인 및 공통 위젯 생성
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text("제목과 할 일을 모두 입력해주세요.")));
+      return;
+    }
 
-    /// fbUser != null지만 예외 처리를 위해 설정
+    final fbUser = fb.FirebaseAuth.instance.currentUser;
     if (fbUser == null) {
       ScaffoldMessenger.of(
         context,
@@ -53,32 +79,40 @@ class _CheckListPageState extends ConsumerState<CheckListPage> {
       return;
     }
 
-    final userId = fbUser.uid;
-    print(userId);
+    try {
+      final userId = fbUser.uid;
 
-    final items = _itemControllers
-        .map((c) => CheckListItem(check: false, content: c.text))
-        .toList();
+      final items = <CheckListItem>[];
+      for (int i = 0; i < _itemControllers.length; i++) {
+        final text = _itemControllers[i].text.trim();
+        if (text.isNotEmpty) {
+          items.add(CheckListItem(check: _checkStates[i], content: text));
+        }
+      }
 
-    final now = DateTime.now();
-    final record = CheckList(
-      id: widget.editingRecord?.id ?? "",
-      title: _titleController.text,
-      createdAt: widget.editingRecord?.createdAt ?? now,
-      updatedAt: now,
-      // TODO : 캘린더 날짜 연동 필요
-      date: now,
-      items: items,
-    );
+      final now = DateTime.now();
+      final record = CheckList(
+        id: widget.editingRecord?.id ?? "",
+        title: _titleController.text,
+        createdAt: widget.editingRecord?.createdAt ?? now,
+        updatedAt: now,
+        // TODO : 캘린더 날짜 연동 필요
+        date: now,
+        items: items,
+      );
 
-    // 저장 및 수정 처리
-    if (widget.editingRecord == null) {
-      await ref.read(recordsProvider.notifier).addRecord(userId, record);
-      debugPrint('Firestore addRecord OK: $userId, ${record.title}');
-    } else {
-      await ref.read(recordsProvider.notifier).updateRecord(userId, record);
+      // 저장 및 수정 처리
+      if (widget.editingRecord == null) {
+        await ref.read(recordsProvider.notifier).addRecord(userId, record);
+      } else {
+        await ref.read(recordsProvider.notifier).updateRecord(userId, record);
+      }
+      if (context.mounted) Navigator.pop(context);
+    } catch (e) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text("저장 중 오류가 발생했습니다: $e")));
     }
-    if (context.mounted) Navigator.pop(context);
   }
 
   @override
@@ -122,15 +156,28 @@ class _CheckListPageState extends ConsumerState<CheckListPage> {
                     const SizedBox(height: 10),
 
                     // Check Item
-                    ..._itemControllers.map((controller) {
+                    ...List.generate(_itemControllers.length, (i) {
                       return Padding(
                         padding: const EdgeInsets.only(bottom: 10),
                         child: Row(
                           children: [
-                            Container(
-                              width: 50,
-                              height: 50,
-                              decoration: BorderBoxDecoration.commonBox,
+                            GestureDetector(
+                              onTap: () {
+                                setState(() {
+                                  _checkStates[i] = !_checkStates[i];
+                                });
+                              },
+                              child: Container(
+                                width: 50,
+                                height: 50,
+                                decoration: BorderBoxDecoration.commonBox,
+                                child: _checkStates[i]
+                                    ? const Icon(
+                                        Icons.check,
+                                        color: Colors.white,
+                                      )
+                                    : null,
+                              ),
                             ),
                             const SizedBox(width: 10),
                             Expanded(
@@ -138,16 +185,34 @@ class _CheckListPageState extends ConsumerState<CheckListPage> {
                                 height: 50,
                                 decoration: BorderBoxDecoration.commonBox,
                                 child: TextFormField(
-                                  controller: controller,
+                                  controller: _itemControllers[i],
                                   cursorColor: Colors.white,
-                                  decoration: const InputDecoration(
+                                  textAlignVertical: i != 0
+                                      ? TextAlignVertical.center
+                                      : TextAlignVertical.top,
+                                  decoration: InputDecoration(
                                     border: InputBorder.none,
                                     hintText: "할 일을 입력하세요.",
                                     contentPadding: EdgeInsets.symmetric(
                                       horizontal: 10,
                                     ),
-
-                                    // focusedBorder:
+                                    suffixIcon: i != 0
+                                        ? IconButton(
+                                            onPressed: () {
+                                              setState(() {
+                                                _itemControllers
+                                                    .removeAt(i)
+                                                    .dispose();
+                                                _checkStates.removeAt(i);
+                                              });
+                                            },
+                                            icon: Icon(
+                                              Icons.close,
+                                              color: Colors.white,
+                                            ),
+                                          )
+                                        : null,
+                                    // focusedBorder: ,
                                   ),
                                 ),
                               ),
@@ -157,11 +222,12 @@ class _CheckListPageState extends ConsumerState<CheckListPage> {
                       );
                     }),
 
-                    // Add Button
+                    // 추가 버튼
                     GestureDetector(
                       onTap: () {
                         setState(() {
                           _itemControllers.add(TextEditingController());
+                          _checkStates.add(false);
                         });
                       },
                       child: Container(

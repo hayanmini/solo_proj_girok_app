@@ -55,7 +55,7 @@ class _DailyPageState extends ConsumerState<DailyPage> {
     if (!_isSaveEnabled) {
       ScaffoldMessenger.of(
         context,
-      ).showSnackBar(const SnackBar(content: Text("제목이나 할 일을 비워둘 수 없습니다.")));
+      ).showSnackBar(const SnackBar(content: Text("제목과 내용을 모두 입력해주세요.")));
       return;
     }
 

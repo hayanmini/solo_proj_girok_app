@@ -37,8 +37,9 @@ class FirestoreDatasource {
         .collection("records")
         .doc();
 
+    // 여기서 미리 생성된 ID 사용
     final recordWithId = RecordDto(
-      id: docRef.id, // 🔹 여기서 미리 생성된 ID 사용
+      id: docRef.id,
       title: record.title,
       createdAt: record.createdAt,
       updatedAt: record.updatedAt,
@@ -46,7 +47,6 @@ class FirestoreDatasource {
       type: record.type,
       extra: record.extra,
     );
-
     await docRef.set(recordWithId.toJson());
   }
 

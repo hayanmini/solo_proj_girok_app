@@ -40,6 +40,16 @@ class RecordsNotifier extends AsyncNotifier<List<RecordModel>> {
     }
   }
 
+  Future<void> loadRecordList(String userId) async {
+    state = const AsyncValue.loading();
+    try {
+      final recordList = await _repository.getRecords(userId);
+      state = AsyncValue.data(recordList);
+    } catch (e, st) {
+      state = AsyncValue.error(e, st);
+    }
+  }
+
   Future<void> addRecord(String userId, RecordModel record) async {
     state = const AsyncValue.loading();
     try {

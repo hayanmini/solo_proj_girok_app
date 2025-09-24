@@ -2,11 +2,18 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_girok_app/core/constants.dart';
 import 'package:flutter_girok_app/presentation/pages/login/login_page.dart';
+import 'package:flutter_girok_app/presentation/providers/user_provider.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class SettingsTab extends StatelessWidget {
+class SettingsTab extends ConsumerStatefulWidget {
   final ScrollController scrollController;
   const SettingsTab({super.key, required this.scrollController});
 
+  @override
+  ConsumerState<SettingsTab> createState() => _SettingsTabState();
+}
+
+class _SettingsTabState extends ConsumerState<SettingsTab> {
   Future<void> _handleLogout(BuildContext context) async {
     try {
       await FirebaseAuth.instance.signOut();
@@ -29,37 +36,108 @@ class SettingsTab extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // 계정 정보
+    final userId = ref.watch(userIdProvider);
+    final userAsync = userId == null
+        ? AsyncValue.data(null)
+        : ref.watch(userProfileProvider(userId));
+
     return Scaffold(
       appBar: AppBar(title: Text("설정")),
       body: SingleChildScrollView(
-        controller: scrollController,
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 5),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // TODO : 기능 구현 및 연결
-              // 작성 설정
-              titleText("작성 설정"),
-              settingItem(Icons.font_download_outlined, "폰트 설정", () {}),
-              Divider(),
-              SizedBox(height: 5),
+        controller: widget.scrollController,
+        padding: EdgeInsets.symmetric(horizontal: 10),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            titleText("계정 정보"),
+            SizedBox(height: 10),
+            userAsync.when(
+              data: (user) {
+                final photoUrl = user?.photoUrl;
+                final email = user?.email ?? "이메일 없음";
 
-              // 시스템 설정
-              titleText("시스템 설정"),
-              settingItem(Icons.dark_mode, "다크 모드", () {}),
-              Divider(),
-              SizedBox(height: 5),
+                return Container(
+                  width: double.infinity,
+                  height: 100,
+                  decoration: BorderBoxDecoration.commonBox,
+                  child: Row(
+                    children: [
+                      const SizedBox(width: 15),
+                      Container(
+                        width: 70,
+                        height: 70,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: Colors.grey[800],
+                          image: photoUrl != null
+                              ? DecorationImage(
+                                  image: NetworkImage(photoUrl),
+                                  fit: BoxFit.cover,
+                                )
+                              : null,
+                        ),
+                        child: photoUrl == null
+                            ? const Icon(Icons.person, size: 40)
+                            : null,
+                      ),
+                      const SizedBox(width: 20),
 
-              // 계정 설정
-              titleText("계정 설정"),
-              settingItem(
-                Icons.logout_outlined,
-                "로그아웃",
-                () => _handleLogout(context),
-              ),
-            ],
-          ),
+                      // 계정 정보
+                      Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const Text(
+                            "이메일",
+                            style: TextStyle(
+                              fontWeight: FontWeight.w100,
+                              fontSize: 12,
+                            ),
+                          ),
+                          const SizedBox(height: 4),
+
+                          Text(
+                            email,
+                            style: const TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 14,
+                            ),
+                          ),
+                          const SizedBox(height: 15),
+                        ],
+                      ),
+                    ],
+                  ),
+                );
+              },
+              loading: () => const CircularProgressIndicator(),
+              error: (e, _) => Text("오류: $e"),
+            ),
+            const SizedBox(height: 15),
+            const Divider(),
+
+            // 작성 설정
+            // titleText("작성 설정"),
+            // settingItem(Icons.font_download_outlined, "폰트 설정", () {}),
+            // Divider(),
+            // SizedBox(height: 5),
+
+            // 시스템 설정
+            // titleText("시스템 설정"),
+            // settingItem(Icons.dark_mode, "다크 모드", () {}),
+            // Divider(),
+            // SizedBox(height: 5),
+
+            // 계정 설정
+            SizedBox(height: 5),
+            titleText("설정"),
+            settingItem(
+              Icons.logout_outlined,
+              "로그아웃",
+              () => _handleLogout(context),
+            ),
+          ],
         ),
       ),
     );

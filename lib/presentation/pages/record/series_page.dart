@@ -210,118 +210,132 @@ class _SeriesPageState extends ConsumerState<SeriesPage> {
     showModalBottomSheet(
       context: context,
       builder: (_) {
-        return foldersAsync.when(
-          data: (folders) {
-            final allFolders = [
-              Folder(
-                id: defaultFolderId,
-                name: defaultFolderName,
-                createdAt: DateTime.now(),
-              ),
-              ...folders.where((f) => f.id != defaultFolderId),
-            ];
-
-            return ListView(
-              children: [
-                ListTile(
-                  leading: const Icon(Icons.create_new_folder_rounded),
-                  title: const Text('새 폴더 만들기'),
-                  onTap: () async {
-                    Navigator.pop(context);
-                    final name = await _showNewFolderDialog(context);
-                    if (name != null && name.trim().isNotEmpty) {
-                      await ref
-                          .read(folderAsyncNotifierProvider.notifier)
-                          .createFolder(name);
-
-                      final updatedFolders =
-                          ref.read(folderAsyncNotifierProvider).value ?? [];
-                      final newFolder = updatedFolders.firstWhere(
-                        (f) => f.name == name,
-                      );
-                      setState(() {
-                        _selectedFolderId = newFolder.id;
-                        _selectedFolderName = newFolder.name;
-                      });
-                    }
-                  },
-                ),
-                const Divider(),
-
-                for (final folder in allFolders)
-                  ListTile(
-                    leading: const Icon(Icons.folder),
-                    title: Text(folder.name),
-                    trailing: folder.id != defaultFolderId
-                        ? Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              IconButton(
-                                icon: const Icon(Icons.edit),
-                                onPressed: () async {
-                                  final controller = TextEditingController(
-                                    text: folder.name,
-                                  );
-                                  final newName = await showDialog<String>(
-                                    context: context,
-                                    builder: (_) => AlertDialog(
-                                      title: const Text("폴더 이름 수정"),
-                                      content: TextField(
-                                        controller: controller,
-                                      ),
-                                      actions: [
-                                        TextButton(
-                                          onPressed: () =>
-                                              Navigator.pop(context),
-                                          child: const Text("취소"),
-                                        ),
-                                        TextButton(
-                                          onPressed: () => Navigator.pop(
-                                            context,
-                                            controller.text.trim(),
-                                          ),
-                                          child: const Text("저장"),
-                                        ),
-                                      ],
-                                    ),
-                                  );
-                                  if (newName != null && newName.isNotEmpty) {
-                                    await ref
-                                        .read(
-                                          folderAsyncNotifierProvider.notifier,
-                                        )
-                                        .updateFolderName(folder.id, newName);
-                                    if (_selectedFolderId == folder.id) {
-                                      setState(() {
-                                        _selectedFolderName = newName;
-                                      });
-                                    }
-                                  }
-                                },
-                              ),
-                              IconButton(
-                                onPressed: () async {
-                                  await _deleteFolder(context);
-                                  // TODO : 삭제 시 바로 반영
-                                },
-                                icon: const Icon(Icons.delete),
-                              ),
-                            ],
-                          )
-                        : null,
-                    onTap: () {
-                      setState(() {
-                        _selectedFolderId = folder.id;
-                        _selectedFolderName = folder.name;
-                      });
-                      Navigator.pop(context);
-                    },
+        return Consumer(
+          builder: (_, WidgetRef ref2, _) {
+            final foldersAsync = ref2.watch(folderAsyncNotifierProvider);
+            return foldersAsync.when(
+              data: (folders) {
+                final allFolders = [
+                  Folder(
+                    id: defaultFolderId,
+                    name: defaultFolderName,
+                    createdAt: DateTime.now(),
                   ),
-              ],
+                  ...folders.where((f) => f.id != defaultFolderId),
+                ];
+
+                return ListView(
+                  children: [
+                    ListTile(
+                      leading: const Icon(Icons.create_new_folder_rounded),
+                      title: const Text('새 폴더 만들기'),
+                      onTap: () async {
+                        Navigator.pop(context);
+                        WidgetsBinding.instance.addPostFrameCallback((_) async {
+                          final name = await _showNewFolderDialog(context);
+                          print("@@@@@");
+                          if (name != null && name.trim().isNotEmpty) {
+                            await ref
+                                .read(folderAsyncNotifierProvider.notifier)
+                                .createFolder(name);
+
+                            final updatedFolders =
+                                ref.read(folderAsyncNotifierProvider).value ??
+                                [];
+                            final newFolder = updatedFolders.firstWhere(
+                              (f) => f.name == name,
+                            );
+                            setState(() {
+                              _selectedFolderId = newFolder.id;
+                              _selectedFolderName = newFolder.name;
+                            });
+                          }
+                        });
+                      },
+                    ),
+                    const Divider(),
+
+                    for (final folder in allFolders)
+                      ListTile(
+                        leading: const Icon(Icons.folder),
+                        title: Text(folder.name),
+                        trailing: folder.id != defaultFolderId
+                            ? Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  IconButton(
+                                    icon: const Icon(Icons.edit),
+                                    onPressed: () async {
+                                      final controller = TextEditingController(
+                                        text: folder.name,
+                                      );
+                                      final newName = await showDialog<String>(
+                                        context: context,
+                                        builder: (_) => AlertDialog(
+                                          title: const Text("폴더 이름 수정"),
+                                          content: TextField(
+                                            controller: controller,
+                                          ),
+                                          actions: [
+                                            TextButton(
+                                              onPressed: () =>
+                                                  Navigator.pop(context),
+                                              child: const Text("취소"),
+                                            ),
+                                            TextButton(
+                                              onPressed: () => Navigator.pop(
+                                                context,
+                                                controller.text.trim(),
+                                              ),
+                                              child: const Text("저장"),
+                                            ),
+                                          ],
+                                        ),
+                                      );
+                                      if (newName != null &&
+                                          newName.isNotEmpty) {
+                                        await ref
+                                            .read(
+                                              folderAsyncNotifierProvider
+                                                  .notifier,
+                                            )
+                                            .updateFolderName(
+                                              folder.id,
+                                              newName,
+                                            );
+                                        if (_selectedFolderId == folder.id) {
+                                          setState(() {
+                                            _selectedFolderName = newName;
+                                          });
+                                        }
+                                      }
+                                    },
+                                  ),
+                                  IconButton(
+                                    onPressed: () async {
+                                      await _deleteFolder(context, folder.id);
+                                      // TODO : 삭제 시 바로 반영
+                                    },
+                                    icon: const Icon(Icons.delete),
+                                  ),
+                                ],
+                              )
+                            : null,
+                        onTap: () {
+                          setState(() {
+                            _selectedFolderId = folder.id;
+                            _selectedFolderName = folder.name;
+                          });
+                          Navigator.pop(context);
+                        },
+                      ),
+                  ],
+                );
+              },
+              loading: () => const Center(child: CircularProgressIndicator()),
+              error: (e, st) => Center(child: Text("오류: $e")),
             );
           },
-          loading: () => const Center(child: CircularProgressIndicator()),
-          error: (e, st) => Center(child: Text("오류: $e")),
         );
       },
     );
@@ -340,7 +354,9 @@ class _SeriesPageState extends ConsumerState<SeriesPage> {
             child: const Text('취소'),
           ),
           TextButton(
-            onPressed: () => Navigator.pop(context, controller.text),
+            onPressed: () {
+              Navigator.pop(context, controller.text);
+            },
             child: const Text('확인'),
           ),
         ],
@@ -348,7 +364,7 @@ class _SeriesPageState extends ConsumerState<SeriesPage> {
     );
   }
 
-  Future<void> _deleteFolder(BuildContext context) async {
+  Future<void> _deleteFolder(BuildContext context, String id) async {
     final confirm = await showDialog<bool>(
       context: context,
       builder: (_) => AlertDialog(
@@ -369,11 +385,13 @@ class _SeriesPageState extends ConsumerState<SeriesPage> {
     if (confirm == true) {
       await ref
           .read(folderAsyncNotifierProvider.notifier)
-          .deleteFolder(_selectedFolderId!, "defaultFolderId");
-      setState(() {
-        _selectedFolderId = "defaultFolderId";
-        _selectedFolderName = "기본 폴더";
-      });
+          .deleteFolder(id, "defaultFolderId");
+      if (_selectedFolderId == id) {
+        setState(() {
+          _selectedFolderId = "defaultFolderId";
+          _selectedFolderName = "기본 폴더";
+        });
+      }
     }
   }
 }

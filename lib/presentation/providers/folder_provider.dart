@@ -69,6 +69,13 @@ class FolderAsyncNotifier extends AsyncNotifier<List<Folder>> {
         .updateFolderName(userId: userId, folderId: folderId, newName: newName);
     await refreshFolders();
   }
+
+  Future<void> getFolderRecordCounts() async {
+    final userId = ref.watch(userIdProvider);
+    if (userId == null) return;
+    await ref.read(folderRepositoryProvider).getFolderRecordCounts(userId);
+    await refreshFolders();
+  }
 }
 
 // Notifier Provider

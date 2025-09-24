@@ -25,6 +25,12 @@ class RecordRepositoryImpl implements RecordRepository {
   }
 
   @override
+  Future<List<RecordModel>> getRecords(String userId) async {
+    final dtos = await datasource.getRecord(userId);
+    return dtos.map((e) => e.toDomain()).toList();
+  }
+
+  @override
   Future<List<RecordModel>> getRecordByDate(
     String userId,
     DateTime date,

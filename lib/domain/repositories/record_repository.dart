@@ -5,5 +5,6 @@ abstract class RecordRepository {
   Future<void> addRecord(String userId, RecordModel record);
   Future<void> updateRecord(String userId, RecordModel record);
   Future<void> deleteRecord(String userId, String recordId);
+  Future<List<RecordModel>> getRecords(String userId);
   Future<List<RecordModel>> getRecordByDate(String userId, DateTime date);
 }

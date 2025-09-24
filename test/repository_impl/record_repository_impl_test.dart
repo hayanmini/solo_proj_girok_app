@@ -49,6 +49,11 @@ class FakeRecordDatasource implements FirestoreDatasource {
 
   @override
   FirebaseFirestore get firestore => throw UnimplementedError();
+
+  @override
+  Future<List<RecordDto>> getRecord(String userId) {
+    throw UnimplementedError();
+  }
 }
 
 void main() {

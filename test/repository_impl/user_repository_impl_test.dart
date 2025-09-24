@@ -46,6 +46,11 @@ class FakeFirestoreDatasource implements FirestoreDatasource {
   Future<List<RecordDto>> getRecordByDate(String userId, DateTime date) {
     throw UnimplementedError();
   }
+
+  @override
+  Future<List<RecordDto>> getRecord(String userId) {
+    throw UnimplementedError();
+  }
 }
 
 void main() {

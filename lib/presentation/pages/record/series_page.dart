@@ -233,7 +233,6 @@ class _SeriesPageState extends ConsumerState<SeriesPage> {
                         Navigator.pop(context);
                         WidgetsBinding.instance.addPostFrameCallback((_) async {
                           final name = await _showNewFolderDialog(context);
-                          print("@@@@@");
                           if (name != null && name.trim().isNotEmpty) {
                             await ref
                                 .read(folderAsyncNotifierProvider.notifier)

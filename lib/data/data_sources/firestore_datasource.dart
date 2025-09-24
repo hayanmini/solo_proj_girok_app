@@ -12,6 +12,15 @@ class FirestoreDatasource {
         .collection("users")
         .doc(user.id)
         .set(user.toJson(), SetOptions(merge: true));
+
+    // 처음 생성 시 기본 폴더 생성
+    final defaultRef = firestore
+        .collection('users')
+        .doc(user.id)
+        .collection('folders')
+        .doc("defaultFolderId");
+
+    await defaultRef.set({'name': "기본 폴더", 'createdAt': DateTime.now()});
   }
 
   Future<UserDto?> getUser(String userId) async {
@@ -46,6 +55,16 @@ class FirestoreDatasource {
         .collection("records")
         .doc(recordId)
         .delete();
+  }
+
+  Future<List<RecordDto>> getRecord(String userId) async {
+    final snap = await firestore
+        .collection("users")
+        .doc(userId)
+        .collection("records")
+        .get();
+
+    return snap.docs.map((doc) => RecordDto.fromFirestore(doc.data())).toList();
   }
 
   Future<List<RecordDto>> getRecordByDate(String userId, DateTime date) async {

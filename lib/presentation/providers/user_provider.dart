@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart' as fb;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_girok_app/data/data_sources/firestore_datasource.dart';
 import 'package:flutter_girok_app/data/repositories/user_repository_impl.dart';
@@ -7,6 +8,11 @@ import 'package:flutter_girok_app/domain/models/user.dart';
 // FirestoreDatasourceProvider
 final firestoreDatasourceProvider = Provider((ref) {
   return FirestoreDatasource(FirebaseFirestore.instance);
+});
+
+// 현재 로그인된 유저 id Provider
+final userIdProvider = Provider<String?>((ref) {
+  return fb.FirebaseAuth.instance.currentUser?.uid;
 });
 
 // UserRepositoryImpl 주입

@@ -1,5 +1,6 @@
 import 'package:flutter_girok_app/data/data_sources/folder_remote_data_source.dart';
 import 'package:flutter_girok_app/domain/models/folder.dart';
+import 'package:flutter_girok_app/presentation/providers/user_provider.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
@@ -25,34 +26,35 @@ final folderRepositoryProvider = Provider<FolderRepository>((ref) {
 
 // Folder 목록 + CRUD 관리 AsyncNotifier
 class FolderAsyncNotifier extends AsyncNotifier<List<Folder>> {
-  final String id;
-
-  FolderAsyncNotifier(this.id);
-
   @override
   Future<List<Folder>> build() async {
-    // 초기 로드 (현재 로그인된 유저 ID 예: user1)
-    return ref.read(folderRepositoryProvider).getFolders(id);
+    final userId = ref.watch(userIdProvider);
+    if (userId == null) return [];
+    return ref.read(folderRepositoryProvider).getFolders(userId);
   }
 
   Future<void> refreshFolders() async {
     state = const AsyncLoading();
-    final folders = await ref
-        .read(folderRepositoryProvider)
-        .getFolders('user1');
+    final userId = ref.watch(userIdProvider);
+    if (userId == null) return;
+    final folders = await ref.read(folderRepositoryProvider).getFolders(userId);
     state = AsyncData(folders);
   }
 
   Future<void> createFolder(String name) async {
-    await ref.read(folderRepositoryProvider).createFolder('user1', name);
+    final userId = ref.watch(userIdProvider);
+    if (userId == null) return;
+    await ref.read(folderRepositoryProvider).createFolder(userId, name);
     await refreshFolders();
   }
 
   Future<void> deleteFolder(String folderId, String defaultFolderId) async {
+    final userId = ref.watch(userIdProvider);
+    if (userId == null) return;
     await ref
         .read(folderRepositoryProvider)
         .deleteFolderAndMoveRecords(
-          userId: 'user1',
+          userId: userId,
           folderId: folderId,
           defaultFolderId: defaultFolderId,
         );
@@ -60,15 +62,17 @@ class FolderAsyncNotifier extends AsyncNotifier<List<Folder>> {
   }
 
   Future<void> updateFolderName(String folderId, String newName) async {
+    final userId = ref.watch(userIdProvider);
+    if (userId == null) return;
     await ref
         .read(folderRepositoryProvider)
-        .updateFolderName(userId: id, folderId: folderId, newName: newName);
+        .updateFolderName(userId: userId, folderId: folderId, newName: newName);
     await refreshFolders();
   }
 }
 
 // Notifier Provider
 final folderAsyncNotifierProvider =
-    AsyncNotifierProvider.family<FolderAsyncNotifier, List<Folder>, String>(
+    AsyncNotifierProvider<FolderAsyncNotifier, List<Folder>>(
       FolderAsyncNotifier.new,
     );

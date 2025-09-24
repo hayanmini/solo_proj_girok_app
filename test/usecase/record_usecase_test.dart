@@ -14,6 +14,7 @@ class FakeRecordRepository implements RecordRepository {
   bool deleteCalled = false;
   bool updateCalled = false;
   bool getByDateCalled = false;
+  bool getCalled = false;
 
   @override
   Future<void> addRecord(String userId, RecordModel record) async {
@@ -48,6 +49,12 @@ class FakeRecordRepository implements RecordRepository {
               r.date.day == date.day,
         )
         .toList();
+  }
+
+  @override
+  Future<List<RecordModel>> getRecords(String userId) async {
+    getCalled = true;
+    return records.toList();
   }
 }
 

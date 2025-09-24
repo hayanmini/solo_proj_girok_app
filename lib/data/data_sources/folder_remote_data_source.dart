@@ -36,23 +36,13 @@ class FolderRemoteDataSource {
     final recordsSnap = await firestore
         .collection('users')
         .doc(userId)
-        .collection('folders')
-        .doc(folderId)
         .collection('records')
+        .where('extra.folder', isEqualTo: folderId)
         .get();
 
     // Move Records
     for (final doc in recordsSnap.docs) {
-      final defaultRef = firestore
-          .collection('users')
-          .doc(userId)
-          .collection('folders')
-          .doc(defaultFolderId)
-          .collection('records')
-          .doc(doc.id);
-
-      batch.set(defaultRef, doc.data());
-      batch.delete(doc.reference);
+      batch.update(doc.reference, {'extra.folder': defaultFolderId});
     }
 
     // Folder Delete

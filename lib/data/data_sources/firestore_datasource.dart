@@ -31,12 +31,23 @@ class FirestoreDatasource {
 
   // Record
   Future<void> addRecord(String userId, RecordDto record) async {
-    await firestore
+    final docRef = firestore
         .collection("users")
         .doc(userId)
         .collection("records")
-        .doc()
-        .set(record.toJson());
+        .doc();
+
+    final recordWithId = RecordDto(
+      id: docRef.id, // 🔹 여기서 미리 생성된 ID 사용
+      title: record.title,
+      createdAt: record.createdAt,
+      updatedAt: record.updatedAt,
+      date: record.date,
+      type: record.type,
+      extra: record.extra,
+    );
+
+    await docRef.set(recordWithId.toJson());
   }
 
   Future<void> updateRecord(String userId, RecordDto record) async {

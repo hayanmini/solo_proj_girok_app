@@ -1,5 +1,32 @@
 import 'package:flutter/material.dart';
 
+// 기록 삭제 다이얼로그
+Future<bool?> showConfirmDeleteDialog({
+  required BuildContext context,
+  required String title,
+  required String content,
+  String cancelText = "취소",
+  String confirmText = "삭제",
+}) {
+  return showDialog<bool>(
+    context: context,
+    builder: (_) => AlertDialog(
+      title: Text(title),
+      content: Text(content),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.pop(context, false),
+          child: Text(cancelText),
+        ),
+        TextButton(
+          onPressed: () => Navigator.pop(context, true),
+          child: Text(confirmText, style: TextStyle(color: Colors.red)),
+        ),
+      ],
+    ),
+  );
+}
+
 // 폴더 이름 수정 다이얼로그
 Future<String?> showEditNameDialog({
   required BuildContext context,

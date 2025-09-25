@@ -18,7 +18,7 @@ class FolderRemoteDataSource {
         .collection('users')
         .doc(userId)
         .collection('folders')
-        .orderBy('createdAt')
+        .orderBy('createdAt', descending: true)
         .get();
 
     return snap.docs
@@ -83,9 +83,8 @@ class FolderRemoteDataSource {
       final recordsSnap = await firestore
           .collection('users')
           .doc(userId)
-          .collection('folders')
-          .doc(doc.id)
           .collection('records')
+          .where("folder", isEqualTo: doc.id)
           .get();
       counts[doc.id] = recordsSnap.docs.length;
     }

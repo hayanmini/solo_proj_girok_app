@@ -230,11 +230,23 @@ class _MypageTabState extends ConsumerState<MypageTab> {
                       Container(
                         width: double.infinity,
                         decoration: BorderBoxDecoration.commonBox,
-                        padding: const EdgeInsets.all(10),
+                        padding: const EdgeInsets.all(12),
                         child: Column(
                           children: [
                             for (final record in slicedRecords)
-                              _buildScheduleItem(record.title, record.type),
+                              Padding(
+                                padding: const EdgeInsets.symmetric(
+                                  vertical: 6,
+                                ),
+                                child: Column(
+                                  children: [
+                                    _buildScheduleItem(
+                                      record.title,
+                                      record.type,
+                                    ),
+                                  ],
+                                ),
+                              ),
                             if (records.length > _currentRecordCount)
                               TextButton(
                                 onPressed: _loadMore,
@@ -286,17 +298,18 @@ class _MypageTabState extends ConsumerState<MypageTab> {
     return Row(
       children: [
         Container(
-          width: 20,
-          height: 20,
+          width: 50,
+          height: 50,
           margin: const EdgeInsets.only(right: 8),
-          decoration: BoxDecoration(
-            color: Colors.grey[600],
-            borderRadius: BorderRadius.circular(4),
-          ),
+          decoration: BorderBoxDecoration.commonBox,
           child: Icon(icon, color: Colors.white),
         ),
+        SizedBox(width: 10),
         Expanded(
-          child: Text(title, style: const TextStyle(color: Colors.white)),
+          child: Text(
+            title,
+            style: const TextStyle(fontSize: 15, color: Colors.white),
+          ),
         ),
       ],
     );

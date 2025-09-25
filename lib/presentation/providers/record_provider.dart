@@ -54,7 +54,7 @@ class RecordsNotifier extends AsyncNotifier<List<RecordModel>> {
     state = const AsyncValue.loading();
     try {
       await _repository.addRecord(userId, record);
-      await loadRecords(RecordQuery(userId: userId, date: record.date));
+      await loadRecordList(userId);
     } catch (e, st) {
       state = AsyncValue.error(e, st);
     }

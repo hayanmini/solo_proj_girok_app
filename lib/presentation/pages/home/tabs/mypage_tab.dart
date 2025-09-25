@@ -308,7 +308,7 @@ class _MypageTabState extends ConsumerState<MypageTab> {
                                     vertical: 6,
                                   ),
                                   child: _buildScheduleItem(
-                                    record.id,
+                                    record,
                                     record.title,
                                     record.type,
                                   ),
@@ -348,7 +348,7 @@ class _MypageTabState extends ConsumerState<MypageTab> {
     );
   }
 
-  Widget _buildScheduleItem(String recordId, String title, dynamic type) {
+  Widget _buildScheduleItem(dynamic record, String title, dynamic type) {
     IconData icon;
     switch (type.toString()) {
       case "RecordType.checklist":
@@ -369,32 +369,39 @@ class _MypageTabState extends ConsumerState<MypageTab> {
 
     return InkWell(
       onTap: () {
+        final userId = ref.watch(userIdProvider);
+
         if (type.toString() == "RecordType.checklist") {
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (_) => ViewCheckListPage(recordId: recordId),
+              builder: (_) =>
+                  ViewCheckListPage(userId: userId!, record: record),
             ),
           );
         } else if (type.toString() == "RecordType.daily") {
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (_) => ViewDailyPage(recordId: recordId),
+              builder: (_) => ViewDailyPage(userId: userId!, record: record),
             ),
           );
         } else if (type.toString() == "RecordType.series") {
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (_) => ViewSeriesPage(recordId: recordId),
+              builder: (_) => ViewSeriesPage(userId: userId!, record: record),
             ),
           );
         } else if (type.toString() == "RecordType.memo") {
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (_) => ViewMemoPage(recordId: recordId)),
+            MaterialPageRoute(
+              builder: (_) => ViewMemoPage(userId: userId!, record: record),
+            ),
           );
+        } else {
+          Center(child: Text("오류가 발생했습니다."));
         }
       },
       child: Row(

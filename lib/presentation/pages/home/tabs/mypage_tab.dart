@@ -4,6 +4,9 @@ import 'package:flutter_girok_app/domain/models/record_model.dart';
 import 'package:flutter_girok_app/domain/models/series.dart';
 import 'package:flutter_girok_app/presentation/pages/home/widgets/common_dialogs.dart';
 import 'package:flutter_girok_app/presentation/pages/record/view_record/view_check_list_page.dart';
+import 'package:flutter_girok_app/presentation/pages/record/view_record/view_daily_page.dart';
+import 'package:flutter_girok_app/presentation/pages/record/view_record/view_memo_page.dart';
+import 'package:flutter_girok_app/presentation/pages/record/view_record/view_series_page.dart';
 import 'package:flutter_girok_app/presentation/providers/folder_provider.dart';
 import 'package:flutter_girok_app/presentation/providers/record_provider.dart';
 import 'package:flutter_girok_app/presentation/providers/user_provider.dart';
@@ -372,6 +375,25 @@ class _MypageTabState extends ConsumerState<MypageTab> {
             MaterialPageRoute(
               builder: (_) => ViewCheckListPage(recordId: recordId),
             ),
+          );
+        } else if (type.toString() == "RecordType.daily") {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (_) => ViewDailyPage(recordId: recordId),
+            ),
+          );
+        } else if (type.toString() == "RecordType.series") {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (_) => ViewSeriesPage(recordId: recordId),
+            ),
+          );
+        } else if (type.toString() == "RecordType.memo") {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (_) => ViewMemoPage(recordId: recordId)),
           );
         }
       },

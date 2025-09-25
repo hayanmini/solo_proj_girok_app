@@ -10,7 +10,6 @@ class CreatePopup extends StatelessWidget {
       padding: const EdgeInsets.all(12),
       width: 250,
       decoration: BoxDecoration(
-        // TODO : Theme Color 설정
         color: const Color.fromARGB(145, 48, 48, 48),
         borderRadius: BorderRadius.circular(16),
       ),
@@ -26,11 +25,7 @@ class CreatePopup extends StatelessWidget {
               onPressed: () {
                 onSelect?.call("checklist");
               },
-              icon: const Icon(
-                Icons.check_box,
-                // TODO : Theme Color 설정
-                color: Colors.white,
-              ),
+              icon: const Icon(Icons.check_box, color: Colors.white),
             ),
           ),
           Container(
@@ -41,11 +36,7 @@ class CreatePopup extends StatelessWidget {
               onPressed: () {
                 onSelect?.call("daily");
               },
-              icon: const Icon(
-                Icons.emoji_emotions,
-                // TODO : Theme Color 설정
-                color: Colors.white,
-              ),
+              icon: const Icon(Icons.emoji_emotions, color: Colors.white),
             ),
           ),
           Container(
@@ -56,11 +47,7 @@ class CreatePopup extends StatelessWidget {
               onPressed: () {
                 onSelect?.call("series");
               },
-              icon: const Icon(
-                Icons.folder,
-                // TODO : Theme Color 설정
-                color: Colors.white,
-              ),
+              icon: const Icon(Icons.edit_document, color: Colors.white),
             ),
           ),
           Container(
@@ -72,8 +59,7 @@ class CreatePopup extends StatelessWidget {
                 onSelect?.call("memo");
               },
               icon: const Icon(
-                Icons.edit,
-                // TODO : Theme Color 설정
+                Icons.my_library_books_sharp,
                 color: Colors.white,
               ),
             ),

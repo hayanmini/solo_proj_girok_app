@@ -99,7 +99,7 @@ class _MypageTabState extends ConsumerState<MypageTab> {
                     ),
                   ],
                 ),
-                const SizedBox(height: 10),
+                const SizedBox(height: 5),
                 foldersAsync.when(
                   data: (folders) {
                     return SingleChildScrollView(
@@ -245,11 +245,10 @@ class _MypageTabState extends ConsumerState<MypageTab> {
                   error: (e, _) => Text("오류: $e"),
                 ),
 
-                SizedBox(height: 15),
+                SizedBox(height: 5),
                 Divider(),
 
                 // Record List
-                SizedBox(height: 10),
                 Consumer(
                   builder: (context, ref, _) {
                     final count = recordsAsync.value?.length ?? 0;
@@ -265,9 +264,6 @@ class _MypageTabState extends ConsumerState<MypageTab> {
                               await ref
                                   .read(recordsProvider.notifier)
                                   .loadRecordList(userId);
-                              // await ref
-                              //     .read(folderAsyncNotifierProvider.notifier)
-                              //     .refreshFolders();
                             }
                           },
                         ),
@@ -275,7 +271,7 @@ class _MypageTabState extends ConsumerState<MypageTab> {
                     );
                   },
                 ),
-                SizedBox(height: 10),
+                SizedBox(height: 5),
                 recordsAsync.when(
                   data: (records) {
                     if (records.isEmpty) {
@@ -343,7 +339,7 @@ class _MypageTabState extends ConsumerState<MypageTab> {
   // 타이틀 속성
   Widget titleText(String title) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+      padding: const EdgeInsets.symmetric(horizontal: 10),
       child: Text(title, style: TitleTextStyle.titleBold16),
     );
   }
@@ -358,13 +354,13 @@ class _MypageTabState extends ConsumerState<MypageTab> {
         icon = Icons.emoji_emotions;
         break;
       case "RecordType.series":
-        icon = Icons.folder;
+        icon = Icons.edit_document;
         break;
       case "RecordType.memo":
-        icon = Icons.edit;
+        icon = Icons.my_library_books_sharp;
         break;
       default:
-        icon = Icons.note;
+        icon = Icons.note_add;
     }
 
     return InkWell(

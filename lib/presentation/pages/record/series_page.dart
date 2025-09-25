@@ -97,7 +97,7 @@ class _SeriesPageState extends ConsumerState<SeriesPage> {
         await ref.read(recordsProvider.notifier).updateRecord(userId, record);
       }
 
-      if (context.mounted) Navigator.pop(context);
+      if (mounted) Navigator.pop(context, record);
     } catch (e) {
       ScaffoldMessenger.of(
         context,
@@ -313,7 +313,6 @@ class _SeriesPageState extends ConsumerState<SeriesPage> {
                                   IconButton(
                                     onPressed: () async {
                                       await _deleteFolder(context, folder.id);
-                                      // TODO : 삭제 시 바로 반영
                                     },
                                     icon: const Icon(Icons.delete),
                                   ),

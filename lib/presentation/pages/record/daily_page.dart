@@ -85,8 +85,7 @@ class _DailyPageState extends ConsumerState<DailyPage> {
       } else {
         await ref.read(recordsProvider.notifier).updateRecord(userId, record);
       }
-
-      if (context.mounted) Navigator.pop(context);
+      if (mounted) Navigator.pop(context, record);
     } catch (e) {
       ScaffoldMessenger.of(
         context,

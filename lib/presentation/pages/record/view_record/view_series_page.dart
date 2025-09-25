@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_girok_app/domain/models/series.dart';
 
 class ViewSeriesPage extends StatelessWidget {
-  final String recordId;
-  const ViewSeriesPage({super.key, required this.recordId});
+  final String userId;
+  final Series record;
+
+  const ViewSeriesPage({super.key, required this.userId, required this.record});
 
   @override
   Widget build(BuildContext context) {

@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_girok_app/domain/models/memo.dart';
 
 class ViewMemoPage extends StatelessWidget {
-  final String recordId;
-  const ViewMemoPage({super.key, required this.recordId});
+  final String userId;
+  final Memo record;
+
+  const ViewMemoPage({super.key, required this.userId, required this.record});
 
   @override
   Widget build(BuildContext context) {

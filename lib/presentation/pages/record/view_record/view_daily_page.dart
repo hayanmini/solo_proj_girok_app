@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_girok_app/domain/models/daily.dart';
 
 class ViewDailyPage extends StatelessWidget {
-  final String recordId;
-  const ViewDailyPage({super.key, required this.recordId});
+  final String userId;
+  final Daily record;
+
+  const ViewDailyPage({super.key, required this.userId, required this.record});
 
   @override
   Widget build(BuildContext context) {

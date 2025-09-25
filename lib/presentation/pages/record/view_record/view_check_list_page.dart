@@ -1,9 +1,22 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_girok_app/domain/models/checklist.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class ViewCheckListPage extends StatelessWidget {
-  final String recordId;
-  const ViewCheckListPage({super.key, required this.recordId});
+class ViewCheckListPage extends ConsumerStatefulWidget {
+  final String userId;
+  final CheckList record;
 
+  const ViewCheckListPage({
+    super.key,
+    required this.userId,
+    required this.record,
+  });
+
+  @override
+  ConsumerState<ViewCheckListPage> createState() => _ViewCheckListPageState();
+}
+
+class _ViewCheckListPageState extends ConsumerState<ViewCheckListPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(

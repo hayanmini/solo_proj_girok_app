@@ -73,6 +73,7 @@ class FirestoreDatasource {
         .collection("users")
         .doc(userId)
         .collection("records")
+        .orderBy('createdAt', descending: true)
         .get();
 
     return snap.docs.map((doc) => RecordDto.fromFirestore(doc.data())).toList();

@@ -108,6 +108,13 @@ class _SeriesPageState extends ConsumerState<SeriesPage> {
   @override
   Widget build(BuildContext context) {
     final foldersAsync = ref.watch(folderAsyncNotifierProvider);
+    String getFolderName(String folderId, List<Folder> folders) {
+      try {
+        return folders.firstWhere((f) => f.id == folderId).name;
+      } catch (e) {
+        return "알 수 없음";
+      }
+    }
 
     return Scaffold(
       appBar: AppBar(
@@ -145,9 +152,28 @@ class _SeriesPageState extends ConsumerState<SeriesPage> {
                             const Icon(Icons.folder, color: Colors.white),
                             const SizedBox(width: 8),
                             Expanded(
-                              child: Text(
-                                _selectedFolderName ?? "기본 폴더",
-                                style: const TextStyle(color: Colors.white),
+                              child: foldersAsync.when(
+                                data: (folders) {
+                                  final folderName =
+                                      _selectedFolderId == defaultFolderId
+                                      ? defaultFolderName
+                                      : getFolderName(
+                                          _selectedFolderId!,
+                                          folders,
+                                        );
+                                  return Text(
+                                    folderName,
+                                    style: const TextStyle(color: Colors.white),
+                                  );
+                                },
+                                loading: () => const Text(
+                                  "로딩중...",
+                                  style: TextStyle(color: Colors.white),
+                                ),
+                                error: (_, __) => const Text(
+                                  "폴더 정보 없음",
+                                  style: TextStyle(color: Colors.white),
+                                ),
                               ),
                             ),
                           ],

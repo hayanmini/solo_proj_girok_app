@@ -102,7 +102,7 @@ class _ViewDailyPageState extends ConsumerState<ViewDailyPage> {
               children: [
                 IconButton(
                   onPressed: () {},
-                  icon: Icon(Icons.check_box, color: Colors.white),
+                  icon: Icon(Icons.emoji_emotions, color: Colors.white),
                 ),
                 SizedBox(width: 4),
 

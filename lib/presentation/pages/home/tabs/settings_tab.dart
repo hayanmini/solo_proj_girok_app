@@ -42,102 +42,103 @@ class _SettingsTabState extends ConsumerState<SettingsTab> {
         ? AsyncValue.data(null)
         : ref.watch(userProfileProvider(userId));
 
-    return Scaffold(
-      appBar: AppBar(title: Text("설정")),
-      body: SingleChildScrollView(
-        controller: widget.scrollController,
-        padding: EdgeInsets.symmetric(horizontal: 10),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            titleText("계정 정보"),
-            SizedBox(height: 10),
-            userAsync.when(
-              data: (user) {
-                final photoUrl = user?.photoUrl;
-                final email = user?.email ?? "이메일 없음";
+    return SafeArea(
+      child: Scaffold(
+        body: SingleChildScrollView(
+          controller: widget.scrollController,
+          padding: EdgeInsets.symmetric(horizontal: 10),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              titleText("계정 정보"),
+              SizedBox(height: 10),
+              userAsync.when(
+                data: (user) {
+                  final photoUrl = user?.photoUrl;
+                  final email = user?.email ?? "이메일 없음";
 
-                return Container(
-                  width: double.infinity,
-                  height: 100,
-                  decoration: BorderBoxDecoration.commonBox,
-                  child: Row(
-                    children: [
-                      const SizedBox(width: 15),
-                      Container(
-                        width: 70,
-                        height: 70,
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          color: Colors.grey[800],
-                          image: photoUrl != null
-                              ? DecorationImage(
-                                  image: NetworkImage(photoUrl),
-                                  fit: BoxFit.cover,
-                                )
+                  return Container(
+                    width: double.infinity,
+                    height: 100,
+                    decoration: BorderBoxDecoration.commonBox,
+                    child: Row(
+                      children: [
+                        const SizedBox(width: 15),
+                        Container(
+                          width: 70,
+                          height: 70,
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: Colors.grey[800],
+                            image: photoUrl != null
+                                ? DecorationImage(
+                                    image: NetworkImage(photoUrl),
+                                    fit: BoxFit.cover,
+                                  )
+                                : null,
+                          ),
+                          child: photoUrl == null
+                              ? const Icon(Icons.person, size: 40)
                               : null,
                         ),
-                        child: photoUrl == null
-                            ? const Icon(Icons.person, size: 40)
-                            : null,
-                      ),
-                      const SizedBox(width: 20),
+                        const SizedBox(width: 20),
 
-                      // 계정 정보
-                      Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const Text(
-                            "이메일",
-                            style: TextStyle(
-                              fontWeight: FontWeight.w100,
-                              fontSize: 12,
+                        // 계정 정보
+                        Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const Text(
+                              "이메일",
+                              style: TextStyle(
+                                fontWeight: FontWeight.w100,
+                                fontSize: 12,
+                              ),
                             ),
-                          ),
-                          const SizedBox(height: 4),
+                            const SizedBox(height: 4),
 
-                          Text(
-                            email,
-                            style: const TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 14,
+                            Text(
+                              email,
+                              style: const TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 14,
+                              ),
                             ),
-                          ),
-                          const SizedBox(height: 15),
-                        ],
-                      ),
-                    ],
-                  ),
-                );
-              },
-              loading: () => const CircularProgressIndicator(),
-              error: (e, _) => Text("오류: $e"),
-            ),
-            const SizedBox(height: 15),
-            const Divider(),
+                            const SizedBox(height: 15),
+                          ],
+                        ),
+                      ],
+                    ),
+                  );
+                },
+                loading: () => const CircularProgressIndicator(),
+                error: (e, _) => Text("오류: $e"),
+              ),
+              const SizedBox(height: 15),
+              const Divider(),
 
-            // 작성 설정
-            // titleText("작성 설정"),
-            // settingItem(Icons.font_download_outlined, "폰트 설정", () {}),
-            // Divider(),
-            // SizedBox(height: 5),
+              // 작성 설정
+              // titleText("작성 설정"),
+              // settingItem(Icons.font_download_outlined, "폰트 설정", () {}),
+              // Divider(),
+              // SizedBox(height: 5),
 
-            // 시스템 설정
-            // titleText("시스템 설정"),
-            // settingItem(Icons.dark_mode, "다크 모드", () {}),
-            // Divider(),
-            // SizedBox(height: 5),
+              // 시스템 설정
+              // titleText("시스템 설정"),
+              // settingItem(Icons.dark_mode, "다크 모드", () {}),
+              // Divider(),
+              // SizedBox(height: 5),
 
-            // 계정 설정
-            SizedBox(height: 5),
-            titleText("설정"),
-            settingItem(
-              Icons.logout_outlined,
-              "로그아웃",
-              () => _handleLogout(context),
-            ),
-          ],
+              // 계정 설정
+              SizedBox(height: 5),
+              titleText("설정"),
+              settingItem(
+                Icons.logout_outlined,
+                "로그아웃",
+                () => _handleLogout(context),
+              ),
+            ],
+          ),
         ),
       ),
     );

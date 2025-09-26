@@ -61,274 +61,280 @@ class _MypageTabState extends ConsumerState<MypageTab> {
         ? const AsyncValue<List<RecordModel>>.data([])
         : ref.watch(recordsProvider);
 
-    return Scaffold(
-      appBar: AppBar(title: Text("마이페이지")),
-      body: GestureDetector(
-        onTap: () {
-          if (_editMode) setState(() => _editMode = false);
-        },
-        child: RefreshIndicator(
-          color: Colors.white,
-          onRefresh: () async {
-            final userId = ref.read(userIdProvider);
-            if (userId != null) {
-              await ref.read(recordsProvider.notifier).loadRecordList(userId);
-              await ref
-                  .read(folderAsyncNotifierProvider.notifier)
-                  .refreshFolders();
-            }
+    return SafeArea(
+      child: Scaffold(
+        body: GestureDetector(
+          onTap: () {
+            if (_editMode) setState(() => _editMode = false);
           },
-          child: SingleChildScrollView(
-            controller: widget.scrollController,
-            padding: const EdgeInsets.symmetric(horizontal: 10),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                // 폴더
-                const SizedBox(height: 10),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    titleText("폴더"),
-                    TextButton(
-                      onPressed: () => setState(() => _editMode = !_editMode),
-                      child: Text(
-                        _editMode ? "완료" : "편집",
-                        style: TextStyle(color: Colors.grey),
+          child: RefreshIndicator(
+            color: Colors.white,
+            onRefresh: () async {
+              final userId = ref.read(userIdProvider);
+              if (userId != null) {
+                await ref.read(recordsProvider.notifier).loadRecordList(userId);
+                await ref
+                    .read(folderAsyncNotifierProvider.notifier)
+                    .refreshFolders();
+              }
+            },
+            child: SingleChildScrollView(
+              controller: widget.scrollController,
+              padding: const EdgeInsets.symmetric(horizontal: 10),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // 폴더
+                  const SizedBox(height: 10),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      titleText("폴더"),
+                      TextButton(
+                        onPressed: () => setState(() => _editMode = !_editMode),
+                        child: Text(
+                          _editMode ? "완료" : "편집",
+                          style: TextStyle(color: Colors.grey),
+                        ),
                       ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 5),
-                foldersAsync.when(
-                  data: (folders) {
-                    return SingleChildScrollView(
-                      scrollDirection: Axis.horizontal,
-                      child: Row(
-                        children: folders.map((folder) {
-                          return Padding(
-                            padding: const EdgeInsets.only(
-                              right: 10,
-                              bottom: 12,
-                            ),
-                            child: GestureDetector(
-                              onTap: () async {
-                                if (!_editMode) return;
-                                if (folder.id == "defaultFolderId") return;
+                    ],
+                  ),
+                  const SizedBox(height: 5),
+                  foldersAsync.when(
+                    data: (folders) {
+                      return SingleChildScrollView(
+                        scrollDirection: Axis.horizontal,
+                        child: Row(
+                          children: folders.map((folder) {
+                            return Padding(
+                              padding: const EdgeInsets.only(
+                                right: 10,
+                                bottom: 12,
+                              ),
+                              child: GestureDetector(
+                                onTap: () async {
+                                  if (!_editMode) return;
+                                  if (folder.id == "defaultFolderId") return;
 
-                                final newName = await showEditNameDialog(
-                                  context: context,
-                                  title: "폴더 이름 수정",
-                                  initialName: folder.name,
-                                );
-                                if (newName != null && newName.isNotEmpty) {
-                                  await ref
-                                      .read(
-                                        folderAsyncNotifierProvider.notifier,
-                                      )
-                                      .updateFolderName(folder.id, newName);
-                                }
-                              },
-                              child: Stack(
-                                children: [
-                                  Container(
-                                    width: 170,
-                                    height: 100,
-                                    decoration: BorderBoxDecoration.commonBox,
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        SizedBox(height: 15),
-                                        Row(
-                                          children: [
-                                            const SizedBox(width: 15),
-                                            const Icon(
-                                              Icons.folder,
-                                              color: Colors.white,
-                                            ),
-                                            const SizedBox(width: 5),
-                                            Expanded(
-                                              child: Text(
-                                                folder.name,
-                                                overflow: TextOverflow.ellipsis,
-                                                style: const TextStyle(
-                                                  fontWeight: FontWeight.bold,
-                                                  color: Colors.white,
+                                  final newName = await showEditNameDialog(
+                                    context: context,
+                                    title: "폴더 이름 수정",
+                                    initialName: folder.name,
+                                  );
+                                  if (newName != null && newName.isNotEmpty) {
+                                    await ref
+                                        .read(
+                                          folderAsyncNotifierProvider.notifier,
+                                        )
+                                        .updateFolderName(folder.id, newName);
+                                  }
+                                },
+                                child: Stack(
+                                  children: [
+                                    Container(
+                                      width: 170,
+                                      height: 100,
+                                      decoration: BorderBoxDecoration.commonBox,
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          SizedBox(height: 15),
+                                          Row(
+                                            children: [
+                                              const SizedBox(width: 15),
+                                              const Icon(
+                                                Icons.folder,
+                                                color: Colors.white,
+                                              ),
+                                              const SizedBox(width: 5),
+                                              Expanded(
+                                                child: Text(
+                                                  folder.name,
+                                                  overflow:
+                                                      TextOverflow.ellipsis,
+                                                  style: const TextStyle(
+                                                    fontWeight: FontWeight.bold,
+                                                    color: Colors.white,
+                                                  ),
                                                 ),
                                               ),
-                                            ),
-                                          ],
-                                        ),
-                                        const SizedBox(height: 10),
-                                        Padding(
-                                          padding: const EdgeInsets.only(
-                                            left: 16,
+                                            ],
                                           ),
-                                          child: recordsAsync.when(
-                                            data: (records) {
-                                              var count = 0;
-                                              for (var record in records) {
-                                                if (record is Series) {
-                                                  if (record.folder ==
-                                                      folder.id) {
-                                                    count++;
+                                          const SizedBox(height: 10),
+                                          Padding(
+                                            padding: const EdgeInsets.only(
+                                              left: 16,
+                                            ),
+                                            child: recordsAsync.when(
+                                              data: (records) {
+                                                var count = 0;
+                                                for (var record in records) {
+                                                  if (record is Series) {
+                                                    if (record.folder ==
+                                                        folder.id) {
+                                                      count++;
+                                                    }
                                                   }
                                                 }
-                                              }
-                                              return Text(
-                                                "작성한 기록 : $count개",
+                                                return Text(
+                                                  "작성한 기록 : $count개",
+                                                  style: const TextStyle(
+                                                    color: Colors.white,
+                                                  ),
+                                                );
+                                              },
+                                              loading: () => Text(
+                                                "작성한 기록 로딩중",
                                                 style: const TextStyle(
                                                   color: Colors.white,
                                                 ),
-                                              );
-                                            },
-                                            loading: () => Text(
-                                              "작성한 기록 로딩중",
-                                              style: const TextStyle(
-                                                color: Colors.white,
                                               ),
-                                            ),
-                                            error: (_, _) => Text(
-                                              "작성한 기록 불러오기 오류",
-                                              style: const TextStyle(
-                                                color: Colors.white,
+                                              error: (_, _) => Text(
+                                                "작성한 기록 불러오기 오류",
+                                                style: const TextStyle(
+                                                  color: Colors.white,
+                                                ),
                                               ),
                                             ),
                                           ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                  if (_editMode &&
-                                      folder.id != "defaultFolderId")
-                                    Positioned(
-                                      top: 4,
-                                      right: 4,
-                                      child: IconButton(
-                                        icon: const Icon(
-                                          Icons.close,
-                                          color: Colors.red,
-                                        ),
-                                        onPressed: () async {
-                                          final confirm =
-                                              await showDeleteDialog(
-                                                context: context,
-                                                title: "폴더 삭제",
-                                                content: "정말 삭제하시겠습니까?",
-                                              );
-                                          if (confirm == true) {
-                                            await ref
-                                                .read(
-                                                  folderAsyncNotifierProvider
-                                                      .notifier,
-                                                )
-                                                .deleteFolder(
-                                                  folder.id,
-                                                  "defaultFolderId",
-                                                );
-                                          }
-                                        },
+                                        ],
                                       ),
                                     ),
-                                ],
+                                    if (_editMode &&
+                                        folder.id != "defaultFolderId")
+                                      Positioned(
+                                        top: 4,
+                                        right: 4,
+                                        child: IconButton(
+                                          icon: const Icon(
+                                            Icons.close,
+                                            color: Colors.red,
+                                          ),
+                                          onPressed: () async {
+                                            final confirm =
+                                                await showDeleteDialog(
+                                                  context: context,
+                                                  title: "폴더 삭제",
+                                                  content: "정말 삭제하시겠습니까?",
+                                                );
+                                            if (confirm == true) {
+                                              await ref
+                                                  .read(
+                                                    folderAsyncNotifierProvider
+                                                        .notifier,
+                                                  )
+                                                  .deleteFolder(
+                                                    folder.id,
+                                                    "defaultFolderId",
+                                                  );
+                                            }
+                                          },
+                                        ),
+                                      ),
+                                  ],
+                                ),
                               ),
-                            ),
-                          );
-                        }).toList(),
-                      ),
-                    );
-                  },
-                  loading: () => Center(
-                    child: const CircularProgressIndicator(color: Colors.white),
-                  ),
-                  error: (e, _) => Text("오류: $e"),
-                ),
-
-                SizedBox(height: 5),
-                Divider(),
-
-                // Record List
-                Consumer(
-                  builder: (context, ref, _) {
-                    final count = recordsAsync.value?.length ?? 0;
-                    return Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        titleText("내가 작성한 기록 ($count)"),
-                        IconButton(
-                          icon: const Icon(Icons.refresh, color: Colors.grey),
-                          onPressed: () async {
-                            final userId = ref.read(userIdProvider);
-                            if (userId != null) {
-                              await ref
-                                  .read(recordsProvider.notifier)
-                                  .loadRecordList(userId);
-                            }
-                          },
-                        ),
-                      ],
-                    );
-                  },
-                ),
-                SizedBox(height: 5),
-                recordsAsync.when(
-                  data: (records) {
-                    if (records.isEmpty) {
-                      return Container(
-                        width: double.infinity,
-                        decoration: BorderBoxDecoration.commonBox,
-                        padding: const EdgeInsets.all(20),
-                        child: const Text(
-                          "작성한 기록이 없습니다.\nCreate 버튼을 눌러 새로운 기록을 작성해보세요!",
-                          style: TextStyle(color: Colors.white),
-                          textAlign: TextAlign.center,
+                            );
+                          }).toList(),
                         ),
                       );
-                    }
+                    },
+                    loading: () => Center(
+                      child: const CircularProgressIndicator(
+                        color: Colors.white,
+                      ),
+                    ),
+                    error: (e, _) => Text("오류: $e"),
+                  ),
 
-                    final slicedRecords = records
-                        .take(_currentRecordCount)
-                        .toList();
-                    return Column(
-                      children: [
-                        Container(
+                  SizedBox(height: 5),
+                  Divider(),
+
+                  // Record List
+                  Consumer(
+                    builder: (context, ref, _) {
+                      final count = recordsAsync.value?.length ?? 0;
+                      return Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          titleText("내가 작성한 기록 ($count)"),
+                          IconButton(
+                            icon: const Icon(Icons.refresh, color: Colors.grey),
+                            onPressed: () async {
+                              final userId = ref.read(userIdProvider);
+                              if (userId != null) {
+                                await ref
+                                    .read(recordsProvider.notifier)
+                                    .loadRecordList(userId);
+                              }
+                            },
+                          ),
+                        ],
+                      );
+                    },
+                  ),
+                  SizedBox(height: 5),
+                  recordsAsync.when(
+                    data: (records) {
+                      if (records.isEmpty) {
+                        return Container(
                           width: double.infinity,
                           decoration: BorderBoxDecoration.commonBox,
-                          padding: const EdgeInsets.all(12),
-                          child: Column(
-                            children: [
-                              for (final record in slicedRecords)
-                                Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                    vertical: 6,
-                                  ),
-                                  child: _buildScheduleItem(
-                                    record,
-                                    record.title,
-                                    record.type,
-                                  ),
-                                ),
-                              if (records.length > _currentRecordCount)
-                                TextButton(
-                                  onPressed: _loadMore,
-                                  child: const Text(
-                                    "더보기",
-                                    style: TextStyle(color: Colors.white),
-                                  ),
-                                ),
-                            ],
+                          padding: const EdgeInsets.all(20),
+                          child: const Text(
+                            "작성한 기록이 없습니다.\nCreate 버튼을 눌러 새로운 기록을 작성해보세요!",
+                            style: TextStyle(color: Colors.white),
+                            textAlign: TextAlign.center,
                           ),
-                        ),
-                      ],
-                    );
-                  },
-                  loading: () => Center(
-                    child: const CircularProgressIndicator(color: Colors.white),
+                        );
+                      }
+
+                      final slicedRecords = records
+                          .take(_currentRecordCount)
+                          .toList();
+                      return Column(
+                        children: [
+                          Container(
+                            width: double.infinity,
+                            decoration: BorderBoxDecoration.commonBox,
+                            padding: const EdgeInsets.all(12),
+                            child: Column(
+                              children: [
+                                for (final record in slicedRecords)
+                                  Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                      vertical: 6,
+                                    ),
+                                    child: _buildScheduleItem(
+                                      record,
+                                      record.title,
+                                      record.type,
+                                    ),
+                                  ),
+                                if (records.length > _currentRecordCount)
+                                  TextButton(
+                                    onPressed: _loadMore,
+                                    child: const Text(
+                                      "더보기",
+                                      style: TextStyle(color: Colors.white),
+                                    ),
+                                  ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      );
+                    },
+                    loading: () => Center(
+                      child: const CircularProgressIndicator(
+                        color: Colors.white,
+                      ),
+                    ),
+                    error: (e, _) => Text("오류: $e"),
                   ),
-                  error: (e, _) => Text("오류: $e"),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         ),

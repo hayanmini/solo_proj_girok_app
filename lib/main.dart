@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_girok_app/firebase_options.dart';
 import 'package:flutter_girok_app/presentation/pages/login/login_page.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -11,6 +12,9 @@ void main() async {
 
   // TODO : 개발용 로그아웃 지우기!!
   await FirebaseAuth.instance.signOut();
+
+  await dotenv.load(fileName: ".env");
+
   runApp(ProviderScope(child: MyApp()));
 }
 

@@ -17,7 +17,7 @@ class BorderBoxDecoration {
 class TitleTextStyle {
   static const TextStyle titleBold16 = TextStyle(
     fontWeight: FontWeight.bold,
-    fontSize: 16,
+    fontSize: 17,
     color: Colors.white,
   );
   static const TextStyle recordTitle = TextStyle(

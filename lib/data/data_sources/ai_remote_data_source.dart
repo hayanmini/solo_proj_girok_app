@@ -17,7 +17,7 @@ class AiRemoteDataSource {
   });
 
   Future<AiResponseDto> request(AiRequestDto dto) async {
-    final url = Uri.parse("$baseUrl");
+    final url = Uri.parse(baseUrl);
     final resp = await client.post(
       url,
       headers: {"Content-Type": "application/json", "X-goog-api-key": apiKey},

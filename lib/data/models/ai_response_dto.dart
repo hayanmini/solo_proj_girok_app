@@ -7,7 +7,8 @@ class AiResponseDto {
 
   factory AiResponseDto.fromJson(Map<String, dynamic> json) {
     final content =
-        json["choices"]?[0]?["message"]?["content"] as String? ?? "";
+        json["candidates"]?[0]?["content"]?["parts"]?[0]?["text"] as String? ??
+        "";
     return AiResponseDto(content: content);
   }
 

@@ -11,19 +11,25 @@ class AiRemoteDataSource {
 
   AiRemoteDataSource({
     required this.apiKey,
-    this.baseUrl = "https://generativelanguage.googleapis.com/v1beta/openai",
+    this.baseUrl =
+        "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent",
     required this.client,
   });
 
   Future<AiResponseDto> request(AiRequestDto dto) async {
-    final url = Uri.parse("$baseUrl/chat/completions");
+    final url = Uri.parse("$baseUrl");
     final resp = await client.post(
       url,
-      headers: {
-        "Content-Type": "application/json",
-        "Authorization": "Bearer $apiKey",
-      },
-      body: json.encode(dto.toJson()),
+      headers: {"Content-Type": "application/json", "X-goog-api-key": apiKey},
+      body: json.encode({
+        "contents": [
+          {
+            "parts": [
+              {"text": dto.prompt},
+            ],
+          },
+        ],
+      }),
     );
 
     if (resp.statusCode == 200) {

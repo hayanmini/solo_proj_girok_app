@@ -1,3 +1,4 @@
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_girok_app/data/data_sources/ai_remote_data_source.dart';
 import 'package:flutter_girok_app/data/repositories/ai_repository_impl.dart';
 import 'package:flutter_girok_app/domain/repositories/ai_repository.dart';
@@ -9,7 +10,7 @@ final httpClientProvider = Provider<http.Client>((ref) {
 });
 
 final aiRemoteDataSourceProvider = Provider<AiRemoteDataSource>((ref) {
-  const apiKey = String.fromEnvironment("GEMINI_API_KEY");
+  final apiKey = dotenv.env['API_KEY'] ?? "";
   final client = ref.watch(httpClientProvider);
   return AiRemoteDataSource(apiKey: apiKey, client: client);
 });

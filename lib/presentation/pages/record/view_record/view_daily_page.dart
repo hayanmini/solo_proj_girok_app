@@ -26,21 +26,6 @@ class _ViewDailyPageState extends ConsumerState<ViewDailyPage> {
     _localRecord = widget.record;
   }
 
-  IconData _emotionIcon(Emotion emotion) {
-    switch (emotion) {
-      case Emotion.veryBad:
-        return Icons.sentiment_very_dissatisfied;
-      case Emotion.bad:
-        return Icons.sentiment_dissatisfied;
-      case Emotion.normal:
-        return Icons.sentiment_neutral;
-      case Emotion.happy:
-        return Icons.sentiment_satisfied;
-      case Emotion.veryHappy:
-        return Icons.sentiment_very_satisfied;
-    }
-  }
-
   Future<void> _changeEmotion(Emotion newEmotion) async {
     final updatedRecord = Daily(
       id: _localRecord.id,
@@ -159,7 +144,7 @@ class _ViewDailyPageState extends ConsumerState<ViewDailyPage> {
                         borderRadius: BorderRadius.circular(8),
                       ),
                       child: Icon(
-                        _emotionIcon(emotion),
+                        emotionIcon(emotion),
                         color: isSelected ? Colors.orange : Colors.white,
                         size: 30,
                       ),

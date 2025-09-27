@@ -1,6 +1,7 @@
 // 앱 전역에서 쓰이는 상수
 // 컬러, 폰트, 문자열, 이미지 경로 등
 import 'package:flutter/material.dart';
+import 'package:flutter_girok_app/core/enums.dart';
 
 class BorderBoxDecoration {
   static BoxDecoration commonBox = BoxDecoration(
@@ -25,4 +26,19 @@ class TitleTextStyle {
     fontSize: 16,
     color: Colors.grey,
   );
+}
+
+IconData emotionIcon(Emotion emotion) {
+  switch (emotion) {
+    case Emotion.veryBad:
+      return Icons.sentiment_very_dissatisfied;
+    case Emotion.bad:
+      return Icons.sentiment_dissatisfied;
+    case Emotion.normal:
+      return Icons.sentiment_neutral;
+    case Emotion.happy:
+      return Icons.sentiment_satisfied;
+    case Emotion.veryHappy:
+      return Icons.sentiment_very_satisfied;
+  }
 }

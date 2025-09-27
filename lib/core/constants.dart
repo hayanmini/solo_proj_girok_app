@@ -42,3 +42,31 @@ IconData emotionIcon(Emotion emotion) {
       return Icons.sentiment_very_satisfied;
   }
 }
+
+Color colorForType(RecordType type) {
+  switch (type) {
+    case RecordType.checklist:
+      return Colors.green.shade100;
+    case RecordType.daily:
+      return Colors.green.shade200;
+    case RecordType.series:
+      return Colors.green.shade300;
+    case RecordType.memo:
+      return Colors.green.shade400;
+  }
+}
+
+Color emotionColor(Emotion emotion) {
+  switch (emotion) {
+    case Emotion.veryBad:
+      return Colors.green.shade100;
+    case Emotion.bad:
+      return Colors.green.shade200;
+    case Emotion.normal:
+      return Colors.green.shade300;
+    case Emotion.happy:
+      return Colors.green.shade400;
+    case Emotion.veryHappy:
+      return Colors.green.shade500;
+  }
+}

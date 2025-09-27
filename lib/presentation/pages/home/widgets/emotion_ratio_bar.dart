@@ -9,9 +9,11 @@ class EmotionRatioBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final total = counts.values.fold<int>(0, (p, e) => p + e);
-
-    // 5개의 감정(Emotion.values) 순서 고정
     final allEmotions = Emotion.values;
+
+    final nonZeroEmotions = allEmotions
+        .where((e) => (counts[e] ?? 0) > 0)
+        .toList();
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -25,61 +27,60 @@ class EmotionRatioBar extends StatelessWidget {
           ),
           child: Row(
             children: [
-              for (int i = 0; i < allEmotions.length; i++)
-                Expanded(
-                  flex: total == 0 ? 1 : counts[allEmotions[i]] ?? 0,
-                  child: Container(
-                    color: (counts[allEmotions[i]] ?? 0) > 0
-                        ? _emotionColor(allEmotions[i])
-                        : Colors.transparent,
+              if (nonZeroEmotions.isEmpty)
+                // 모든 값이 0일 때
+                Expanded(child: Container(color: Colors.transparent))
+              else
+                for (int i = 0; i < nonZeroEmotions.length; i++)
+                  Expanded(
+                    flex: counts[nonZeroEmotions[i]]!,
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: emotionColor(nonZeroEmotions[i]),
+                        borderRadius: BorderRadius.horizontal(
+                          left: i == 0 ? const Radius.circular(6) : Radius.zero,
+                          right: i == nonZeroEmotions.length - 1
+                              ? const Radius.circular(6)
+                              : Radius.zero,
+                        ),
+                      ),
+                    ),
                   ),
-                ),
             ],
           ),
         ),
         const SizedBox(height: 8),
 
         // 아이콘 + % 줄
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: [
-            for (int i = 0; i < allEmotions.length; i++)
-              Column(
-                children: [
-                  SizedBox(height: 5),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 3),
 
-                  Icon(
-                    emotionIcon(allEmotions[i]),
-                    color: Colors.white,
-                    size: 20,
-                  ),
-                  SizedBox(height: 5),
-                  Text(
-                    total == 0
-                        ? "0%"
-                        : "${((counts[allEmotions[i]] ?? 0) / total * 100).toStringAsFixed(0)}%",
-                    style: const TextStyle(color: Colors.white, fontSize: 12),
-                  ),
-                ],
-              ),
-          ],
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              for (int i = 0; i < allEmotions.length; i++)
+                Column(
+                  children: [
+                    SizedBox(height: 5),
+
+                    Icon(
+                      emotionIcon(allEmotions[i]),
+                      color: Colors.white,
+                      size: 20,
+                    ),
+                    SizedBox(height: 5),
+                    Text(
+                      total == 0
+                          ? "0%"
+                          : "${((counts[allEmotions[i]] ?? 0) / total * 100).toStringAsFixed(0)}%",
+                      style: const TextStyle(color: Colors.white, fontSize: 12),
+                    ),
+                  ],
+                ),
+            ],
+          ),
         ),
       ],
     );
-  }
-
-  Color _emotionColor(Emotion emotion) {
-    switch (emotion) {
-      case Emotion.veryBad:
-        return Colors.red;
-      case Emotion.bad:
-        return Colors.orange;
-      case Emotion.normal:
-        return Colors.grey;
-      case Emotion.happy:
-        return Colors.lightGreen;
-      case Emotion.veryHappy:
-        return Colors.green;
-    }
   }
 }

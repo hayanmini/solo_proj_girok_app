@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_girok_app/core/constants.dart';
 import 'package:flutter_girok_app/core/enums.dart';
 
 class TypeRatioBar extends StatelessWidget {
@@ -32,7 +33,7 @@ class TypeRatioBar extends StatelessWidget {
                     flex: (percent * 1000).toInt(),
                     child: Container(
                       decoration: BoxDecoration(
-                        color: _colorForType(type),
+                        color: colorForType(type),
                         borderRadius: BorderRadius.horizontal(
                           left: index == 0
                               ? const Radius.circular(6)
@@ -75,20 +76,6 @@ class TypeRatioBar extends StatelessWidget {
         ),
       ],
     );
-  }
-
-  Color _colorForType(RecordType type) {
-    // TODO : ThemeColor
-    switch (type) {
-      case RecordType.checklist:
-        return Colors.green.shade100;
-      case RecordType.daily:
-        return Colors.green.shade200;
-      case RecordType.series:
-        return Colors.green.shade300;
-      case RecordType.memo:
-        return Colors.green.shade400;
-    }
   }
 
   IconData _iconForType(RecordType type) {

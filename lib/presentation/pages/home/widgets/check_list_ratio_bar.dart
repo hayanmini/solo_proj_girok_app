@@ -58,7 +58,7 @@ class CheckListRatioBar extends StatelessWidget {
               Column(
                 children: [
                   const SizedBox(height: 5),
-                  const Icon(Icons.check_circle, color: Colors.white, size: 20),
+                  const Icon(Icons.check_box, color: Colors.white, size: 20),
                   const SizedBox(height: 5),
                   Text(
                     "${(donePercent * 100).toStringAsFixed(0)}%",
@@ -69,7 +69,11 @@ class CheckListRatioBar extends StatelessWidget {
               Column(
                 children: [
                   const SizedBox(height: 5),
-                  const Icon(Icons.cancel, color: Colors.white, size: 20),
+                  const Icon(
+                    Icons.disabled_by_default_rounded,
+                    color: Colors.white,
+                    size: 20,
+                  ),
                   const SizedBox(height: 5),
                   Text(
                     "${(100 - donePercent * 100).toStringAsFixed(0)}%",

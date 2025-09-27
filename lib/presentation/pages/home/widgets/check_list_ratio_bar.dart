@@ -42,7 +42,7 @@ class CheckListRatioBar extends StatelessWidget {
               ),
               Expanded(
                 flex: (100 - (donePercent * 100).round()),
-                child: Container(color: Colors.transparent),
+                child: Container(color: Colors.white),
               ),
             ],
           ),

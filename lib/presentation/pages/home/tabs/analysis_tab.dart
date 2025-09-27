@@ -113,10 +113,6 @@ class _AnalysisTabState extends ConsumerState<AnalysisTab> {
             const SizedBox(height: 15),
             Divider(),
 
-            // CheckList 통계
-            const SizedBox(height: 10),
-            titleText("할 일 진척도"),
-            const SizedBox(height: 10),
             recordsAsync.when(
               data: (records) {
                 // CheckList 필터링
@@ -163,6 +159,9 @@ class _AnalysisTabState extends ConsumerState<AnalysisTab> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     // CheckList 통계
+                    const SizedBox(height: 10),
+                    titleText("할 일 진척도"),
+                    const SizedBox(height: 10),
                     Container(
                       padding: const EdgeInsets.all(12),
                       decoration: BorderBoxDecoration.commonBox,

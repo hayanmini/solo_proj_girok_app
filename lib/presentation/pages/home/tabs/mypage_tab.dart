@@ -351,24 +351,6 @@ class _MypageTabState extends ConsumerState<MypageTab> {
   }
 
   Widget _buildScheduleItem(dynamic record, String title, dynamic type) {
-    IconData icon;
-    switch (type.toString()) {
-      case "RecordType.checklist":
-        icon = Icons.check_box;
-        break;
-      case "RecordType.daily":
-        icon = Icons.emoji_emotions;
-        break;
-      case "RecordType.series":
-        icon = Icons.edit_document;
-        break;
-      case "RecordType.memo":
-        icon = Icons.my_library_books_sharp;
-        break;
-      default:
-        icon = Icons.note_add;
-    }
-
     return InkWell(
       onTap: () {
         final userId = ref.watch(userIdProvider);
@@ -413,7 +395,7 @@ class _MypageTabState extends ConsumerState<MypageTab> {
             height: 50,
             margin: const EdgeInsets.only(right: 8),
             decoration: BorderBoxDecoration.commonBox,
-            child: Icon(icon, color: Colors.white),
+            child: Icon(typeIcon(type), color: Colors.white),
           ),
           SizedBox(width: 10),
           Expanded(

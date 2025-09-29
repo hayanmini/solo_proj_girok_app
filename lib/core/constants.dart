@@ -28,6 +28,40 @@ class TitleTextStyle {
   );
 }
 
+String weekdayToKorean(int weekday) {
+  switch (weekday) {
+    case 1:
+      return '월';
+    case 2:
+      return '화';
+    case 3:
+      return '수';
+    case 4:
+      return '목';
+    case 5:
+      return '금';
+    case 6:
+      return '토';
+    default:
+      return '일';
+  }
+}
+
+IconData typeIcon(dynamic type) {
+  switch (type.toString()) {
+    case "RecordType.checklist":
+      return Icons.check_box;
+    case "RecordType.daily":
+      return Icons.emoji_emotions;
+    case "RecordType.series":
+      return Icons.edit_document;
+    case "RecordType.memo":
+      return Icons.my_library_books_sharp;
+    default:
+      return Icons.note_add;
+  }
+}
+
 IconData emotionIcon(Emotion emotion) {
   switch (emotion) {
     case Emotion.veryBad:

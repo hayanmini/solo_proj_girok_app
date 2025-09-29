@@ -19,6 +19,7 @@ class MainTabPage extends StatefulWidget {
 class _MainTabPageState extends State<MainTabPage> {
   int _currentIndex = 0;
   OverlayEntry? _overlayEntry;
+  DateTime _selectedDate = DateTime.now();
 
   final List<ScrollController> _scrollControllers = List.generate(
     4,
@@ -34,6 +35,11 @@ class _MainTabPageState extends State<MainTabPage> {
       HomeTab(
         scrollController: _scrollControllers[0],
         onEmptyDateTap: _showCreatePopup,
+        onDateSelected: (date) {
+          setState(() {
+            _selectedDate = date;
+          });
+        },
       ),
       AnalysisTab(scrollController: _scrollControllers[1]),
       const SizedBox(),
@@ -91,23 +97,41 @@ class _MainTabPageState extends State<MainTabPage> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => CheckListPage(),
+                          builder: (context) => CheckListPage(
+                            date: _selectedDate,
+                            editingRecord: null,
+                          ),
                         ),
                       );
                     } else if (type == "daily") {
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (_) => DailyPage()),
+                        MaterialPageRoute(
+                          builder: (_) => DailyPage(
+                            date: _selectedDate,
+                            editingRecord: null,
+                          ),
+                        ),
                       );
                     } else if (type == "series") {
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (_) => SeriesPage()),
+                        MaterialPageRoute(
+                          builder: (_) => SeriesPage(
+                            date: _selectedDate,
+                            editingRecord: null,
+                          ),
+                        ),
                       );
                     } else {
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (_) => MemoPage()),
+                        MaterialPageRoute(
+                          builder: (_) => MemoPage(
+                            date: _selectedDate,
+                            editingRecord: null,
+                          ),
+                        ),
                       );
                     }
                     _toggleCreatePopup();
@@ -123,7 +147,6 @@ class _MainTabPageState extends State<MainTabPage> {
 
   // Tab Tap 이벤트
   void _onTabTapped(int index) {
-    // Create 팝업
     if (index == 2) {
       _toggleCreatePopup();
       return;
@@ -149,7 +172,21 @@ class _MainTabPageState extends State<MainTabPage> {
     return Scaffold(
       body: IndexedStack(
         index: _currentIndex == 2 ? 0 : _currentIndex,
-        children: _pages,
+        children: [
+          HomeTab(
+            scrollController: _scrollControllers[0],
+            onEmptyDateTap: _showCreatePopup,
+            onDateSelected: (date) {
+              setState(() {
+                _selectedDate = date;
+              });
+            },
+          ),
+          AnalysisTab(scrollController: _scrollControllers[1]),
+          const SizedBox(),
+          MypageTab(scrollController: _scrollControllers[2]),
+          SettingsTab(scrollController: _scrollControllers[3]),
+        ],
       ),
       bottomNavigationBar: Padding(
         padding: const EdgeInsets.only(top: 4),

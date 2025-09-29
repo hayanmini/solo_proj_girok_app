@@ -5,6 +5,7 @@ import 'package:flutter_girok_app/presentation/pages/home/widgets/common_dialogs
 import 'package:flutter_girok_app/presentation/pages/record/memo_page.dart';
 import 'package:flutter_girok_app/presentation/providers/record_provider.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:intl/intl.dart';
 
 class ViewMemoPage extends ConsumerStatefulWidget {
   final String userId;
@@ -23,6 +24,10 @@ class _ViewMemoPageState extends ConsumerState<ViewMemoPage> {
   void initState() {
     super.initState();
     _localRecord = widget.record;
+  }
+
+  String get formattedDate {
+    return DateFormat("M월 d일 EEEE", "ko_KR").format(_localRecord.date);
   }
 
   Future<void> _deleteRecord() async {
@@ -44,10 +49,7 @@ class _ViewMemoPageState extends ConsumerState<ViewMemoPage> {
     return Scaffold(
       appBar: AppBar(
         title: Center(
-          child: Text(
-            "${_localRecord.date.year}년 ${_localRecord.date.month}월 ${_localRecord.date.day}일",
-            style: TextStyle(color: Colors.white),
-          ),
+          child: Text(formattedDate, style: TextStyle(color: Colors.white)),
         ),
         actions: [
           IconButton(
@@ -92,7 +94,10 @@ class _ViewMemoPageState extends ConsumerState<ViewMemoPage> {
                     final updatedRecord = await Navigator.push<Memo>(
                       context,
                       MaterialPageRoute(
-                        builder: (_) => MemoPage(editingRecord: _localRecord),
+                        builder: (_) => MemoPage(
+                          date: _localRecord.date,
+                          editingRecord: _localRecord,
+                        ),
                       ),
                     );
                     if (updatedRecord != null) {

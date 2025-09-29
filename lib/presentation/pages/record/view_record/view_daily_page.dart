@@ -6,6 +6,7 @@ import 'package:flutter_girok_app/presentation/pages/home/widgets/common_dialogs
 import 'package:flutter_girok_app/presentation/pages/record/daily_page.dart';
 import 'package:flutter_girok_app/presentation/providers/record_provider.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:intl/intl.dart';
 
 class ViewDailyPage extends ConsumerStatefulWidget {
   final String userId;
@@ -24,6 +25,10 @@ class _ViewDailyPageState extends ConsumerState<ViewDailyPage> {
   void initState() {
     super.initState();
     _localRecord = widget.record;
+  }
+
+  String get formattedDate {
+    return DateFormat("M월 d일 EEEE", "ko_KR").format(_localRecord.date);
   }
 
   Future<void> _changeEmotion(Emotion newEmotion) async {
@@ -63,10 +68,7 @@ class _ViewDailyPageState extends ConsumerState<ViewDailyPage> {
     return Scaffold(
       appBar: AppBar(
         title: Center(
-          child: Text(
-            "${_localRecord.date.year}년 ${_localRecord.date.month}월 ${_localRecord.date.day}일",
-            style: TextStyle(color: Colors.white),
-          ),
+          child: Text(formattedDate, style: TextStyle(color: Colors.white)),
         ),
         actions: [
           IconButton(
@@ -111,7 +113,10 @@ class _ViewDailyPageState extends ConsumerState<ViewDailyPage> {
                     final updatedRecord = await Navigator.push<Daily>(
                       context,
                       MaterialPageRoute(
-                        builder: (_) => DailyPage(editingRecord: _localRecord),
+                        builder: (_) => DailyPage(
+                          date: _localRecord.date,
+                          editingRecord: _localRecord,
+                        ),
                       ),
                     );
                     if (updatedRecord != null) {

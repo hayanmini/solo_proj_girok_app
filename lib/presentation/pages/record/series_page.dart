@@ -10,7 +10,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class SeriesPage extends ConsumerStatefulWidget {
   final Series? editingRecord;
-  const SeriesPage({super.key, this.editingRecord});
+  final DateTime date;
+
+  const SeriesPage({super.key, required this.date, this.editingRecord});
 
   @override
   ConsumerState<SeriesPage> createState() => _SeriesPageState();
@@ -86,7 +88,7 @@ class _SeriesPageState extends ConsumerState<SeriesPage> {
         title: _titleController.text,
         createdAt: widget.editingRecord?.createdAt ?? now,
         updatedAt: now,
-        date: now,
+        date: widget.date,
         folder: _selectedFolderId!,
         content: _contentController.text,
       );
@@ -116,13 +118,12 @@ class _SeriesPageState extends ConsumerState<SeriesPage> {
       }
     }
 
+    final dateTitle =
+        '${widget.date.month}월 ${widget.date.day}일 ${weekdayToKorean(widget.date.weekday)}요일';
+
     return Scaffold(
       appBar: AppBar(
-        title: Text(
-          // TODO : 캘린더 날짜 변경
-          "9월 20일 토요일",
-          style: TextStyle(color: Colors.white),
-        ),
+        title: Text(dateTitle, style: TextStyle(color: Colors.white)),
       ),
       body: GestureDetector(
         onTap: () => FocusScope.of(context).unfocus(),

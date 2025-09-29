@@ -5,6 +5,7 @@ import 'package:flutter_girok_app/presentation/pages/home/widgets/common_dialogs
 import 'package:flutter_girok_app/presentation/pages/record/check_list_page.dart';
 import 'package:flutter_girok_app/presentation/providers/record_provider.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:intl/intl.dart';
 
 class ViewCheckListPage extends ConsumerStatefulWidget {
   final String userId;
@@ -27,6 +28,10 @@ class _ViewCheckListPageState extends ConsumerState<ViewCheckListPage> {
   void initState() {
     super.initState();
     _localRecord = widget.record;
+  }
+
+  String get formattedDate {
+    return DateFormat("M월 d일 EEEE", "ko_KR").format(_localRecord.date);
   }
 
   Future<void> _toggleItem(int index) async {
@@ -75,10 +80,7 @@ class _ViewCheckListPageState extends ConsumerState<ViewCheckListPage> {
     return Scaffold(
       appBar: AppBar(
         title: Center(
-          child: Text(
-            "${_localRecord.date.year}년 ${_localRecord.date.month}월 ${_localRecord.date.day}일",
-            style: TextStyle(color: Colors.white),
-          ),
+          child: Text(formattedDate, style: TextStyle(color: Colors.white)),
         ),
         actions: [
           IconButton(
@@ -99,7 +101,7 @@ class _ViewCheckListPageState extends ConsumerState<ViewCheckListPage> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 IconButton(
-                  onPressed: () {},
+                  onPressed: null,
                   icon: Icon(Icons.check_box, color: Colors.white),
                 ),
                 SizedBox(width: 4),
@@ -119,8 +121,10 @@ class _ViewCheckListPageState extends ConsumerState<ViewCheckListPage> {
                     final updatedRecord = await Navigator.push<CheckList>(
                       context,
                       MaterialPageRoute(
-                        builder: (_) =>
-                            CheckListPage(editingRecord: _localRecord),
+                        builder: (_) => CheckListPage(
+                          date: _localRecord.date,
+                          editingRecord: _localRecord,
+                        ),
                       ),
                     );
                     if (updatedRecord != null) {

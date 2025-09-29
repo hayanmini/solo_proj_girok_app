@@ -7,6 +7,7 @@ import 'package:flutter_girok_app/presentation/pages/record/series_page.dart';
 import 'package:flutter_girok_app/presentation/providers/folder_provider.dart';
 import 'package:flutter_girok_app/presentation/providers/record_provider.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:intl/intl.dart';
 
 class ViewSeriesPage extends ConsumerStatefulWidget {
   final String userId;
@@ -25,6 +26,10 @@ class _ViewSeriesPageState extends ConsumerState<ViewSeriesPage> {
   void initState() {
     super.initState();
     _localRecord = widget.record;
+  }
+
+  String get formattedDate {
+    return DateFormat("M월 d일 EEEE", "ko_KR").format(_localRecord.date);
   }
 
   Future<void> _deleteRecord() async {
@@ -55,10 +60,7 @@ class _ViewSeriesPageState extends ConsumerState<ViewSeriesPage> {
     return Scaffold(
       appBar: AppBar(
         title: Center(
-          child: Text(
-            "${_localRecord.date.year}년 ${_localRecord.date.month}월 ${_localRecord.date.day}일",
-            style: TextStyle(color: Colors.white),
-          ),
+          child: Text(formattedDate, style: TextStyle(color: Colors.white)),
         ),
         actions: [
           IconButton(
@@ -111,8 +113,10 @@ class _ViewSeriesPageState extends ConsumerState<ViewSeriesPage> {
                       final updatedRecord = await Navigator.push<Series>(
                         context,
                         MaterialPageRoute(
-                          builder: (_) =>
-                              SeriesPage(editingRecord: _localRecord),
+                          builder: (_) => SeriesPage(
+                            date: _localRecord.date,
+                            editingRecord: _localRecord,
+                          ),
                         ),
                       );
                       if (updatedRecord != null) {

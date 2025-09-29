@@ -7,8 +7,10 @@ import 'package:flutter_girok_app/presentation/providers/record_provider.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class CheckListPage extends ConsumerStatefulWidget {
+  final DateTime date;
   final CheckList? editingRecord;
-  const CheckListPage({super.key, this.editingRecord});
+
+  const CheckListPage({super.key, required this.date, this.editingRecord});
 
   @override
   ConsumerState<CheckListPage> createState() => _CheckListPageState();
@@ -96,8 +98,7 @@ class _CheckListPageState extends ConsumerState<CheckListPage> {
         title: _titleController.text,
         createdAt: widget.editingRecord?.createdAt ?? now,
         updatedAt: now,
-        // TODO : 캘린더 날짜 연동 필요
-        date: now,
+        date: widget.date,
         items: items,
       );
 
@@ -117,13 +118,12 @@ class _CheckListPageState extends ConsumerState<CheckListPage> {
 
   @override
   Widget build(BuildContext context) {
+    final dateTitle =
+        '${widget.date.month}월 ${widget.date.day}일 ${weekdayToKorean(widget.date.weekday)}요일';
+
     return Scaffold(
       appBar: AppBar(
-        title: Text(
-          // TODO : 캘린더 날짜 변경
-          "9월 20일 토요일",
-          style: TextStyle(color: Colors.white),
-        ),
+        title: Text(dateTitle, style: TextStyle(color: Colors.white)),
       ),
       body: GestureDetector(
         onTap: () => FocusScope.of(context).unfocus(),

@@ -8,7 +8,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class MemoPage extends ConsumerStatefulWidget {
   final Memo? editingRecord;
-  const MemoPage({super.key, this.editingRecord});
+  final DateTime date;
+  const MemoPage({super.key, required this.date, this.editingRecord});
 
   @override
   ConsumerState<MemoPage> createState() => _MemoPageState();
@@ -72,7 +73,7 @@ class _MemoPageState extends ConsumerState<MemoPage> {
         title: _titleController.text,
         createdAt: widget.editingRecord?.createdAt ?? now,
         updatedAt: now,
-        date: now,
+        date: widget.date,
         content: _contentController.text,
       );
       if (widget.editingRecord == null) {
@@ -91,13 +92,12 @@ class _MemoPageState extends ConsumerState<MemoPage> {
 
   @override
   Widget build(BuildContext context) {
+    final dateTitle =
+        '${widget.date.month}월 ${widget.date.day}일 ${weekdayToKorean(widget.date.weekday)}요일';
+
     return Scaffold(
       appBar: AppBar(
-        title: Text(
-          // TODO : 캘린더 날짜 변경
-          "9월 20일 토요일",
-          style: TextStyle(color: Colors.white),
-        ),
+        title: Text(dateTitle, style: TextStyle(color: Colors.white)),
       ),
       body: GestureDetector(
         onTap: () => FocusScope.of(context).unfocus(),

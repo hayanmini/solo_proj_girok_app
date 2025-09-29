@@ -228,6 +228,16 @@ class _MypageTabState extends ConsumerState<MypageTab> {
                                                     folder.id,
                                                     "defaultFolderId",
                                                   );
+                                              final userId = ref.read(
+                                                userIdProvider,
+                                              );
+                                              if (userId != null) {
+                                                await ref
+                                                    .read(
+                                                      recordsProvider.notifier,
+                                                    )
+                                                    .loadRecordList(userId);
+                                              }
                                             }
                                           },
                                         ),

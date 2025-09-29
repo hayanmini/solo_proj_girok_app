@@ -39,8 +39,7 @@ class _AnalysisTabState extends ConsumerState<AnalysisTab> {
       final response = await aiRepo.request(
         AiRequest(
           prompt: """오늘의 명언 문구 한 마디에서 두마디로 이모지랑 함께 이야기해줘.
-              한 문장당 줄 바꿔서 다른 사담 없이 요청한 내용만 이야기 해줘.
-              마지막 문장 끝에는 ? 붙여줘""",
+              한 문장당 줄 바꿔서 다른 사담 없이 요청한 내용만 이야기 해줘.""",
         ),
       );
 

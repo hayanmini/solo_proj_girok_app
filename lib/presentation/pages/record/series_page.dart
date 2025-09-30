@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_girok_app/core/constants.dart';
 import 'package:flutter_girok_app/domain/models/folder.dart';
 import 'package:flutter_girok_app/domain/models/series.dart';
+import 'package:flutter_girok_app/presentation/pages/home/widgets/common_dialogs.dart';
 import 'package:flutter_girok_app/presentation/pages/record/widgets/save_button.dart';
 import 'package:flutter_girok_app/presentation/providers/folder_provider.dart';
 import 'package:flutter_girok_app/presentation/providers/record_provider.dart';
@@ -259,7 +260,7 @@ class _SeriesPageState extends ConsumerState<SeriesPage> {
                       onTap: () async {
                         Navigator.pop(context);
                         WidgetsBinding.instance.addPostFrameCallback((_) async {
-                          final name = await _showNewFolderDialog(context);
+                          final name = await showNewFolderDialog(context);
                           if (name != null && name.trim().isNotEmpty) {
                             await ref
                                 .read(folderAsyncNotifierProvider.notifier)
@@ -363,29 +364,6 @@ class _SeriesPageState extends ConsumerState<SeriesPage> {
           },
         );
       },
-    );
-  }
-
-  Future<String?> _showNewFolderDialog(BuildContext context) async {
-    final controller = TextEditingController();
-    return showDialog<String>(
-      context: context,
-      builder: (_) => AlertDialog(
-        title: const Text('새 폴더 이름'),
-        content: TextField(controller: controller),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text('취소'),
-          ),
-          TextButton(
-            onPressed: () {
-              Navigator.pop(context, controller.text);
-            },
-            child: const Text('확인'),
-          ),
-        ],
-      ),
     );
   }
 

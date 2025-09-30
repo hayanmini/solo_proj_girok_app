@@ -27,6 +27,30 @@ Future<bool?> showConfirmDeleteDialog({
   );
 }
 
+// 새 폴더 생성 다이얼로그
+Future<String?> showNewFolderDialog(BuildContext context) async {
+  final controller = TextEditingController();
+  return showDialog<String>(
+    context: context,
+    builder: (_) => AlertDialog(
+      title: const Text('새 폴더 이름'),
+      content: TextField(controller: controller),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.pop(context),
+          child: const Text('취소'),
+        ),
+        TextButton(
+          onPressed: () {
+            Navigator.pop(context, controller.text);
+          },
+          child: const Text('확인'),
+        ),
+      ],
+    ),
+  );
+}
+
 // 폴더 이름 수정 다이얼로그
 Future<String?> showEditNameDialog({
   required BuildContext context,

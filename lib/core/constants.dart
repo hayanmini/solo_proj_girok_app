@@ -1,5 +1,3 @@
-// 앱 전역에서 쓰이는 상수
-// 컬러, 폰트, 문자열, 이미지 경로 등
 import 'package:flutter/material.dart';
 import 'package:flutter_girok_app/core/enums.dart';
 

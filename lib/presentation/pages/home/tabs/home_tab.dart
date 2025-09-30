@@ -199,7 +199,6 @@ class _HomeTabState extends ConsumerState<HomeTab> {
                                             r.date.day == _selectedDate!.day,
                                       )
                                       .toList();
-
                                   if (filteredRecords.isEmpty) {
                                     return const SizedBox.shrink();
                                   }

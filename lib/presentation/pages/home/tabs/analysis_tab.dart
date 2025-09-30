@@ -63,7 +63,7 @@ class _AnalysisTabState extends ConsumerState<AnalysisTab> {
 
     final recordsAsync = userId == null
         ? const AsyncValue<List<RecordModel>>.data([])
-        : ref.watch(recordsProvider);
+        : ref.watch(allRecordsProvider);
 
     return SafeArea(
       child: SingleChildScrollView(

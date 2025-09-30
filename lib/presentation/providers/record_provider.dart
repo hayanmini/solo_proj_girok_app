@@ -24,6 +24,7 @@ class RecordsNotifier extends AsyncNotifier<List<RecordModel>> {
   @override
   Future<List<RecordModel>> build() async {
     _repository = ref.read(recordRepositoryProvider);
+    print("AAAAAAAAAAAAAAA");
     return [];
   }
 
@@ -34,6 +35,8 @@ class RecordsNotifier extends AsyncNotifier<List<RecordModel>> {
         query.userId,
         query.date ?? DateTime.now(),
       );
+
+      print("${query.userId} ${query.date}");
       state = AsyncValue.data(records);
     } catch (e, st) {
       state = AsyncValue.error(e, st);

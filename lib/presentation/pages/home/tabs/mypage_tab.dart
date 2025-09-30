@@ -22,6 +22,7 @@ class MypageTab extends ConsumerStatefulWidget {
 
 class _MypageTabState extends ConsumerState<MypageTab> {
   bool _editMode = false;
+  String? _selectedFolderId;
 
   static const int pageSize = 10;
   int _currentRecordCount = pageSize;
@@ -78,7 +79,7 @@ class _MypageTabState extends ConsumerState<MypageTab> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    titleText("폴더"),
+                    titleText("내 폴더"),
                     Spacer(),
 
                     if (_editMode)
@@ -124,6 +125,11 @@ class _MypageTabState extends ConsumerState<MypageTab> {
                             child: GestureDetector(
                               onTap: () async {
                                 if (!_editMode) return;
+                                setState(() {
+                                  // _selectedFolderId = folder.id;
+                                  // print("${_selectedFolderId}");
+                                });
+
                                 if (folder.id == "defaultFolderId") return;
 
                                 final newName = await showEditNameDialog(
@@ -351,6 +357,7 @@ class _MypageTabState extends ConsumerState<MypageTab> {
     );
   }
 
+  // 기록 리스트 아이템
   Widget _buildScheduleItem(dynamic record, String title, dynamic type) {
     return InkWell(
       onTap: () {

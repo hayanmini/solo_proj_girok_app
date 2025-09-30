@@ -89,3 +89,8 @@ final recordsProvider =
     AsyncNotifierProvider<RecordsNotifier, List<RecordModel>>(
       RecordsNotifier.new,
     );
+
+final allRecordsProvider =
+    AsyncNotifierProvider<RecordsNotifier, List<RecordModel>>(
+      RecordsNotifier.new,
+    );

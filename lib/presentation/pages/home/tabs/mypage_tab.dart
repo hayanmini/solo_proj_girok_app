@@ -32,7 +32,7 @@ class _MypageTabState extends ConsumerState<MypageTab> {
     Future.microtask(() {
       final userId = ref.watch(userIdProvider);
       if (userId != null) {
-        ref.read(recordsProvider.notifier).loadRecordList(userId);
+        ref.read(allRecordsProvider.notifier).loadRecordList(userId);
         ref.read(folderAsyncNotifierProvider.notifier).refreshFolders();
       }
     });
@@ -59,7 +59,7 @@ class _MypageTabState extends ConsumerState<MypageTab> {
     // 글 목록
     final recordsAsync = userId == null
         ? const AsyncValue<List<RecordModel>>.data([])
-        : ref.watch(recordsProvider);
+        : ref.watch(allRecordsProvider);
 
     return SafeArea(
       child: Scaffold(
@@ -89,10 +89,6 @@ class _MypageTabState extends ConsumerState<MypageTab> {
                             await ref
                                 .read(folderAsyncNotifierProvider.notifier)
                                 .createFolder(name);
-
-                            await ref
-                                .read(folderAsyncNotifierProvider.notifier)
-                                .refreshFolders();
 
                             setState(() {});
                           }
@@ -247,7 +243,7 @@ class _MypageTabState extends ConsumerState<MypageTab> {
                                             if (userId != null) {
                                               await ref
                                                   .read(
-                                                    recordsProvider.notifier,
+                                                    allRecordsProvider.notifier,
                                                   )
                                                   .loadRecordList(userId);
                                             }

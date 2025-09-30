@@ -2,11 +2,10 @@ import 'package:firebase_auth/firebase_auth.dart' as fb;
 import 'package:flutter/material.dart';
 import 'package:flutter_girok_app/core/constants.dart';
 import 'package:flutter_girok_app/domain/models/record_model.dart';
-import 'package:flutter_girok_app/presentation/pages/home/widgets/create_popup.dart';
-import 'package:flutter_girok_app/presentation/pages/record/check_list_page.dart';
-import 'package:flutter_girok_app/presentation/pages/record/daily_page.dart';
-import 'package:flutter_girok_app/presentation/pages/record/memo_page.dart';
-import 'package:flutter_girok_app/presentation/pages/record/series_page.dart';
+import 'package:flutter_girok_app/presentation/pages/record/view_record/view_check_list_page.dart';
+import 'package:flutter_girok_app/presentation/pages/record/view_record/view_daily_page.dart';
+import 'package:flutter_girok_app/presentation/pages/record/view_record/view_memo_page.dart';
+import 'package:flutter_girok_app/presentation/pages/record/view_record/view_series_page.dart';
 import 'package:flutter_girok_app/presentation/providers/record_provider.dart';
 import 'package:flutter_girok_app/presentation/providers/user_provider.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
@@ -48,123 +47,6 @@ class _HomeTabState extends ConsumerState<HomeTab> {
     final fbUser = fb.FirebaseAuth.instance.currentUser;
     if (fbUser != null) {
       await ref
-          .read(recordsProvider.notifier)
-          .loadRecords(RecordQuery(userId: fbUser.uid, date: date));
-    }
-  }
-
-  Future<void> _handleDateTap(DateTime date) async {
-    setState(() {
-      _selectedDate = date;
-    });
-
-    await _loadRecordsForDate(date);
-
-    final fbUser = fb.FirebaseAuth.instance.currentUser;
-    if (fbUser == null) return;
-
-    final records = ref.read(recordsProvider).value ?? [];
-
-    if (records.isEmpty) {
-      // 기록이 없으면 팝업 자동 노출
-      final type = await showDialog<String>(
-        context: context,
-        barrierDismissible: true,
-        builder: (_) => const Center(child: CreatePopup()),
-      );
-      if (type == null) return;
-
-      switch (type) {
-        case 'checklist':
-          await Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (_) => CheckListPage(date: date, editingRecord: null),
-            ),
-          );
-          break;
-        case 'daily':
-          await Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (_) => DailyPage(date: date, editingRecord: null),
-            ),
-          );
-          break;
-        case 'series':
-          await Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (_) => SeriesPage(date: date, editingRecord: null),
-            ),
-          );
-          break;
-        case 'memo':
-          await Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (_) => MemoPage(date: date, editingRecord: null),
-            ),
-          );
-          break;
-      }
-
-      // 팝업 후 기록 다시 로드
-      await _loadRecordsForDate(date);
-    }
-    // 기록이 있으면 하단 컨테이너는 그대로 노출됨
-  }
-
-  Future<void> _openCreatePopup() async {
-    if (_selectedDate == null) return;
-    final date = _selectedDate!;
-
-    final type = await showDialog<String>(
-      context: context,
-      barrierDismissible: true,
-      builder: (_) => const Center(child: CreatePopup()),
-    );
-    if (type == null) return;
-
-    // 타입별로 작성페이지로 이동
-    switch (type) {
-      case 'RecordType.checklist':
-        await Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (_) => CheckListPage(date: date, editingRecord: null),
-          ),
-        );
-        break;
-      case 'daily':
-        await Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (_) => DailyPage(date: date, editingRecord: null),
-          ),
-        );
-        break;
-      case 'series':
-        await Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (_) => SeriesPage(date: date, editingRecord: null),
-          ),
-        );
-        break;
-      case 'memo':
-        await Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (_) => MemoPage(date: date, editingRecord: null),
-          ),
-        );
-        break;
-    }
-
-    final fbUser = fb.FirebaseAuth.instance.currentUser;
-    if (fbUser != null) {
-      ref
           .read(recordsProvider.notifier)
           .loadRecords(RecordQuery(userId: fbUser.uid, date: date));
     }
@@ -218,6 +100,13 @@ class _HomeTabState extends ConsumerState<HomeTab> {
                             _selectedDate = date;
                           });
                           widget.onDateSelected?.call(date);
+
+                          await _loadRecordsForDate(date);
+                          final records = ref.read(recordsProvider).value ?? [];
+
+                          if (records.isEmpty) {
+                            widget.onEmptyDateTap();
+                          }
                         }
                       },
                       monthCellBuilder: (context, details) {
@@ -229,11 +118,19 @@ class _HomeTabState extends ConsumerState<HomeTab> {
                             date.day == _selectedDate!.day;
 
                         return GestureDetector(
-                          onTap: () {
+                          onTap: () async {
                             setState(() {
                               _selectedDate = date;
                             });
                             widget.onDateSelected?.call(date);
+
+                            await _loadRecordsForDate(date);
+                            final records =
+                                ref.read(recordsProvider).value ?? [];
+
+                            if (records.isEmpty) {
+                              widget.onEmptyDateTap();
+                            }
                           },
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.center,
@@ -322,7 +219,7 @@ class _HomeTabState extends ConsumerState<HomeTab> {
                                           CrossAxisAlignment.start,
                                       children: [
                                         Text(
-                                          '${_selectedDate!.day}일 ${weekdayToKorean(_selectedDate!.weekday)}요일',
+                                          _formatDateTitle(_selectedDate!),
                                           style: const TextStyle(
                                             color: Colors.white,
                                             fontWeight: FontWeight.bold,
@@ -334,9 +231,13 @@ class _HomeTabState extends ConsumerState<HomeTab> {
                                         ...filteredRecords.map(
                                           (record) => Padding(
                                             padding: const EdgeInsets.symmetric(
-                                              vertical: 6,
+                                              vertical: 4,
                                             ),
-                                            child: _buildScheduleItem(record),
+                                            child: _buildScheduleItem(
+                                              record,
+                                              record.title,
+                                              record.type,
+                                            ),
                                           ),
                                         ),
                                       ],
@@ -362,23 +263,61 @@ class _HomeTabState extends ConsumerState<HomeTab> {
     );
   }
 
-  Widget _buildScheduleItem(RecordModel record) {
-    return Row(
-      children: [
-        Container(
-          width: 20,
-          height: 20,
-          margin: const EdgeInsets.only(right: 8),
-          decoration: BoxDecoration(
-            color: Colors.grey[600],
-            borderRadius: BorderRadius.circular(4),
+  Widget _buildScheduleItem(dynamic record, String title, dynamic type) {
+    return InkWell(
+      onTap: () {
+        final userId = ref.watch(userIdProvider);
+
+        if (type.toString() == "RecordType.checklist") {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (_) =>
+                  ViewCheckListPage(userId: userId!, record: record),
+            ),
+          );
+        } else if (type.toString() == "RecordType.daily") {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (_) => ViewDailyPage(userId: userId!, record: record),
+            ),
+          );
+        } else if (type.toString() == "RecordType.series") {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (_) => ViewSeriesPage(userId: userId!, record: record),
+            ),
+          );
+        } else if (type.toString() == "RecordType.memo") {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (_) => ViewMemoPage(userId: userId!, record: record),
+            ),
+          );
+        } else {
+          Center(child: Text("오류가 발생했습니다."));
+        }
+      },
+      child: Row(
+        children: [
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 4),
+            margin: const EdgeInsets.only(right: 8),
+            // decoration: BorderBoxDecoration.commonBox,
+            child: Icon(typeIcon(type), color: Colors.white),
           ),
-        ),
-        Text(
-          record.title,
-          style: const TextStyle(color: Colors.white, fontSize: 14),
-        ),
-      ],
+          SizedBox(width: 4),
+          Expanded(
+            child: Text(
+              title,
+              style: const TextStyle(fontSize: 14, color: Colors.white),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

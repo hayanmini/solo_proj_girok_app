@@ -18,9 +18,8 @@ class FolderRemoteDataSource {
         .collection('users')
         .doc(userId)
         .collection('folders')
-        .orderBy('createdAt', descending: true)
+        .orderBy('createdAt', descending: false)
         .get();
-
     return snap.docs
         .map((doc) => FolderDto.fromFirestore(doc.data(), doc.id))
         .toList();

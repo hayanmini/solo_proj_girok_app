@@ -20,7 +20,10 @@ class FirestoreDatasource {
         .collection('folders')
         .doc("defaultFolderId");
 
-    await defaultRef.set({'name': "기본 폴더", 'createdAt': DateTime.now()});
+    final doc = await defaultRef.get();
+    if (!doc.exists) {
+      await defaultRef.set({'name': "기본 폴더", 'createdAt': DateTime.now()});
+    }
   }
 
   Future<UserDto?> getUser(String userId) async {
@@ -80,16 +83,14 @@ class FirestoreDatasource {
   }
 
   Future<List<RecordDto>> getRecordByDate(String userId, DateTime date) async {
+    final startOfDay = DateTime(date.year, date.month, date.day); // 00:00
+    final endOfDay = startOfDay.add(const Duration(days: 1)); // 다음날 00:00
     final snap = await firestore
         .collection("users")
         .doc(userId)
         .collection("records")
-        .where(
-          "date",
-          isEqualTo: Timestamp.fromDate(
-            DateTime(date.year, date.month, date.day),
-          ),
-        )
+        .where("date", isGreaterThanOrEqualTo: Timestamp.fromDate(startOfDay))
+        .where("date", isLessThan: Timestamp.fromDate(endOfDay))
         .get();
 
     return snap.docs.map((doc) => RecordDto.fromFirestore(doc.data())).toList();

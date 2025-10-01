@@ -1,3 +1,4 @@
+import 'package:flutter_girok_app/domain/models/series.dart';
 import 'package:flutter_girok_app/presentation/providers/firestore_provider.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_girok_app/domain/models/record_model.dart';
@@ -24,7 +25,6 @@ class RecordsNotifier extends AsyncNotifier<List<RecordModel>> {
   @override
   Future<List<RecordModel>> build() async {
     _repository = ref.read(recordRepositoryProvider);
-    print("AAAAAAAAAAAAAAA");
     return [];
   }
 
@@ -35,8 +35,6 @@ class RecordsNotifier extends AsyncNotifier<List<RecordModel>> {
         query.userId,
         query.date ?? DateTime.now(),
       );
-
-      print("${query.userId} ${query.date}");
       state = AsyncValue.data(records);
     } catch (e, st) {
       state = AsyncValue.error(e, st);
@@ -97,3 +95,19 @@ final allRecordsProvider =
     AsyncNotifierProvider<RecordsNotifier, List<RecordModel>>(
       RecordsNotifier.new,
     );
+
+final recordsByFolderProvider = Provider.family<List<RecordModel>, String>((
+  ref,
+  folderId,
+) {
+  final records = ref.watch(allRecordsProvider);
+  return records.when(
+    data: (data) {
+      return data.where((r) {
+        return (r is Series && r.folder == folderId);
+      }).toList();
+    },
+    error: (_, __) => [],
+    loading: () => [],
+  );
+});

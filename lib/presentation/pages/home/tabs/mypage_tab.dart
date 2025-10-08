@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_girok_app/core/constants.dart';
+import 'package:flutter_girok_app/core/theme/colors.dart';
 import 'package:flutter_girok_app/domain/models/record_model.dart';
 import 'package:flutter_girok_app/domain/models/series.dart';
 import 'package:flutter_girok_app/presentation/pages/home/widgets/common_dialogs.dart';
@@ -107,7 +108,11 @@ class _MypageTabState extends ConsumerState<MypageTab> {
                       onPressed: () => setState(() => _editMode = !_editMode),
                       child: Text(
                         _editMode ? "완료" : "편집",
-                        style: TextStyle(color: Colors.grey),
+                        style: TextStyle(
+                          color: _editMode
+                              ? AppColors.textSecondary
+                              : AppColors.pointColor,
+                        ),
                       ),
                     ),
                   ],

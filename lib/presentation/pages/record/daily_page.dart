@@ -163,6 +163,7 @@ class _DailyPageState extends ConsumerState<DailyPage> {
                           textAlign: TextAlign.center,
                           cursorColor: Colors.white,
                           controller: _titleController,
+                          textAlignVertical: TextAlignVertical.top,
                           decoration: InputDecoration(
                             border: InputBorder.none,
                             hintText: "제목을 입력하세요.",

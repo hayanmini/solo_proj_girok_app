@@ -212,6 +212,7 @@ class _SeriesPageState extends ConsumerState<SeriesPage> {
                         cursorColor: Colors.white,
                         maxLines: null,
                         expands: true,
+                        textAlignVertical: TextAlignVertical.top,
                         decoration: const InputDecoration(
                           border: InputBorder.none,
                           hintText: "내용을 입력하세요.",

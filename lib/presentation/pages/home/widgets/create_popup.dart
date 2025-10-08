@@ -10,7 +10,7 @@ class CreatePopup extends StatelessWidget {
       padding: const EdgeInsets.all(12),
       width: 250,
       decoration: BoxDecoration(
-        color: const Color.fromARGB(145, 48, 48, 48),
+        color: const Color.fromARGB(165, 31, 17, 60),
         borderRadius: BorderRadius.circular(16),
       ),
       child: Row(

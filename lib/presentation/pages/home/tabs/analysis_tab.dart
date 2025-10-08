@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_girok_app/core/constants.dart';
 import 'package:flutter_girok_app/core/enums.dart';
+import 'package:flutter_girok_app/core/theme/colors.dart';
 import 'package:flutter_girok_app/domain/models/ai/ai_request.dart';
 import 'package:flutter_girok_app/domain/models/checklist.dart';
 import 'package:flutter_girok_app/domain/models/daily.dart';
@@ -102,7 +103,13 @@ class _AnalysisTabState extends ConsumerState<AnalysisTab> {
 
                       child: Align(
                         alignment: Alignment.centerLeft,
-                        child: Text(_result!, style: TextStyle(fontSize: 16)),
+                        child: Text(
+                          _result!,
+                          style: TextStyle(
+                            fontSize: 16,
+                            color: AppColors.textPrimary,
+                          ),
+                        ),
                       ),
                     ),
                 ],

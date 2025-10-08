@@ -1,5 +1,6 @@
 // widgets/checklist_ratio_bar.dart
 import 'package:flutter/material.dart';
+import 'package:flutter_girok_app/core/theme/colors.dart';
 
 class CheckListRatioBar extends StatelessWidget {
   final int doneCount;
@@ -30,7 +31,7 @@ class CheckListRatioBar extends StatelessWidget {
                 flex: (donePercent * 100).round(),
                 child: Container(
                   decoration: BoxDecoration(
-                    color: Colors.green,
+                    color: AppColors.pointColor,
                     borderRadius: BorderRadius.horizontal(
                       left: Radius.circular(6),
                       right: donePercent == 1.0

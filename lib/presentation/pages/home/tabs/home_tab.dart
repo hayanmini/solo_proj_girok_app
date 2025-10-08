@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart' as fb;
 import 'package:flutter/material.dart';
 import 'package:flutter_girok_app/core/constants.dart';
+import 'package:flutter_girok_app/core/theme/colors.dart';
 import 'package:flutter_girok_app/domain/models/record_model.dart';
 import 'package:flutter_girok_app/presentation/pages/record/view_record/view_check_list_page.dart';
 import 'package:flutter_girok_app/presentation/pages/record/view_record/view_daily_page.dart';
@@ -73,11 +74,12 @@ class _HomeTabState extends ConsumerState<HomeTab> {
                       view: CalendarView.month,
                       headerHeight: 50,
                       headerStyle: CalendarHeaderStyle(
+                        backgroundColor: AppColors.background,
                         textAlign: TextAlign.center,
                       ),
 
                       viewHeaderStyle: ViewHeaderStyle(
-                        backgroundColor: Colors.grey[700],
+                        backgroundColor: AppColors.secondColor,
                         dayTextStyle: const TextStyle(color: Colors.white),
                       ),
 
@@ -140,11 +142,11 @@ class _HomeTabState extends ConsumerState<HomeTab> {
                                 height: details.bounds.height * 0.58,
                                 decoration: BoxDecoration(
                                   color: isSelected
-                                      ? Colors.purple[100]
-                                      : Colors.grey[400],
+                                      ? AppColors.lightColor
+                                      : AppColors.containerColor,
                                   border: Border.all(
                                     color: isSelected
-                                        ? Colors.purple.shade200
+                                        ? AppColors.pointColor
                                         : Colors.transparent,
                                     width: 2,
                                   ),
@@ -156,7 +158,7 @@ class _HomeTabState extends ConsumerState<HomeTab> {
                                 '${date.day}',
                                 style: TextStyle(
                                   color: isSelected
-                                      ? Colors.purple.shade200
+                                      ? AppColors.pointColor
                                       : Colors.white,
                                   fontSize: 12,
                                 ),

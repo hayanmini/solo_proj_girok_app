@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart' as fb;
 import 'package:flutter/material.dart';
 import 'package:flutter_girok_app/core/constants.dart';
 import 'package:flutter_girok_app/core/enums.dart';
+import 'package:flutter_girok_app/core/theme/colors.dart';
 import 'package:flutter_girok_app/domain/models/daily.dart';
 import 'package:flutter_girok_app/presentation/pages/record/widgets/save_button.dart';
 import 'package:flutter_girok_app/presentation/providers/record_provider.dart';
@@ -135,15 +136,15 @@ class _DailyPageState extends ConsumerState<DailyPage> {
                                 height: 50,
                                 decoration: BoxDecoration(
                                   color: isSelected
-                                      ? Colors.white
-                                      : Colors.grey[800],
+                                      ? AppColors.pointColor
+                                      : Colors.white,
                                   borderRadius: BorderRadius.circular(8),
                                 ),
                                 child: Icon(
                                   emotionIcon(emotion),
                                   color: isSelected
-                                      ? Colors.orange
-                                      : Colors.white,
+                                      ? AppColors.containerColor
+                                      : AppColors.textSecondary,
                                   size: 30,
                                 ),
                               ),

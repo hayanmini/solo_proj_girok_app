@@ -62,6 +62,8 @@ class _MypageTabState extends ConsumerState<MypageTab> {
         ? const AsyncValue<List<RecordModel>>.data([])
         : ref.watch(allRecordsProvider);
 
+    //var a = ref.watch(recordsByFolderProvider("defaultFolderId"));
+
     return SafeArea(
       child: Scaffold(
         body: GestureDetector(
@@ -126,8 +128,8 @@ class _MypageTabState extends ConsumerState<MypageTab> {
                               onTap: () async {
                                 if (!_editMode) return;
                                 setState(() {
-                                  // _selectedFolderId = folder.id;
-                                  // print("${_selectedFolderId}");
+                                  _selectedFolderId = folder.id;
+                                  print("${_selectedFolderId}");
                                 });
 
                                 if (folder.id == "defaultFolderId") return;

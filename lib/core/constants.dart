@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_girok_app/core/enums.dart';
+import 'package:flutter_girok_app/core/theme/colors.dart';
 
 class BorderBoxDecoration {
   static BoxDecoration commonBox = BoxDecoration(
@@ -8,7 +9,7 @@ class BorderBoxDecoration {
     borderRadius: BorderRadius.circular(12),
   );
   static BoxDecoration saveBox = BoxDecoration(
-    color: Color(0xFF2B2545),
+    color: AppColors.pointColor,
     borderRadius: BorderRadius.circular(12),
   );
 }
@@ -78,27 +79,27 @@ IconData emotionIcon(Emotion emotion) {
 Color colorForType(RecordType type) {
   switch (type) {
     case RecordType.checklist:
-      return Colors.green.shade100;
+      return Colors.purple.shade100;
     case RecordType.daily:
-      return Colors.green.shade200;
+      return Colors.purple.shade200;
     case RecordType.series:
-      return Colors.green.shade300;
+      return Colors.purple.shade300;
     case RecordType.memo:
-      return Colors.green.shade400;
+      return Colors.purple.shade400;
   }
 }
 
 Color emotionColor(Emotion emotion) {
   switch (emotion) {
     case Emotion.veryBad:
-      return Colors.green.shade100;
+      return Colors.purple.shade100;
     case Emotion.bad:
-      return Colors.green.shade200;
+      return Colors.purple.shade200;
     case Emotion.normal:
-      return Colors.green.shade300;
+      return Colors.purple.shade300;
     case Emotion.happy:
-      return Colors.green.shade400;
+      return Colors.purple.shade400;
     case Emotion.veryHappy:
-      return Colors.green.shade500;
+      return Colors.purple.shade500;
   }
 }

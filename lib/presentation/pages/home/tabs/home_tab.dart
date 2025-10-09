@@ -15,13 +15,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 class HomeTab extends ConsumerStatefulWidget {
   final ScrollController scrollController;
   final VoidCallback onEmptyDateTap;
-  final ValueChanged<DateTime>? onDateSelected;
 
   const HomeTab({
     super.key,
     required this.scrollController,
     required this.onEmptyDateTap,
-    this.onDateSelected,
   });
 
   @override
@@ -29,14 +27,24 @@ class HomeTab extends ConsumerStatefulWidget {
 }
 
 class _HomeTabState extends ConsumerState<HomeTab> {
-  DateTime? _selectedDate;
+  var currentColumnCount = 0;
 
   @override
   void initState() {
     super.initState();
-    _selectedDate = DateTime.now();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      widget.onDateSelected?.call(_selectedDate!);
+
+    final date = DateTime.now();
+    final firstDayOfMonth = DateTime(date.year, date.month, 1);
+    final startWeekday = firstDayOfMonth.weekday % 7;
+    final lastDayOfMonth = DateTime(date.year, date.month + 1, 0).day;
+    final totalNeededSlots = startWeekday + lastDayOfMonth;
+    currentColumnCount = (totalNeededSlots / 7).ceil();
+
+    Future.microtask(() {
+      final userId = ref.watch(userIdProvider);
+      if (userId != null) {
+        ref.read(allRecordsProvider.notifier).loadRecordList(userId);
+      }
     });
   }
 
@@ -44,168 +52,173 @@ class _HomeTabState extends ConsumerState<HomeTab> {
     return '${date.month}월 ${date.day}일 ${weekdayToKorean(date.weekday)}요일';
   }
 
-  Future<void> _loadRecordsForDate(DateTime date) async {
-    final fbUser = fb.FirebaseAuth.instance.currentUser;
-    if (fbUser != null) {
-      await ref
-          .read(recordsProvider.notifier)
-          .loadRecords(RecordQuery(userId: fbUser.uid, date: date));
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     final fbUser = fb.FirebaseAuth.instance.currentUser;
+    final selectedDate = ref.watch(selectedRecordDateProvider);
     final recordsAsync = fbUser != null
-        ? ref.watch(recordsProvider)
-        : const AsyncValue.data([]);
+        ? ref.watch(allRecordsProvider)
+        : const AsyncValue.data(<RecordModel>[]);
 
     return SafeArea(
       child: Scaffold(
-        body: LayoutBuilder(
-          builder: (context, constraints) {
-            return SingleChildScrollView(
-              controller: widget.scrollController,
-              child: Column(
-                children: [
-                  SizedBox(
-                    height: constraints.maxHeight * 0.7,
-                    child: SfCalendar(
-                      view: CalendarView.month,
-                      headerHeight: 50,
-                      headerStyle: CalendarHeaderStyle(
-                        backgroundColor: AppColors.background,
-                        textAlign: TextAlign.center,
-                      ),
+        body: recordsAsync.when(
+          data: (allRecords) {
+            final recordsForDate = <DateTime, List<RecordModel>>{};
+            for (var record in allRecords) {
+              final date = DateTime(
+                record.date.year,
+                record.date.month,
+                record.date.day,
+              );
+              if (!recordsForDate.containsKey(date)) {
+                recordsForDate[date] = [];
+              }
+              recordsForDate[date]!.add(record);
+            }
+            return LayoutBuilder(
+              builder: (context, constraints) {
+                return SingleChildScrollView(
+                  controller: widget.scrollController,
+                  child: Column(
+                    children: [
+                      SizedBox(
+                        height: constraints.maxHeight * 0.7,
 
-                      viewHeaderStyle: ViewHeaderStyle(
-                        backgroundColor: AppColors.secondColor,
-                        dayTextStyle: const TextStyle(color: Colors.white),
-                      ),
+                        child: SfCalendar(
+                          view: CalendarView.month,
+                          headerHeight: 50,
+                          viewHeaderHeight: -1,
+                          headerStyle: CalendarHeaderStyle(
+                            backgroundColor: AppColors.background,
+                            textAlign: TextAlign.center,
+                          ),
 
-                      monthViewSettings: const MonthViewSettings(
-                        showTrailingAndLeadingDates: false,
-                        dayFormat: 'EE',
-                        appointmentDisplayMode:
-                            MonthAppointmentDisplayMode.none,
-                      ),
+                          viewHeaderStyle: ViewHeaderStyle(
+                            backgroundColor: AppColors.secondColor,
+                            dayTextStyle: const TextStyle(color: Colors.white),
+                          ),
+                          selectionDecoration: BoxDecoration(),
+                          monthViewSettings: const MonthViewSettings(
+                            showTrailingAndLeadingDates: false,
+                            dayFormat: 'EE',
+                            appointmentDisplayMode:
+                                MonthAppointmentDisplayMode.none,
+                          ),
 
-                      onTap: (calendarTapDetails) async {
-                        final tapped = calendarTapDetails.date;
-                        if (tapped != null) {
-                          final date = DateTime(
-                            tapped.year,
-                            tapped.month,
-                            tapped.day,
-                          );
-                          setState(() {
-                            _selectedDate = date;
-                          });
-                          widget.onDateSelected?.call(date);
+                          onViewChanged: (details) {
+                            // 2) 시작 요일 (월=1 ... 일=7) → 캘린더 기준으로 쓰려면 일요일을 0으로 맞출 수 있음
+                            final firstDay = details.visibleDates.first;
+                            final startWeekday =
+                                firstDay.weekday % 7; // 일요일 = 0
 
-                          await _loadRecordsForDate(date);
-                          final records = ref.read(recordsProvider).value ?? [];
+                            // 3) 실제 필요한 칸 수 = 앞 공백 + 날짜 길이
+                            final totalSlots =
+                                startWeekday + details.visibleDates.length;
 
-                          if (records.isEmpty) {
-                            widget.onEmptyDateTap();
-                          }
-                        }
-                      },
-                      monthCellBuilder: (context, details) {
-                        final date = details.date;
-                        final isSelected =
-                            _selectedDate != null &&
-                            date.year == _selectedDate!.year &&
-                            date.month == _selectedDate!.month &&
-                            date.day == _selectedDate!.day;
-
-                        return GestureDetector(
-                          onTap: () async {
-                            setState(() {
-                              _selectedDate = date;
+                            // 4) 7로 나눈 후 올림 → 줄 수
+                            WidgetsBinding.instance.addPostFrameCallback((t) {
+                              setState(() {
+                                currentColumnCount = (totalSlots / 7).ceil();
+                              });
                             });
-                            widget.onDateSelected?.call(date);
+                          },
+                          onTap: (calendarTapDetails) async {
+                            final tapped = calendarTapDetails.date;
+                            if (tapped != null) {
+                              final date = DateTime(
+                                tapped.year,
+                                tapped.month,
+                                tapped.day,
+                              );
+                              final selectedDateNotifier = ref.read(
+                                selectedRecordDateProvider.notifier,
+                              );
+                              selectedDateNotifier.state = date;
 
-                            await _loadRecordsForDate(date);
-                            final records =
-                                ref.read(recordsProvider).value ?? [];
-
-                            if (records.isEmpty) {
-                              widget.onEmptyDateTap();
+                              final records = ref.read(
+                                recordsForSelectedDateProvider,
+                              );
+                              if (records.isEmpty) {
+                                widget.onEmptyDateTap();
+                              }
                             }
                           },
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Container(
-                                width: details.bounds.width * 0.7,
-                                height: details.bounds.height * 0.58,
-                                decoration: BoxDecoration(
-                                  color: isSelected
-                                      ? AppColors.lightColor
-                                      : AppColors.containerColor,
-                                  border: Border.all(
-                                    color: isSelected
-                                        ? AppColors.pointColor
-                                        : Colors.transparent,
-                                    width: 2,
+                          monthCellBuilder: (context, details) {
+                            final date = DateTime(
+                              details.date.year,
+                              details.date.month,
+                              details.date.day,
+                            );
+                            final isSelected =
+                                date.year == selectedDate.year &&
+                                date.month == selectedDate.month &&
+                                date.day == selectedDate.day;
+                            final dateRecordList = recordsForDate[date];
+                            return GestureDetector(
+                              onTap: () async {
+                                final selectedDateNotifier = ref.read(
+                                  selectedRecordDateProvider.notifier,
+                                );
+                                selectedDateNotifier.state = date;
+                                final records = ref.read(
+                                  recordsForSelectedDateProvider,
+                                );
+
+                                if (records.isEmpty) {
+                                  widget.onEmptyDateTap();
+                                }
+                              },
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Container(
+                                    width: details.bounds.width * 0.7,
+                                    height: details.bounds.height * 0.58,
+                                    decoration: BoxDecoration(
+                                      color: AppColors.containerColor,
+                                      border: Border.all(
+                                        color: isSelected
+                                            ? AppColors.pointColor
+                                            : Colors.transparent,
+                                        width: 2,
+                                      ),
+                                      borderRadius: BorderRadius.circular(6),
+                                    ),
+                                    child: Text(
+                                      "${dateRecordList?.length ?? 0}",
+                                    ),
                                   ),
-                                  borderRadius: BorderRadius.circular(6),
-                                ),
+                                  const SizedBox(height: 4),
+                                  Text(
+                                    '${date.day}',
+                                    style: TextStyle(
+                                      color: isSelected
+                                          ? AppColors.pointColor
+                                          : Colors.white,
+                                      fontSize: 12,
+                                    ),
+                                  ),
+                                ],
                               ),
-                              const SizedBox(height: 4),
-                              Text(
-                                '${date.day}',
-                                style: TextStyle(
-                                  color: isSelected
-                                      ? AppColors.pointColor
-                                      : Colors.white,
-                                  fontSize: 12,
-                                ),
-                              ),
-                            ],
-                          ),
-                        );
-                      },
-                    ),
-                  ),
+                            );
+                          },
+                        ),
+                      ),
 
-                  // 캘린더와 컨테이너 간격
-                  SizedBox(height: constraints.maxHeight * 0.05),
+                      // 캘린더와 컨테이너 간격
+                      SizedBox(height: 30),
 
-                  Container(
-                    child: _selectedDate == null
-                        ? const Center(
-                            child: Text(
-                              '날짜를 선택해주세요',
-                              style: TextStyle(color: Colors.white),
-                            ),
-                          )
-                        : Consumer(
-                            builder: (context, ref, _) {
-                              final userId = ref.watch(userIdProvider);
-                              final recordsAsync = userId == null
-                                  ? const AsyncValue<List<RecordModel>>.data([])
-                                  : ref.watch(recordsProvider);
-
-                              return recordsAsync.when(
-                                data: (records) {
-                                  // 선택된 날짜 기준으로 필터링
-                                  final filteredRecords = records
-                                      .where(
-                                        (r) =>
-                                            r.date.year ==
-                                                _selectedDate!.year &&
-                                            r.date.month ==
-                                                _selectedDate!.month &&
-                                            r.date.day == _selectedDate!.day,
-                                      )
-                                      .toList();
-                                  if (filteredRecords.isEmpty) {
-                                    return const SizedBox.shrink();
-                                  }
-
-                                  return Container(
+                      Container(
+                        child: Consumer(
+                          builder: (context, ref, _) {
+                            final userId = ref.watch(userIdProvider);
+                            final records = userId == null
+                                ? []
+                                : ref.watch(recordsForSelectedDateProvider);
+                            return records.isEmpty
+                                ? const SizedBox.shrink()
+                                : Container(
                                     margin: const EdgeInsets.symmetric(
                                       horizontal: 8,
                                     ),
@@ -220,7 +233,11 @@ class _HomeTabState extends ConsumerState<HomeTab> {
                                           CrossAxisAlignment.start,
                                       children: [
                                         Text(
-                                          _formatDateTitle(_selectedDate!),
+                                          _formatDateTitle(
+                                            ref.read(
+                                              selectedRecordDateProvider,
+                                            ),
+                                          ),
                                           style: const TextStyle(
                                             color: Colors.white,
                                             fontWeight: FontWeight.bold,
@@ -229,7 +246,7 @@ class _HomeTabState extends ConsumerState<HomeTab> {
                                           ),
                                         ),
                                         const SizedBox(height: 10),
-                                        ...filteredRecords.map(
+                                        ...records.map(
                                           (record) => Padding(
                                             padding: const EdgeInsets.symmetric(
                                               vertical: 4,
@@ -244,21 +261,19 @@ class _HomeTabState extends ConsumerState<HomeTab> {
                                       ],
                                     ),
                                   );
-                                },
-                                loading: () => const Center(
-                                  child: CircularProgressIndicator(
-                                    color: Colors.white,
-                                  ),
-                                ),
-                                error: (e, _) => Text("오류: $e"),
-                              );
-                            },
-                          ),
+                          },
+                        ),
+                      ),
+                    ],
                   ),
-                ],
-              ),
+                );
+              },
             );
           },
+          loading: () => const Center(
+            child: CircularProgressIndicator(color: Colors.white),
+          ),
+          error: (e, _) => Text("오류: $e"),
         ),
       ),
     );

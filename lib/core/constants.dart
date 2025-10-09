@@ -5,7 +5,7 @@ import 'package:flutter_girok_app/core/theme/colors.dart';
 class BorderBoxDecoration {
   static BoxDecoration commonBox = BoxDecoration(
     color: AppColors.containerColor,
-    border: Border.all(color: Colors.white.withOpacity(0.2), width: 1),
+    // border: Border.all(color: Colors.white.withOpacity(0.2), width: 1),
     borderRadius: BorderRadius.circular(12),
   );
   static BoxDecoration saveBox = BoxDecoration(

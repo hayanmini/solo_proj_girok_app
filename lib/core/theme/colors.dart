@@ -14,6 +14,18 @@ class AppColors {
   static final containerColor = Color(0xFF383554);
   static final lightContainColor = Color(0xFF4A476F);
 
+  // static final dartColor = Color(0xFFC9B9E9);
+  // static final secondColor = Color(0xFFF3ECFC);
+
+  // static final pointColor = Color(0xFFE0C4EC);
+  // static final lightColor = Color(0xFFFAF2FE);
+
+  // static final whiteTextColor = Color(0xFFA893D5);
+  // static final lightTextColor = Color(0xFFA08BCA);
+
+  // static final containerColor = Color(0xFFDFD3F0);
+  // static final lightContainColor = Color(0xFFF0E9FA);
+
   // 기본 배경
   static final Color background = dartColor;
 
@@ -32,5 +44,5 @@ class AppColors {
   static final Color divider = lightColor;
 
   // 에러
-  static final Color error = pointColor;
+  static Color error = pointColor;
 }

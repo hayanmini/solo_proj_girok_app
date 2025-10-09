@@ -63,8 +63,6 @@ class _MypageTabState extends ConsumerState<MypageTab> {
         ? const AsyncValue<List<RecordModel>>.data([])
         : ref.watch(allRecordsProvider);
 
-    //var a = ref.watch(recordsByFolderProvider("defaultFolderId"));
-
     return SafeArea(
       child: Scaffold(
         body: GestureDetector(
@@ -131,12 +129,16 @@ class _MypageTabState extends ConsumerState<MypageTab> {
                             ),
                             child: GestureDetector(
                               onTap: () async {
-                                if (!_editMode) return;
-                                setState(() {
-                                  _selectedFolderId = folder.id;
-                                  print("${_selectedFolderId}");
-                                });
-
+                                if (!_editMode) {
+                                  setState(() {
+                                    if (_selectedFolderId == folder.id) {
+                                      _selectedFolderId = null;
+                                    } else {
+                                      _selectedFolderId = folder.id;
+                                    }
+                                  });
+                                  return;
+                                }
                                 if (folder.id == "defaultFolderId") return;
 
                                 final newName = await showEditNameDialog(
@@ -157,7 +159,20 @@ class _MypageTabState extends ConsumerState<MypageTab> {
                                   Container(
                                     width: 170,
                                     height: 100,
-                                    decoration: BorderBoxDecoration.commonBox,
+                                    decoration: BoxDecoration(
+                                      color: AppColors.containerColor,
+                                      border: _selectedFolderId == folder.id
+                                          ? Border.all(
+                                              color: Colors.white.withOpacity(
+                                                0.5,
+                                              ),
+                                              strokeAlign:
+                                                  BorderSide.strokeAlignOutside,
+                                              width: 2,
+                                            )
+                                          : null,
+                                      borderRadius: BorderRadius.circular(12),
+                                    ),
                                     child: Column(
                                       crossAxisAlignment:
                                           CrossAxisAlignment.start,
@@ -307,9 +322,10 @@ class _MypageTabState extends ConsumerState<MypageTab> {
                       );
                     }
 
-                    final slicedRecords = records
-                        .take(_currentRecordCount)
-                        .toList();
+                    // final slicedRecords = records
+                    //     .take(_currentRecordCount)
+                    //     .toList();
+                    final slicedRecords = records;
                     return Column(
                       children: [
                         Container(
@@ -319,24 +335,28 @@ class _MypageTabState extends ConsumerState<MypageTab> {
                           child: Column(
                             children: [
                               for (final record in slicedRecords)
-                                Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                    vertical: 6,
+                                if (_selectedFolderId == null ||
+                                    (record is Series &&
+                                        record.folder == _selectedFolderId))
+                                  Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                      vertical: 6,
+                                    ),
+                                    child: _buildScheduleItem(
+                                      record,
+                                      record.title,
+                                      record.type,
+                                    ),
                                   ),
-                                  child: _buildScheduleItem(
-                                    record,
-                                    record.title,
-                                    record.type,
-                                  ),
-                                ),
-                              if (records.length > _currentRecordCount)
-                                TextButton(
-                                  onPressed: _loadMore,
-                                  child: const Text(
-                                    "더보기",
-                                    style: TextStyle(color: Colors.white),
-                                  ),
-                                ),
+                              // if (_selectedFolderId == null &&
+                              //     records.length > _currentRecordCount)
+                              //   TextButton(
+                              //     onPressed: _loadMore,
+                              //     child: const Text(
+                              //       "더보기",
+                              //       style: TextStyle(color: Colors.white),
+                              //     ),
+                              //   ),
                             ],
                           ),
                         ),

@@ -8,44 +8,29 @@ import 'package:flutter_girok_app/presentation/pages/record/check_list_page.dart
 import 'package:flutter_girok_app/presentation/pages/record/daily_page.dart';
 import 'package:flutter_girok_app/presentation/pages/record/memo_page.dart';
 import 'package:flutter_girok_app/presentation/pages/record/series_page.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class MainTabPage extends StatefulWidget {
+import '../../providers/record_provider.dart';
+
+class MainTabPage extends ConsumerStatefulWidget {
   const MainTabPage({super.key});
 
   @override
-  State<MainTabPage> createState() => _MainTabPageState();
+  ConsumerState<MainTabPage> createState() => _MainTabPageState();
 }
 
-class _MainTabPageState extends State<MainTabPage> {
+class _MainTabPageState extends ConsumerState<MainTabPage> {
   int _currentIndex = 0;
   OverlayEntry? _overlayEntry;
-  DateTime _selectedDate = DateTime.now();
 
   final List<ScrollController> _scrollControllers = List.generate(
     4,
     (_) => ScrollController(),
   );
 
-  final List<Widget> _pages = [];
-
   @override
   void initState() {
     super.initState();
-    _pages.addAll([
-      HomeTab(
-        scrollController: _scrollControllers[0],
-        onEmptyDateTap: _showCreatePopup,
-        onDateSelected: (date) {
-          setState(() {
-            _selectedDate = date;
-          });
-        },
-      ),
-      AnalysisTab(scrollController: _scrollControllers[1]),
-      const SizedBox(),
-      MypageTab(scrollController: _scrollControllers[2]),
-      SettingsTab(scrollController: _scrollControllers[3]),
-    ]);
   }
 
   // 스크롤 초기화
@@ -98,7 +83,7 @@ class _MainTabPageState extends State<MainTabPage> {
                         context,
                         MaterialPageRoute(
                           builder: (context) => CheckListPage(
-                            date: _selectedDate,
+                            date: ref.read(selectedRecordDateProvider),
                             editingRecord: null,
                           ),
                         ),
@@ -108,7 +93,7 @@ class _MainTabPageState extends State<MainTabPage> {
                         context,
                         MaterialPageRoute(
                           builder: (_) => DailyPage(
-                            date: _selectedDate,
+                            date: ref.read(selectedRecordDateProvider),
                             editingRecord: null,
                           ),
                         ),
@@ -118,7 +103,7 @@ class _MainTabPageState extends State<MainTabPage> {
                         context,
                         MaterialPageRoute(
                           builder: (_) => SeriesPage(
-                            date: _selectedDate,
+                            date: ref.read(selectedRecordDateProvider),
                             editingRecord: null,
                           ),
                         ),
@@ -128,7 +113,7 @@ class _MainTabPageState extends State<MainTabPage> {
                         context,
                         MaterialPageRoute(
                           builder: (_) => MemoPage(
-                            date: _selectedDate,
+                            date: ref.read(selectedRecordDateProvider),
                             editingRecord: null,
                           ),
                         ),
@@ -176,11 +161,6 @@ class _MainTabPageState extends State<MainTabPage> {
           HomeTab(
             scrollController: _scrollControllers[0],
             onEmptyDateTap: _showCreatePopup,
-            onDateSelected: (date) {
-              setState(() {
-                _selectedDate = date;
-              });
-            },
           ),
           AnalysisTab(scrollController: _scrollControllers[1]),
           const SizedBox(),

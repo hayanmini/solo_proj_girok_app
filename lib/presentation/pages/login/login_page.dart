@@ -78,6 +78,10 @@ class _LoginPageState extends ConsumerState<LoginPage> {
   @override
   void initState() {
     super.initState();
+    final authRepo = ref.read(authRepositoryProvider);
+    if (authRepo.getCurrentUser() != null) {
+      _navigateToMain();
+    }
   }
 
   @override

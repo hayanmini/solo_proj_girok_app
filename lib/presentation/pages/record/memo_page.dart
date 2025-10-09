@@ -77,9 +77,11 @@ class _MemoPageState extends ConsumerState<MemoPage> {
         content: _contentController.text,
       );
       if (widget.editingRecord == null) {
-        await ref.read(recordsProvider.notifier).addRecord(userId, record);
+        await ref.read(allRecordsProvider.notifier).addRecord(userId, record);
       } else {
-        await ref.read(recordsProvider.notifier).updateRecord(userId, record);
+        await ref
+            .read(allRecordsProvider.notifier)
+            .updateRecord(userId, record);
       }
 
       if (mounted) Navigator.pop(context, record);

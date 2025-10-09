@@ -3,6 +3,7 @@ import 'package:flutter_girok_app/presentation/providers/firestore_provider.dart
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_girok_app/domain/models/record_model.dart';
 import 'package:flutter_girok_app/data/repositories/record_repository_impl.dart';
+import 'package:flutter_riverpod/legacy.dart';
 
 // 레포지토리 주입
 final recordRepositoryProvider = Provider<RecordRepositoryImpl>((ref) {
@@ -26,19 +27,6 @@ class RecordsNotifier extends AsyncNotifier<List<RecordModel>> {
   Future<List<RecordModel>> build() async {
     _repository = ref.read(recordRepositoryProvider);
     return [];
-  }
-
-  Future<void> loadRecords(RecordQuery query) async {
-    state = const AsyncValue.loading();
-    try {
-      final records = await _repository.getRecordByDate(
-        query.userId,
-        query.date ?? DateTime.now(),
-      );
-      state = AsyncValue.data(records);
-    } catch (e, st) {
-      state = AsyncValue.error(e, st);
-    }
   }
 
   Future<void> loadRecordList(String userId) async {
@@ -86,10 +74,25 @@ class RecordsNotifier extends AsyncNotifier<List<RecordModel>> {
   }
 }
 
-final recordsProvider =
-    AsyncNotifierProvider<RecordsNotifier, List<RecordModel>>(
-      RecordsNotifier.new,
-    );
+final selectedRecordDateProvider = StateProvider<DateTime>((ref) {
+  return DateTime.now(); // 기본값은 오늘 날짜
+});
+
+final recordsForSelectedDateProvider = Provider<List<RecordModel>>((ref) {
+  final selectedDate = ref.watch(selectedRecordDateProvider);
+  final records = ref.watch(allRecordsProvider);
+  return records.when(
+    data: (data) {
+      return data.where((r) {
+        return r.date.year == selectedDate.year &&
+            r.date.month == selectedDate.month &&
+            r.date.day == selectedDate.day;
+      }).toList();
+    },
+    error: (_, __) => [],
+    loading: () => [],
+  );
+});
 
 final allRecordsProvider =
     AsyncNotifierProvider<RecordsNotifier, List<RecordModel>>(

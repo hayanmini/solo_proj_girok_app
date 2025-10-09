@@ -104,9 +104,11 @@ class _CheckListPageState extends ConsumerState<CheckListPage> {
 
       // 저장 및 수정 처리
       if (widget.editingRecord == null) {
-        await ref.read(recordsProvider.notifier).addRecord(userId, record);
+        await ref.read(allRecordsProvider.notifier).addRecord(userId, record);
       } else {
-        await ref.read(recordsProvider.notifier).updateRecord(userId, record);
+        await ref
+            .read(allRecordsProvider.notifier)
+            .updateRecord(userId, record);
       }
       if (mounted) Navigator.pop(context, record);
     } catch (e) {

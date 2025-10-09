@@ -83,9 +83,11 @@ class _DailyPageState extends ConsumerState<DailyPage> {
       );
 
       if (widget.editingRecord == null) {
-        await ref.read(recordsProvider.notifier).addRecord(userId, record);
+        await ref.read(allRecordsProvider.notifier).addRecord(userId, record);
       } else {
-        await ref.read(recordsProvider.notifier).updateRecord(userId, record);
+        await ref
+            .read(allRecordsProvider.notifier)
+            .updateRecord(userId, record);
       }
       if (mounted) Navigator.pop(context, record);
     } catch (e) {

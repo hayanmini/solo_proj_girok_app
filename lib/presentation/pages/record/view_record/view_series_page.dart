@@ -40,7 +40,7 @@ class _ViewSeriesPageState extends ConsumerState<ViewSeriesPage> {
     );
     if (confirm == true) {
       await ref
-          .read(recordsProvider.notifier)
+          .read(allRecordsProvider.notifier)
           .deleteRecord(widget.userId, _localRecord.id, _localRecord.date);
       if (mounted) Navigator.pop(context);
     }

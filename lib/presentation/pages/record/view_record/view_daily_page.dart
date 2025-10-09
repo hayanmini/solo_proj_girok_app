@@ -46,7 +46,7 @@ class _ViewDailyPageState extends ConsumerState<ViewDailyPage> {
       _localRecord = updatedRecord;
     });
     await ref
-        .read(recordsProvider.notifier)
+        .read(allRecordsProvider.notifier)
         .updateRecord(widget.userId, _localRecord);
   }
 
@@ -58,7 +58,7 @@ class _ViewDailyPageState extends ConsumerState<ViewDailyPage> {
     );
     if (confirm == true) {
       await ref
-          .read(recordsProvider.notifier)
+          .read(allRecordsProvider.notifier)
           .deleteRecord(widget.userId, _localRecord.id, _localRecord.date);
       if (mounted) Navigator.pop(context);
     }

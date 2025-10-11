@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart' as fb;
 import 'package:flutter/material.dart';
+import 'package:flutter_girok_app/core/theme/colors.dart';
 import 'package:flutter_girok_app/domain/models/user.dart' as domain_user;
 import 'package:flutter_girok_app/presentation/pages/home/main_tab_page.dart';
 import 'package:flutter_girok_app/presentation/providers/auth_provider.dart';
@@ -18,7 +19,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
   // 네비게이션 중복 방지
   bool _hasNavigated = false;
 
-  Future<void> _signInWithGoogle() async {
+  Future<void> _signInWithSNS({required bool isGoogle}) async {
     if (_isLoggingIn) {
       return;
     }
@@ -31,7 +32,9 @@ class _LoginPageState extends ConsumerState<LoginPage> {
       final authRepo = ref.read(authRepositoryProvider);
       final userRepo = ref.read(userRepositoryProvider);
 
-      final fbUser = await authRepo.signInWithGoogle();
+      final fbUser = isGoogle
+          ? await authRepo.signInWithGoogle()
+          : await authRepo.signInWithApple();
 
       if (fbUser != null && mounted) {
         final domainUser = domain_user.User(
@@ -94,6 +97,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
     final currentUserAsync = ref.watch(currentUserProvider);
 
     return Scaffold(
+      backgroundColor: AppColors.backGrey,
       body: SafeArea(
         child: currentUserAsync.when(
           data: (fb.User? user) {
@@ -103,10 +107,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    CircularProgressIndicator(
-                      // TODO : Theme Color
-                      color: Colors.white,
-                    ),
+                    CircularProgressIndicator(color: Colors.white),
                     SizedBox(height: 16),
                     Text('메인 화면으로 이동 중...'),
                   ],
@@ -120,10 +121,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    CircularProgressIndicator(
-                      // TODO : Theme Color
-                      color: Colors.white,
-                    ),
+                    CircularProgressIndicator(color: Colors.white),
                     SizedBox(height: 16),
                     Text('잠시만 기다려주세요...'),
                   ],
@@ -150,28 +148,42 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                     if (_isLoggingIn)
                       Column(
                         children: [
-                          CircularProgressIndicator(
-                            // TODO : Theme Color
-                            color: Colors.white,
-                          ),
+                          CircularProgressIndicator(color: Colors.white),
                           SizedBox(height: 16),
-                          Text('Google 로그인 중...'),
+                          Text('로그인 중...'),
                         ],
                       )
                     else
-                      SizedBox(
-                        width: double.infinity,
-                        height: 50,
-                        child: ElevatedButton.icon(
-                          onPressed: _signInWithGoogle,
-                          icon: const Icon(Icons.login),
-                          label: const Text('Google 로그인'),
-                          style: ElevatedButton.styleFrom(
-                            // TODO : Theme Color
-                            backgroundColor: Colors.white,
-                            foregroundColor: Colors.black,
+                      Column(
+                        children: [
+                          SizedBox(
+                            width: double.infinity,
+                            height: 50,
+                            child: ElevatedButton.icon(
+                              onPressed: () => _signInWithSNS(isGoogle: true),
+                              icon: const Icon(Icons.login),
+                              label: const Text('Google 로그인'),
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Colors.white,
+                                foregroundColor: Colors.black,
+                              ),
+                            ),
                           ),
-                        ),
+                          SizedBox(height: 20),
+                          SizedBox(
+                            width: double.infinity,
+                            height: 50,
+                            child: ElevatedButton.icon(
+                              onPressed: () => _signInWithSNS(isGoogle: false),
+                              icon: const Icon(Icons.login),
+                              label: const Text('Apple 로그인'),
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Colors.black,
+                                foregroundColor: Colors.white,
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
                   ],
                 ),
@@ -183,10 +195,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  CircularProgressIndicator(
-                    // TODO : Theme Color
-                    color: Colors.white,
-                  ),
+                  CircularProgressIndicator(color: Colors.white),
                   SizedBox(height: 16),
                   Text('인증 상태 확인 중...'),
                 ],

@@ -169,27 +169,35 @@ class _MainTabPageState extends ConsumerState<MainTabPage> {
         ],
       ),
       bottomNavigationBar: Padding(
-        padding: const EdgeInsets.only(top: 4),
+        padding: const EdgeInsets.only(top: 3),
         child: BottomNavigationBar(
           currentIndex: _currentIndex,
           onTap: _onTabTapped,
           type: BottomNavigationBarType.fixed,
           items: const [
-            BottomNavigationBarItem(icon: Icon(Icons.home), label: "Home"),
             BottomNavigationBarItem(
-              icon: Icon(Icons.analytics),
-              label: "Analysis",
+              icon: Icon(Icons.calendar_today_outlined, size: 24),
+              label: "",
             ),
             BottomNavigationBarItem(
-              icon: Icon(Icons.add_circle_outline),
-              label: "Create",
+              icon: Icon(Icons.analytics, size: 26),
+              label: "분석",
             ),
-            BottomNavigationBarItem(icon: Icon(Icons.person), label: "MyPage"),
             BottomNavigationBarItem(
-              icon: Icon(Icons.settings),
-              label: "Settings",
+              icon: Icon(Icons.add_circle_outline, size: 28),
+              label: "",
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.person, size: 28),
+              label: "",
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.settings, size: 26),
+              label: "",
             ),
           ],
+          showSelectedLabels: false,
+          showUnselectedLabels: false,
         ),
       ),
     );

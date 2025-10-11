@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_girok_app/core/constants.dart';
+import 'package:flutter_girok_app/core/theme/colors.dart';
 
 // 기록 삭제 다이얼로그
 Future<bool?> showConfirmDeleteDialog({
@@ -11,16 +13,29 @@ Future<bool?> showConfirmDeleteDialog({
   return showDialog<bool>(
     context: context,
     builder: (_) => AlertDialog(
-      title: Text(title),
-      content: Text(content),
+      title: Text(
+        title,
+        textAlign: TextAlign.center,
+        style: TextStyle(fontSize: 18, color: AppColors.level1Color),
+      ),
+      content: Text(content, textAlign: TextAlign.center),
       actions: [
         TextButton(
           onPressed: () => Navigator.pop(context, false),
-          child: Text(cancelText),
+          child: Text(
+            cancelText,
+            style: TextStyle(color: AppColors.whiteTextColor),
+          ),
         ),
-        TextButton(
-          onPressed: () => Navigator.pop(context, true),
-          child: Text(confirmText, style: TextStyle(color: Colors.red)),
+        Container(
+          decoration: BorderBoxDecoration.saveBox,
+          child: TextButton(
+            onPressed: () => Navigator.pop(context, true),
+            child: Text(
+              confirmText,
+              style: TextStyle(color: AppColors.whiteTextColor),
+            ),
+          ),
         ),
       ],
     ),
@@ -30,21 +45,47 @@ Future<bool?> showConfirmDeleteDialog({
 // 새 폴더 생성 다이얼로그
 Future<String?> showNewFolderDialog(BuildContext context) async {
   final controller = TextEditingController();
+  final formKey = GlobalKey<FormState>();
+
   return showDialog<String>(
     context: context,
     builder: (_) => AlertDialog(
-      title: const Text('새 폴더 이름'),
-      content: TextField(controller: controller),
+      title: Text(
+        '새 폴더 이름',
+        textAlign: TextAlign.center,
+        style: TextStyle(fontSize: 18, color: AppColors.level1Color),
+      ),
+      content: Form(
+        key: formKey,
+        child: TextFormField(
+          controller: controller,
+          autofocus: true,
+          validator: (val) {
+            if (val == null || val.trim().isEmpty) {
+              return "폴더 이름을 입력하세요.";
+            }
+            return null;
+          },
+        ),
+      ),
       actions: [
         TextButton(
           onPressed: () => Navigator.pop(context),
           child: const Text('취소'),
         ),
-        TextButton(
-          onPressed: () {
-            Navigator.pop(context, controller.text);
-          },
-          child: const Text('확인'),
+        Container(
+          decoration: BorderBoxDecoration.saveBox,
+          child: TextButton(
+            onPressed: () {
+              if (formKey.currentState!.validate()) {
+                Navigator.pop(context, controller.text.trim());
+              }
+            },
+            child: Text(
+              '확인',
+              style: TextStyle(color: AppColors.whiteTextColor),
+            ),
+          ),
         ),
       ],
     ),
@@ -65,7 +106,11 @@ Future<String?> showEditNameDialog({
   return showDialog<String>(
     context: context,
     builder: (_) => AlertDialog(
-      title: Text(title),
+      title: Text(
+        title,
+        textAlign: TextAlign.center,
+        style: TextStyle(fontSize: 18, color: AppColors.level1Color),
+      ),
       content: Form(
         key: formKey,
         child: TextFormField(
@@ -83,15 +128,24 @@ Future<String?> showEditNameDialog({
       actions: [
         TextButton(
           onPressed: () => Navigator.pop(context),
-          child: Text(cancelText),
+          child: Text(
+            cancelText,
+            style: TextStyle(color: AppColors.whiteTextColor),
+          ),
         ),
-        TextButton(
-          onPressed: () {
-            if (formKey.currentState!.validate()) {
-              Navigator.pop(context, controller.text.trim());
-            }
-          },
-          child: Text(confirmText),
+        Container(
+          decoration: BorderBoxDecoration.saveBox,
+          child: TextButton(
+            onPressed: () {
+              if (formKey.currentState!.validate()) {
+                Navigator.pop(context, controller.text.trim());
+              }
+            },
+            child: Text(
+              confirmText,
+              style: TextStyle(color: AppColors.whiteTextColor),
+            ),
+          ),
         ),
       ],
     ),
@@ -109,16 +163,29 @@ Future<bool?> showDeleteDialog({
   return showDialog<bool>(
     context: context,
     builder: (_) => AlertDialog(
-      title: Text(title),
-      content: Text(content),
+      title: Text(
+        title,
+        textAlign: TextAlign.center,
+        style: TextStyle(fontSize: 18, color: AppColors.level1Color),
+      ),
+      content: Text(content, textAlign: TextAlign.center),
       actions: [
         TextButton(
           onPressed: () => Navigator.pop(context, false),
-          child: Text(cancelText),
+          child: Text(
+            cancelText,
+            style: TextStyle(color: AppColors.whiteTextColor),
+          ),
         ),
-        TextButton(
-          onPressed: () => Navigator.pop(context, true),
-          child: Text(confirmText),
+        Container(
+          decoration: BorderBoxDecoration.saveBox,
+          child: TextButton(
+            onPressed: () => Navigator.pop(context, true),
+            child: Text(
+              confirmText,
+              style: TextStyle(color: AppColors.whiteTextColor),
+            ),
+          ),
         ),
       ],
     ),

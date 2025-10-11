@@ -25,8 +25,9 @@ class _MypageTabState extends ConsumerState<MypageTab> {
   bool _editMode = false;
   String? _selectedFolderId;
 
-  static const int pageSize = 10;
-  int _currentRecordCount = pageSize;
+  // 더보기용
+  // static const int pageSize = 10;
+  // int _currentRecordCount = pageSize;
 
   @override
   void initState() {
@@ -45,11 +46,12 @@ class _MypageTabState extends ConsumerState<MypageTab> {
     super.dispose();
   }
 
-  void _loadMore() {
-    setState(() {
-      _currentRecordCount += pageSize;
-    });
-  }
+  // 더보기용
+  // void _loadMore() {
+  //   setState(() {
+  //     _currentRecordCount += pageSize;
+  //   });
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -108,7 +110,7 @@ class _MypageTabState extends ConsumerState<MypageTab> {
                         _editMode ? "완료" : "편집",
                         style: TextStyle(
                           color: _editMode
-                              ? AppColors.textSecondary
+                              ? AppColors.level2Color
                               : AppColors.pointColor,
                         ),
                       ),
@@ -143,7 +145,7 @@ class _MypageTabState extends ConsumerState<MypageTab> {
 
                                 final newName = await showEditNameDialog(
                                   context: context,
-                                  title: "폴더 이름 수정",
+                                  title: "폴더명 변경",
                                   initialName: folder.name,
                                 );
                                 if (newName != null && newName.isNotEmpty) {
@@ -163,9 +165,7 @@ class _MypageTabState extends ConsumerState<MypageTab> {
                                       color: AppColors.containerColor,
                                       border: _selectedFolderId == folder.id
                                           ? Border.all(
-                                              color: Colors.white.withOpacity(
-                                                0.5,
-                                              ),
+                                              color: AppColors.pointColor,
                                               strokeAlign:
                                                   BorderSide.strokeAlignOutside,
                                               width: 2,
@@ -181,9 +181,12 @@ class _MypageTabState extends ConsumerState<MypageTab> {
                                         Row(
                                           children: [
                                             const SizedBox(width: 15),
-                                            const Icon(
+                                            Icon(
                                               Icons.folder,
-                                              color: Colors.white,
+                                              color:
+                                                  _selectedFolderId == folder.id
+                                                  ? Colors.white
+                                                  : null,
                                             ),
                                             const SizedBox(width: 5),
                                             Expanded(

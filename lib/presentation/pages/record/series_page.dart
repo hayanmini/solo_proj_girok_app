@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart' as fb;
 import 'package:flutter/material.dart';
 import 'package:flutter_girok_app/core/constants.dart';
+import 'package:flutter_girok_app/core/theme/colors.dart';
 import 'package:flutter_girok_app/domain/models/folder.dart';
 import 'package:flutter_girok_app/domain/models/series.dart';
 import 'package:flutter_girok_app/presentation/pages/home/widgets/common_dialogs.dart';
@@ -153,8 +154,8 @@ class _SeriesPageState extends ConsumerState<SeriesPage> {
                         decoration: BorderBoxDecoration.commonBox,
                         child: Row(
                           children: [
-                            const Icon(Icons.folder, color: Colors.white),
-                            const SizedBox(width: 8),
+                            Icon(Icons.folder, color: AppColors.pointColor),
+                            const SizedBox(width: 10),
                             Expanded(
                               child: foldersAsync.when(
                                 data: (folders) {
@@ -239,6 +240,7 @@ class _SeriesPageState extends ConsumerState<SeriesPage> {
     AsyncValue<List<Folder>> foldersAsync,
   ) {
     showModalBottomSheet(
+      backgroundColor: AppColors.dartColor,
       context: context,
       builder: (_) {
         return Consumer(
@@ -256,10 +258,14 @@ class _SeriesPageState extends ConsumerState<SeriesPage> {
                 ];
 
                 return ListView(
+                  padding: EdgeInsets.symmetric(vertical: 10, horizontal: 5),
                   children: [
                     ListTile(
-                      leading: const Icon(Icons.create_new_folder_rounded),
-                      title: const Text('새 폴더 만들기'),
+                      leading: Icon(
+                        Icons.create_new_folder_rounded,
+                        color: AppColors.pointColor,
+                      ),
+                      title: Text('새 폴더 만들기'),
                       onTap: () async {
                         Navigator.pop(context);
                         WidgetsBinding.instance.addPostFrameCallback((_) async {
@@ -283,7 +289,10 @@ class _SeriesPageState extends ConsumerState<SeriesPage> {
                         });
                       },
                     ),
-                    const Divider(),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 12),
+                      child: const Divider(),
+                    ),
 
                     for (final folder in allFolders)
                       ListTile(
@@ -294,7 +303,7 @@ class _SeriesPageState extends ConsumerState<SeriesPage> {
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
                                   IconButton(
-                                    icon: const Icon(Icons.edit),
+                                    icon: Icon(Icons.edit),
                                     onPressed: () async {
                                       final controller = TextEditingController(
                                         text: folder.name,
@@ -345,7 +354,7 @@ class _SeriesPageState extends ConsumerState<SeriesPage> {
                                     onPressed: () async {
                                       await _deleteFolder(context, folder.id);
                                     },
-                                    icon: const Icon(Icons.delete),
+                                    icon: Icon(Icons.delete),
                                   ),
                                 ],
                               )
@@ -361,7 +370,9 @@ class _SeriesPageState extends ConsumerState<SeriesPage> {
                   ],
                 );
               },
-              loading: () => const Center(child: CircularProgressIndicator()),
+              loading: () => const Center(
+                child: CircularProgressIndicator(color: Colors.white),
+              ),
               error: (e, st) => Center(child: Text("오류: $e")),
             );
           },

@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart' as fb;
 import 'package:flutter/material.dart';
 import 'package:flutter_girok_app/core/constants.dart';
+import 'package:flutter_girok_app/core/theme/colors.dart';
 import 'package:flutter_girok_app/domain/models/checklist.dart';
 import 'package:flutter_girok_app/presentation/pages/record/widgets/save_button.dart';
 import 'package:flutter_girok_app/presentation/providers/record_provider.dart';
@@ -66,7 +67,6 @@ class _CheckListPageState extends ConsumerState<CheckListPage> {
   // 기록 저장 로직
   Future<void> _saveRecord() async {
     if (!_isSaveEnabled) {
-      // TODO :  디자인 및 공통 위젯 생성
       ScaffoldMessenger.of(
         context,
       ).showSnackBar(const SnackBar(content: Text("제목과 할 일을 모두 입력해주세요.")));
@@ -211,7 +211,7 @@ class _CheckListPageState extends ConsumerState<CheckListPage> {
                                               },
                                               icon: Icon(
                                                 Icons.close,
-                                                color: Colors.white,
+                                                color: AppColors.pointColor,
                                               ),
                                             )
                                           : null,

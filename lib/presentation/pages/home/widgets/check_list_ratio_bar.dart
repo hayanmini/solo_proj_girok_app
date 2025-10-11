@@ -31,7 +31,7 @@ class CheckListRatioBar extends StatelessWidget {
                 flex: (donePercent * 100).round(),
                 child: Container(
                   decoration: BoxDecoration(
-                    color: AppColors.pointColor,
+                    color: AppColors.level1Color,
                     borderRadius: BorderRadius.horizontal(
                       left: Radius.circular(6),
                       right: donePercent == 1.0
@@ -43,7 +43,17 @@ class CheckListRatioBar extends StatelessWidget {
               ),
               Expanded(
                 flex: (100 - (donePercent * 100).round()),
-                child: Container(color: Colors.white),
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: AppColors.containerColor,
+                    borderRadius: BorderRadius.horizontal(
+                      left: donePercent == 1.0
+                          ? Radius.circular(6)
+                          : Radius.zero,
+                      right: Radius.circular(6),
+                    ),
+                  ),
+                ),
               ),
             ],
           ),

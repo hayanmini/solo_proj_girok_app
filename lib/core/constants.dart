@@ -79,27 +79,31 @@ IconData emotionIcon(Emotion emotion) {
 Color colorForType(RecordType type) {
   switch (type) {
     case RecordType.checklist:
-      return Colors.purple.shade100;
+      return AppColors.level1Color;
     case RecordType.daily:
-      return Colors.purple.shade200;
+      return AppColors.level2Color;
     case RecordType.series:
-      return Colors.purple.shade300;
+      return AppColors.level3Color;
     case RecordType.memo:
-      return Colors.purple.shade400;
+      return AppColors.level4Color;
   }
 }
 
 Color emotionColor(Emotion emotion) {
   switch (emotion) {
     case Emotion.veryBad:
-      return Colors.purple.shade100;
+      return AppColors.level5Color;
+
     case Emotion.bad:
-      return Colors.purple.shade200;
+      return AppColors.level4Color;
+
     case Emotion.normal:
-      return Colors.purple.shade300;
+      return AppColors.level3Color;
+
     case Emotion.happy:
-      return Colors.purple.shade400;
+      return AppColors.level2Color;
+
     case Emotion.veryHappy:
-      return Colors.purple.shade500;
+      return AppColors.level1Color;
   }
 }

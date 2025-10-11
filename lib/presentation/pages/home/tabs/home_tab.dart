@@ -84,19 +84,24 @@ class _HomeTabState extends ConsumerState<HomeTab> {
                     children: [
                       SizedBox(
                         height: constraints.maxHeight * 0.7,
-
                         child: SfCalendar(
                           view: CalendarView.month,
                           headerHeight: 50,
                           viewHeaderHeight: -1,
+                          headerDateFormat: "yyyy년 MM월",
                           headerStyle: CalendarHeaderStyle(
                             backgroundColor: AppColors.background,
                             textAlign: TextAlign.center,
+                            textStyle: TextStyle(
+                              color: AppColors.whiteTextColor,
+                            ),
                           ),
-
+                          todayHighlightColor: AppColors.whiteTextColor,
                           viewHeaderStyle: ViewHeaderStyle(
                             backgroundColor: AppColors.secondColor,
-                            dayTextStyle: const TextStyle(color: Colors.white),
+                            dayTextStyle: TextStyle(
+                              color: AppColors.whiteTextColor,
+                            ),
                           ),
                           selectionDecoration: BoxDecoration(),
                           monthViewSettings: const MonthViewSettings(
@@ -107,21 +112,17 @@ class _HomeTabState extends ConsumerState<HomeTab> {
                           ),
 
                           onViewChanged: (details) {
-                            // 2) 시작 요일 (월=1 ... 일=7) → 캘린더 기준으로 쓰려면 일요일을 0으로 맞출 수 있음
-                            final firstDay = details.visibleDates.first;
-                            final startWeekday =
-                                firstDay.weekday % 7; // 일요일 = 0
-
-                            // 3) 실제 필요한 칸 수 = 앞 공백 + 날짜 길이
-                            final totalSlots =
-                                startWeekday + details.visibleDates.length;
-
-                            // 4) 7로 나눈 후 올림 → 줄 수
-                            WidgetsBinding.instance.addPostFrameCallback((t) {
-                              setState(() {
-                                currentColumnCount = (totalSlots / 7).ceil();
-                              });
-                            });
+                            // 개수 카운트 로직
+                            // final firstDay = details.visibleDates.first;
+                            // final startWeekday =
+                            //     firstDay.weekday % 7;
+                            // final totalSlots =
+                            //     startWeekday + details.visibleDates.length;
+                            // WidgetsBinding.instance.addPostFrameCallback((t) {
+                            //   setState(() {
+                            //     currentColumnCount = (totalSlots / 7).ceil();
+                            //   });
+                            // });
                           },
                           onTap: (calendarTapDetails) async {
                             final tapped = calendarTapDetails.date;
@@ -176,17 +177,16 @@ class _HomeTabState extends ConsumerState<HomeTab> {
                                     width: details.bounds.width * 0.7,
                                     height: details.bounds.height * 0.58,
                                     decoration: BoxDecoration(
-                                      color: AppColors.containerColor,
+                                      color: (dateRecordList?.length ?? 0) > 0
+                                          ? AppColors.level5Color
+                                          : AppColors.containerColor,
                                       border: Border.all(
                                         color: isSelected
-                                            ? AppColors.pointColor
+                                            ? AppColors.level1Color
                                             : Colors.transparent,
                                         width: 2,
                                       ),
                                       borderRadius: BorderRadius.circular(6),
-                                    ),
-                                    child: Text(
-                                      "${dateRecordList?.length ?? 0}",
                                     ),
                                   ),
                                   const SizedBox(height: 4),
@@ -194,7 +194,7 @@ class _HomeTabState extends ConsumerState<HomeTab> {
                                     '${date.day}',
                                     style: TextStyle(
                                       color: isSelected
-                                          ? AppColors.pointColor
+                                          ? AppColors.level1Color
                                           : Colors.white,
                                       fontSize: 12,
                                     ),
@@ -209,60 +209,56 @@ class _HomeTabState extends ConsumerState<HomeTab> {
                       // 캘린더와 컨테이너 간격
                       SizedBox(height: 30),
 
-                      Container(
-                        child: Consumer(
-                          builder: (context, ref, _) {
-                            final userId = ref.watch(userIdProvider);
-                            final records = userId == null
-                                ? []
-                                : ref.watch(recordsForSelectedDateProvider);
-                            return records.isEmpty
-                                ? const SizedBox.shrink()
-                                : Container(
-                                    margin: const EdgeInsets.symmetric(
-                                      horizontal: 8,
-                                    ),
-                                    padding: const EdgeInsets.symmetric(
-                                      horizontal: 16,
-                                      vertical: 14,
-                                    ),
-                                    decoration: BorderBoxDecoration.commonBox,
+                      Consumer(
+                        builder: (context, ref, _) {
+                          final userId = ref.watch(userIdProvider);
+                          final records = userId == null
+                              ? []
+                              : ref.watch(recordsForSelectedDateProvider);
+                          return records.isEmpty
+                              ? const SizedBox.shrink()
+                              : Container(
+                                  margin: const EdgeInsets.symmetric(
+                                    horizontal: 8,
+                                  ),
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 16,
+                                    vertical: 14,
+                                  ),
+                                  decoration: BorderBoxDecoration.commonBox,
 
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          _formatDateTitle(
-                                            ref.read(
-                                              selectedRecordDateProvider,
-                                            ),
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        _formatDateTitle(
+                                          ref.read(selectedRecordDateProvider),
+                                        ),
+                                        style: const TextStyle(
+                                          color: Colors.white,
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 14,
+                                          overflow: TextOverflow.ellipsis,
+                                        ),
+                                      ),
+                                      const SizedBox(height: 10),
+                                      ...records.map(
+                                        (record) => Padding(
+                                          padding: const EdgeInsets.symmetric(
+                                            vertical: 4,
                                           ),
-                                          style: const TextStyle(
-                                            color: Colors.white,
-                                            fontWeight: FontWeight.bold,
-                                            fontSize: 14,
-                                            overflow: TextOverflow.ellipsis,
+                                          child: _buildScheduleItem(
+                                            record,
+                                            record.title,
+                                            record.type,
                                           ),
                                         ),
-                                        const SizedBox(height: 10),
-                                        ...records.map(
-                                          (record) => Padding(
-                                            padding: const EdgeInsets.symmetric(
-                                              vertical: 4,
-                                            ),
-                                            child: _buildScheduleItem(
-                                              record,
-                                              record.title,
-                                              record.type,
-                                            ),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  );
-                          },
-                        ),
+                                      ),
+                                    ],
+                                  ),
+                                );
+                        },
                       ),
                     ],
                   ),

@@ -6,13 +6,22 @@ import 'package:flutter_girok_app/core/theme/theme.dart';
 import 'package:flutter_girok_app/firebase_options.dart';
 import 'package:flutter_girok_app/presentation/pages/login/login_page.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:syncfusion_localizations/syncfusion_localizations.dart';
+import 'package:flutter_localization/flutter_localization.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  await FlutterLocalization.instance.ensureInitialized();
+  FlutterLocalization.instance.init(
+    mapLocales: [const MapLocale('ko', {})],
+    initLanguageCode: 'ko',
+  );
+
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
   // TODO : 개발용 로그아웃 지우기!!
-  await FirebaseAuth.instance.signOut();
+  // await FirebaseAuth.instance.signOut();
 
   await dotenv.load(fileName: ".env");
 
@@ -24,10 +33,19 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final localizationsDelegates = <LocalizationsDelegate>[];
+    localizationsDelegates.addAll(
+      FlutterLocalization.instance.localizationsDelegates,
+    );
+    localizationsDelegates.add(SfGlobalLocalizations.delegate);
+
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       theme: AppTheme.darkTheme,
       home: LoginPage(),
+      localizationsDelegates: localizationsDelegates,
+      supportedLocales: [const Locale('ko')],
+      locale: Locale('ko'),
     );
   }
 }

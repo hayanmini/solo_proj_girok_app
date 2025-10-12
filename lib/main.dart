@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_girok_app/core/theme/theme.dart';
 import 'package:flutter_girok_app/firebase_options.dart';
-import 'package:flutter_girok_app/presentation/pages/login/login_page.dart';
+import 'package:flutter_girok_app/presentation/pages/splash/splash_page.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:syncfusion_localizations/syncfusion_localizations.dart';
 import 'package:flutter_localization/flutter_localization.dart';
@@ -42,7 +42,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       theme: AppTheme.darkTheme,
-      home: LoginPage(),
+      home: SplashPage(),
       localizationsDelegates: localizationsDelegates,
       supportedLocales: [const Locale('ko')],
       locale: Locale('ko'),

@@ -343,7 +343,7 @@ class _MypageTabState extends ConsumerState<MypageTab> {
                                         record.folder == _selectedFolderId))
                                   Padding(
                                     padding: const EdgeInsets.symmetric(
-                                      vertical: 6,
+                                      vertical: 4,
                                     ),
                                     child: _buildScheduleItem(
                                       record,
@@ -435,7 +435,7 @@ class _MypageTabState extends ConsumerState<MypageTab> {
             decoration: BorderBoxDecoration.commonBox,
             child: Icon(typeIcon(type), color: Colors.white),
           ),
-          SizedBox(width: 10),
+          SizedBox(width: 4),
           Expanded(
             child: Text(
               title,

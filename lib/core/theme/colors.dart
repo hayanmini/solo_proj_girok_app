@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 class AppColors {
   static final dartColor = Color.fromARGB(255, 28, 28, 29);
   static final secondColor = Color.fromARGB(255, 28, 28, 29);
+  static final backPointColor = Color.fromARGB(255, 32, 31, 49);
 
   static final pointColor = Color.fromARGB(255, 98, 93, 152);
   static final lightColor = Color.fromARGB(255, 225, 219, 243);

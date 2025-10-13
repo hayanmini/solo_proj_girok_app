@@ -78,8 +78,6 @@ class _LoginPageState extends ConsumerState<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
-    final currentUserAsync = ref.watch(currentUserProvider);
-
     return Scaffold(
       backgroundColor: AppColors.backPointColor,
       body: SafeArea(
@@ -142,13 +140,18 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                           icon: const Icon(Icons.apple_rounded),
                           label: const Text('Apple 로그인'),
                           style: ElevatedButton.styleFrom(
-                            // backgroundColor: AppColors.pointColor,
                             backgroundColor: Colors.black,
-
                             foregroundColor: Colors.white,
                           ),
                         ),
                       ),
+                      // SignInWithAppleButton(
+                      //   onPressed: () {},
+                      //   style: SignInWithAppleButtonStyle.black,
+                      //   height: 50,
+                      //   borderRadius: BorderRadius.circular(12),
+                      //   text: "Apple 로그인",
+                      // ),
                     ],
                   ),
               ],

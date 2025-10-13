@@ -318,7 +318,7 @@ class _MypageTabState extends ConsumerState<MypageTab> {
                         decoration: BorderBoxDecoration.commonBox,
                         padding: const EdgeInsets.all(20),
                         child: const Text(
-                          "작성한 기록이 없습니다.\nCreate 버튼을 눌러 새로운 기록을 작성해보세요!",
+                          "작성한 기록이 없습니다.\n+ 버튼을 눌러 새로운 기록을 작성해보세요!",
                           style: TextStyle(color: Colors.white),
                           textAlign: TextAlign.center,
                         ),

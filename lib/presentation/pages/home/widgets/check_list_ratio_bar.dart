@@ -14,6 +14,7 @@ class CheckListRatioBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final donePercent = totalCount == 0 ? 0.0 : doneCount / totalCount;
+    final notDoneCount = totalCount - doneCount;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -27,34 +28,37 @@ class CheckListRatioBar extends StatelessWidget {
           ),
           child: Row(
             children: [
-              Expanded(
-                flex: (donePercent * 100).round(),
-                child: Container(
-                  decoration: BoxDecoration(
-                    color: AppColors.level1Color,
-                    borderRadius: BorderRadius.horizontal(
-                      left: Radius.circular(6),
-                      right: donePercent == 1.0
-                          ? Radius.circular(6)
-                          : Radius.zero,
+              if (donePercent > 0)
+                Expanded(
+                  flex: doneCount,
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: AppColors.level1Color,
+                      borderRadius: BorderRadius.horizontal(
+                        left: Radius.circular(6),
+                        right: donePercent == 1.0
+                            ? Radius.circular(6)
+                            : Radius.zero,
+                      ),
                     ),
                   ),
                 ),
-              ),
-              Expanded(
-                flex: (100 - (donePercent * 100).round()),
-                child: Container(
-                  decoration: BoxDecoration(
-                    color: AppColors.containerColor,
-                    borderRadius: BorderRadius.horizontal(
-                      left: donePercent == 1.0
-                          ? Radius.circular(6)
-                          : Radius.zero,
-                      right: Radius.circular(6),
+
+              if (notDoneCount > 0)
+                Expanded(
+                  flex: notDoneCount,
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: AppColors.containerColor,
+                      borderRadius: BorderRadius.horizontal(
+                        left: donePercent == 1.0
+                            ? Radius.circular(6)
+                            : Radius.zero,
+                        right: Radius.circular(6),
+                      ),
                     ),
                   ),
                 ),
-              ),
             ],
           ),
         ),

@@ -1,7 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart' as fb;
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/framework.dart';
-import 'package:flutter_girok_app/core/constants.dart';
 import 'package:flutter_girok_app/core/theme/colors.dart';
 import 'package:flutter_girok_app/presentation/pages/home/main_tab_page.dart';
 import 'package:flutter_girok_app/presentation/pages/login/login_page.dart';

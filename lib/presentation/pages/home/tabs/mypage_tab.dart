@@ -33,11 +33,8 @@ class _MypageTabState extends ConsumerState<MypageTab> {
   void initState() {
     super.initState();
     Future.microtask(() {
-      final userId = ref.watch(userIdProvider);
-      if (userId != null) {
-        ref.read(allRecordsProvider.notifier).loadRecordList(userId);
-        ref.read(folderAsyncNotifierProvider.notifier).refreshFolders();
-      }
+      ref.read(allRecordsProvider.notifier).loadRecordList(myUserId);
+      ref.read(folderAsyncNotifierProvider.notifier).refreshFolders();
     });
   }
 
@@ -55,15 +52,11 @@ class _MypageTabState extends ConsumerState<MypageTab> {
 
   @override
   Widget build(BuildContext context) {
-    final userId = ref.watch(userIdProvider);
-
     // 폴더 정보
     final foldersAsync = ref.watch(folderAsyncNotifierProvider);
 
     // 글 목록
-    final recordsAsync = userId == null
-        ? const AsyncValue<List<RecordModel>>.data([])
-        : ref.watch(allRecordsProvider);
+    final recordsAsync = ref.watch(allRecordsProvider);
 
     return SafeArea(
       child: Scaffold(
@@ -268,16 +261,12 @@ class _MypageTabState extends ConsumerState<MypageTab> {
                                                   folder.id,
                                                   "defaultFolderId",
                                                 );
-                                            final userId = ref.read(
-                                              userIdProvider,
-                                            );
-                                            if (userId != null) {
-                                              await ref
-                                                  .read(
-                                                    allRecordsProvider.notifier,
-                                                  )
-                                                  .loadRecordList(userId);
-                                            }
+
+                                            await ref
+                                                .read(
+                                                  allRecordsProvider.notifier,
+                                                )
+                                                .loadRecordList(myUserId);
                                           }
                                         },
                                       ),
@@ -391,35 +380,33 @@ class _MypageTabState extends ConsumerState<MypageTab> {
   Widget _buildScheduleItem(dynamic record, String title, dynamic type) {
     return InkWell(
       onTap: () {
-        final userId = ref.watch(userIdProvider);
-
         if (type.toString() == "RecordType.checklist") {
           Navigator.push(
             context,
             MaterialPageRoute(
               builder: (_) =>
-                  ViewCheckListPage(userId: userId!, record: record),
+                  ViewCheckListPage(userId: myUserId, record: record),
             ),
           );
         } else if (type.toString() == "RecordType.daily") {
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (_) => ViewDailyPage(userId: userId!, record: record),
+              builder: (_) => ViewDailyPage(userId: myUserId, record: record),
             ),
           );
         } else if (type.toString() == "RecordType.series") {
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (_) => ViewSeriesPage(userId: userId!, record: record),
+              builder: (_) => ViewSeriesPage(userId: myUserId, record: record),
             ),
           );
         } else if (type.toString() == "RecordType.memo") {
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (_) => ViewMemoPage(userId: userId!, record: record),
+              builder: (_) => ViewMemoPage(userId: myUserId, record: record),
             ),
           );
         } else {

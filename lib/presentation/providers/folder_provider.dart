@@ -28,33 +28,27 @@ final folderRepositoryProvider = Provider<FolderRepository>((ref) {
 class FolderAsyncNotifier extends AsyncNotifier<List<Folder>> {
   @override
   Future<List<Folder>> build() async {
-    final userId = ref.watch(userIdProvider);
-    if (userId == null) return [];
-    return ref.read(folderRepositoryProvider).getFolders(userId);
+    return ref.read(folderRepositoryProvider).getFolders(myUserId);
   }
 
   Future<void> refreshFolders() async {
     state = const AsyncLoading();
-    final userId = ref.watch(userIdProvider);
-    if (userId == null) return;
-    final folders = await ref.read(folderRepositoryProvider).getFolders(userId);
+    final folders = await ref
+        .read(folderRepositoryProvider)
+        .getFolders(myUserId);
     state = AsyncData(folders);
   }
 
   Future<void> createFolder(String name) async {
-    final userId = ref.watch(userIdProvider);
-    if (userId == null) return;
-    await ref.read(folderRepositoryProvider).createFolder(userId, name);
+    await ref.read(folderRepositoryProvider).createFolder(myUserId, name);
     await refreshFolders();
   }
 
   Future<void> deleteFolder(String folderId, String defaultFolderId) async {
-    final userId = ref.watch(userIdProvider);
-    if (userId == null) return;
     await ref
         .read(folderRepositoryProvider)
         .deleteFolderAndMoveRecords(
-          userId: userId,
+          userId: myUserId,
           folderId: folderId,
           defaultFolderId: defaultFolderId,
         );
@@ -62,18 +56,18 @@ class FolderAsyncNotifier extends AsyncNotifier<List<Folder>> {
   }
 
   Future<void> updateFolderName(String folderId, String newName) async {
-    final userId = ref.watch(userIdProvider);
-    if (userId == null) return;
     await ref
         .read(folderRepositoryProvider)
-        .updateFolderName(userId: userId, folderId: folderId, newName: newName);
+        .updateFolderName(
+          userId: myUserId,
+          folderId: folderId,
+          newName: newName,
+        );
     await refreshFolders();
   }
 
   Future<void> getFolderRecordCounts() async {
-    final userId = ref.watch(userIdProvider);
-    if (userId == null) return;
-    await ref.read(folderRepositoryProvider).getFolderRecordCounts(userId);
+    await ref.read(folderRepositoryProvider).getFolderRecordCounts(myUserId);
     await refreshFolders();
   }
 }

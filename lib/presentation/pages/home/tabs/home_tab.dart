@@ -41,10 +41,7 @@ class _HomeTabState extends ConsumerState<HomeTab> {
     currentColumnCount = (totalNeededSlots / 7).ceil();
 
     Future.microtask(() {
-      final userId = ref.watch(userIdProvider);
-      if (userId != null) {
-        ref.read(allRecordsProvider.notifier).loadRecordList(userId);
-      }
+      ref.read(allRecordsProvider.notifier).loadRecordList(myUserId);
     });
   }
 
@@ -211,10 +208,9 @@ class _HomeTabState extends ConsumerState<HomeTab> {
 
                       Consumer(
                         builder: (context, ref, _) {
-                          final userId = ref.watch(userIdProvider);
-                          final records = userId == null
-                              ? []
-                              : ref.watch(recordsForSelectedDateProvider);
+                          final records = ref.watch(
+                            recordsForSelectedDateProvider,
+                          );
                           return records.isEmpty
                               ? const SizedBox.shrink()
                               : Container(
@@ -278,35 +274,33 @@ class _HomeTabState extends ConsumerState<HomeTab> {
   Widget _buildScheduleItem(dynamic record, String title, dynamic type) {
     return InkWell(
       onTap: () {
-        final userId = ref.watch(userIdProvider);
-
         if (type.toString() == "RecordType.checklist") {
           Navigator.push(
             context,
             MaterialPageRoute(
               builder: (_) =>
-                  ViewCheckListPage(userId: userId!, record: record),
+                  ViewCheckListPage(userId: myUserId, record: record),
             ),
           );
         } else if (type.toString() == "RecordType.daily") {
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (_) => ViewDailyPage(userId: userId!, record: record),
+              builder: (_) => ViewDailyPage(userId: myUserId, record: record),
             ),
           );
         } else if (type.toString() == "RecordType.series") {
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (_) => ViewSeriesPage(userId: userId!, record: record),
+              builder: (_) => ViewSeriesPage(userId: myUserId, record: record),
             ),
           );
         } else if (type.toString() == "RecordType.memo") {
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (_) => ViewMemoPage(userId: userId!, record: record),
+              builder: (_) => ViewMemoPage(userId: myUserId, record: record),
             ),
           );
         } else {

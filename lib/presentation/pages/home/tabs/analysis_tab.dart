@@ -60,11 +60,7 @@ class _AnalysisTabState extends ConsumerState<AnalysisTab> {
 
   @override
   Widget build(BuildContext context) {
-    final userId = ref.watch(userIdProvider);
-
-    final recordsAsync = userId == null
-        ? const AsyncValue<List<RecordModel>>.data([])
-        : ref.watch(allRecordsProvider);
+    final recordsAsync = ref.watch(allRecordsProvider);
 
     return SafeArea(
       child: SingleChildScrollView(

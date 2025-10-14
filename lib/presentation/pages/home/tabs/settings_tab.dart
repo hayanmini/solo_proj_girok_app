@@ -1,7 +1,9 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_girok_app/core/constants.dart';
+import 'package:flutter_girok_app/presentation/pages/home/widgets/common_dialogs.dart';
 import 'package:flutter_girok_app/presentation/pages/login/login_page.dart';
+import 'package:flutter_girok_app/presentation/providers/auth_provider.dart';
 import 'package:flutter_girok_app/presentation/providers/user_provider.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -37,10 +39,7 @@ class _SettingsTabState extends ConsumerState<SettingsTab> {
   @override
   Widget build(BuildContext context) {
     // 계정 정보
-    final userId = ref.watch(userIdProvider);
-    final userAsync = userId == null
-        ? AsyncValue.data(null)
-        : ref.watch(userProfileProvider(userId));
+    final userAsync = ref.watch(userProfileProvider(myUserId));
 
     return SafeArea(
       child: Scaffold(
@@ -50,72 +49,72 @@ class _SettingsTabState extends ConsumerState<SettingsTab> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              titleText("계정 정보"),
-              SizedBox(height: 10),
-              userAsync.when(
-                data: (user) {
-                  final photoUrl = user?.photoUrl;
-                  final email = user?.email ?? "이메일 없음";
+              // titleText("계정 정보"),
+              // SizedBox(height: 10),
+              // userAsync.when(
+              //   data: (user) {
+              //     final photoUrl = user?.photoUrl;
+              //     final email = user?.email ?? "이메일 없음";
 
-                  return Container(
-                    width: double.infinity,
-                    height: 100,
-                    decoration: BorderBoxDecoration.commonBox,
-                    child: Row(
-                      children: [
-                        const SizedBox(width: 15),
-                        Container(
-                          width: 70,
-                          height: 70,
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            color: Colors.grey[800],
-                            image: photoUrl != null
-                                ? DecorationImage(
-                                    image: NetworkImage(photoUrl),
-                                    fit: BoxFit.cover,
-                                  )
-                                : null,
-                          ),
-                          child: photoUrl == null
-                              ? const Icon(Icons.person, size: 40)
-                              : null,
-                        ),
-                        const SizedBox(width: 20),
+              //     return Container(
+              //       width: double.infinity,
+              //       height: 100,
+              //       decoration: BorderBoxDecoration.commonBox,
+              //       child: Row(
+              //         children: [
+              //           const SizedBox(width: 15),
+              //           Container(
+              //             width: 70,
+              //             height: 70,
+              //             decoration: BoxDecoration(
+              //               shape: BoxShape.circle,
+              //               color: Colors.grey[800],
+              //               image: photoUrl != null
+              //                   ? DecorationImage(
+              //                       image: NetworkImage(photoUrl),
+              //                       fit: BoxFit.cover,
+              //                     )
+              //                   : null,
+              //             ),
+              //             child: photoUrl == null
+              //                 ? const Icon(Icons.person, size: 40)
+              //                 : null,
+              //           ),
+              //           const SizedBox(width: 20),
 
-                        // 계정 정보
-                        Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            const Text(
-                              "이메일",
-                              style: TextStyle(
-                                fontWeight: FontWeight.w100,
-                                fontSize: 12,
-                              ),
-                            ),
-                            const SizedBox(height: 4),
+              //           // 계정 정보
+              //           Column(
+              //             mainAxisAlignment: MainAxisAlignment.center,
+              //             crossAxisAlignment: CrossAxisAlignment.start,
+              //             children: [
+              //               const Text(
+              //                 "이메일",
+              //                 style: TextStyle(
+              //                   fontWeight: FontWeight.w100,
+              //                   fontSize: 12,
+              //                 ),
+              //               ),
+              //               const SizedBox(height: 4),
 
-                            Text(
-                              email,
-                              style: const TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontSize: 14,
-                              ),
-                            ),
-                            const SizedBox(height: 15),
-                          ],
-                        ),
-                      ],
-                    ),
-                  );
-                },
-                loading: () => const CircularProgressIndicator(),
-                error: (e, _) => Text("오류: $e"),
-              ),
+              //               Text(
+              //                 email,
+              //                 style: const TextStyle(
+              //                   fontWeight: FontWeight.bold,
+              //                   fontSize: 14,
+              //                 ),
+              //               ),
+              //               const SizedBox(height: 15),
+              //             ],
+              //   ),
+              // ],
+              // ),
+              //     );
+              //   },
+              //   loading: () => const CircularProgressIndicator(),
+              //   error: (e, _) => Text("오류: $e"),
+              // ),
               const SizedBox(height: 15),
-              const Divider(),
+              // const Divider(),
 
               // 작성 설정
               // titleText("작성 설정"),
@@ -137,6 +136,28 @@ class _SettingsTabState extends ConsumerState<SettingsTab> {
                 "로그아웃",
                 () => _handleLogout(context),
               ),
+              settingItem(Icons.no_accounts_rounded, "계정 탈퇴", () async {
+                final confirm = await showDeleteDialog(
+                  context: context,
+                  title: "계정 탈퇴",
+                  content: "정말 계정을 탈퇴하시겠어요?",
+                );
+
+                if (confirm == true) {
+                  final check = await showDeleteDialog(
+                    context: context,
+                    title: "주의! 모든 데이터 삭제",
+                    content: "계정 및 기록 등 모든 데이터가 삭제됩니다.\n삭제된 정보는 복구가 불가능합니다.",
+                  );
+                  if (check == true) {
+                    final deleteUseCase = ref.read(deleteAccountProvider);
+                    await deleteUseCase(myUserId);
+                    Navigator.of(context).pushReplacement(
+                      MaterialPageRoute(builder: (_) => const LoginPage()),
+                    );
+                  }
+                }
+              }),
             ],
           ),
         ),

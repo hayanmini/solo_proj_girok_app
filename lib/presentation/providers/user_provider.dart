@@ -10,10 +10,7 @@ final firestoreDatasourceProvider = Provider((ref) {
   return FirestoreDatasource(FirebaseFirestore.instance);
 });
 
-// 현재 로그인된 유저 id Provider
-final userIdProvider = Provider<String?>((ref) {
-  return fb.FirebaseAuth.instance.currentUser?.uid;
-});
+String get myUserId => fb.FirebaseAuth.instance.currentUser?.uid ?? "";
 
 // UserRepositoryImpl 주입
 final userRepositoryProvider = Provider<UserRepositoryImpl>((ref) {

@@ -2,6 +2,15 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_girok_app/data/models/record_dto.dart';
 import 'package:flutter_girok_app/data/models/user_dto.dart';
 
+extension _DeleteCollection on CollectionReference {
+  Future<void> deleteAll() async {
+    final snapshots = await get();
+    for (final doc in snapshots.docs) {
+      await doc.reference.delete();
+    }
+  }
+}
+
 class FirestoreDatasource {
   final FirebaseFirestore firestore;
   FirestoreDatasource(this.firestore);
@@ -30,6 +39,15 @@ class FirestoreDatasource {
     final doc = await firestore.collection("users").doc(userId).get();
     if (!doc.exists) return null;
     return UserDto.fromFirestore(doc.data()!);
+  }
+
+  Future<void> deleteUser(String userId) async {
+    final userRef = firestore.collection("users").doc(userId);
+
+    // 모든 데이터 삭제
+    await userRef.collection("records").deleteAll();
+    await userRef.collection("folders").deleteAll();
+    await userRef.delete();
   }
 
   // Record

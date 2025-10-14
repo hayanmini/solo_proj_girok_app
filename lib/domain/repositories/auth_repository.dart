@@ -5,4 +5,5 @@ abstract class AuthRepository {
   Future<User?> signInWithApple();
   Future<void> signOut();
   User? getCurrentUser();
+  Future<void> deleteAccount();
 }

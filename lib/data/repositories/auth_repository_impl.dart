@@ -27,7 +27,9 @@ class AuthRepositoryImpl implements AuthRepository {
 
   @override
   Future<User?> signInWithApple() async {
-    final appleProvider = fb.AppleAuthProvider();
+    final appleProvider = fb.AppleAuthProvider()
+      ..addScope('email')
+      ..addScope('name');
     final userCredential = await _auth.signInWithProvider(appleProvider);
     return _mapUser(userCredential.user);
   }
@@ -35,6 +37,14 @@ class AuthRepositoryImpl implements AuthRepository {
   @override
   Future<void> signOut() async {
     await _auth.signOut();
+  }
+
+  @override
+  Future<void> deleteAccount() async {
+    final user = _auth.currentUser;
+    if (user != null) {
+      await user.delete();
+    }
   }
 
   @override

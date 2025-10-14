@@ -18,4 +18,9 @@ class UserRepositoryImpl implements UserRepository {
     final dto = await datasource.getUser(userId);
     return dto?.toDomain();
   }
+
+  @override
+  Future<void> deleteUser(String userId) async {
+    await datasource.deleteUser(userId);
+  }
 }

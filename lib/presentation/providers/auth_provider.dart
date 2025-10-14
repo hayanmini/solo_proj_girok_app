@@ -1,3 +1,5 @@
+import 'package:flutter_girok_app/domain/usecases/delete_user.dart';
+import 'package:flutter_girok_app/presentation/providers/user_provider.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:firebase_auth/firebase_auth.dart' as fb;
 import 'package:flutter_girok_app/data/repositories/auth_repository_impl.dart';
@@ -35,4 +37,10 @@ final domainUserProvider = FutureProvider<domain_user.User?>((ref) async {
     displayName: fbUser.displayName,
     photoUrl: fbUser.photoURL,
   );
+});
+
+final deleteAccountProvider = Provider<DeleteUser>((ref) {
+  final authRepo = ref.watch(authRepositoryProvider);
+  final userRepo = ref.watch(userRepositoryProvider);
+  return DeleteUser(authRepo, userRepo);
 });

@@ -1,5 +1,12 @@
 
-# 📘 기록이 (Girogi)
+# 📘 기록이 (Girok) 
+
+- 1인 개발 프로젝트
+- 프로젝트 작업 기간 : 2025/9/10 ~ 10/15
+
+---
+
+## 🔖 앱 소개
 
 <img width="380" height="270" alt="image" src="https://github.com/user-attachments/assets/09327cca-8246-4581-9374-5ca7d3b7bb8d" /></br>
 

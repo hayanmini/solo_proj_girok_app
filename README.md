@@ -80,7 +80,7 @@ lib/
 
 ## 🛠 기술적 의사결정 
 
-## 🏗 Architecture — `Clean Architecture`
+### 🏗 Architecture — `Clean Architecture`
 
 **역할**
 
@@ -94,7 +94,7 @@ lib/
 
 ---
 
-## 🔄 State Management — `Riverpod`
+### 🔄 State Management — `Riverpod`
 
 **역할**
 
@@ -108,7 +108,7 @@ lib/
 
 ---
 
-## 🔐 Authentication — `Firebase Auth` / `Google Sign-In` / `Apple Sign-In`
+### 🔐 Authentication — `Firebase Auth` / `Google Sign-In` / `Apple Sign-In`
 
 **역할**
 
@@ -122,7 +122,7 @@ lib/
 
 ---
 
-## ☁️ Database — `Cloud Firestore`
+### ☁️ Database — `Cloud Firestore`
 
 **역할**
 
@@ -136,7 +136,7 @@ lib/
 
 ---
 
-## 🤖 AI — `Gemini 2.0 Flash`
+### 🤖 AI — `Gemini 2.0 Flash`
 
 **역할**
 
@@ -150,7 +150,7 @@ lib/
 
 ---
 
-## 📅 Calendar — `Syncfusion Flutter Calendar`
+### 📅 Calendar — `Syncfusion Flutter Calendar`
 
 **역할**
 
@@ -164,7 +164,7 @@ lib/
 
 ---
 
-## 🌐 Network — `HTTP`
+### 🌐 Network — `HTTP`
 
 **역할**
 
@@ -177,7 +177,7 @@ lib/
 
 ---
 
-## 🧵 Async Handling — `Future` 기반 처리
+### 🧵 Async Handling — `Future` 기반 처리
 
 **역할**
 
@@ -190,7 +190,7 @@ lib/
 
 ---
 
-## 🌍 Localization — `intl`, `flutter_localization`, `syncfusion_localizations`
+### 🌍 Localization — `intl`, `flutter_localization`, `syncfusion_localizations`
 
 **역할**
 
@@ -203,7 +203,7 @@ lib/
 
 ---
 
-## 🎨 Design Tools — `Figma` / `Photoshop`
+### 🎨 Design Tools — `Figma` / `Photoshop`
 
 **역할**
 

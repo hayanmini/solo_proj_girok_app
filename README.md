@@ -1,16 +1,312 @@
-# flutter_girok_app
 
-A new Flutter project.
+# 📘 기록이 (Girogi)
 
-## Getting Started
+<img width="380" height="270" alt="image" src="https://github.com/user-attachments/assets/09327cca-8246-4581-9374-5ca7d3b7bb8d" /></br>
 
-This project is a starting point for a Flutter application.
+> "오늘도 적어보는, 아주 작은 시작"  
+기록이는 다양한 기록 유형(할 일, 일지, 체크리스트 등)을 하나의 흐름 안에서 관리할 수 있도록 설계된 **통합 기록 플랫폼**입니다.
 
-A few resources to get you started if this is your first Flutter project:
+“흩어져 있던 기록의 방식들을, 하나의 공간에 모았습니다.”</br>
+여러 앱을 전전하며 메모는 메모대로, 할 일은 할 일대로 흩어 쓰던 시간을 이제는 붙잡아두고 싶었습니다.</br>
+**기록이란 단지 남기는 행위가 아니라, 나를 이해하는 방식이 되기를 바라며—**
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+**기록이는 필요한 순간마다 어울리는 기록 타입을 제안하고,**</br>
+**그때 그때의 감정과 목적에 맞게 자연스럽게 쓰여지도록 돕습니다.**
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+메모, 할 일, 감정 기록, 그리고 긴 글까지.</br>
+**앱을 바꾸지 않고도, 쓰고 싶은 방식으로 바로 기록할 수 있는 공간.**</br>
+그것이 기록이가 만들고 싶은 기록의 환경입니다.
+
+---
+
+## 📂 프로젝트 구조
+
+```
+lib/
+├─ core/ # 상수, 유틸, 공통 위젯, 테마
+├─ features/
+│ ├─ auth/ # 로그인/로그아웃 흐름
+│ ├─ home/ # 캘린더 뷰 + 연동된 기록 조회
+│ ├─ records/ # 기록 생성/수정/삭제
+│ ├─ common/ # 공용 모듈 (위젯, 팝업, 타입 정의 등)
+├─ main.dart
+```
+
+---
+
+## 🔐 실행 방법
+
+> 현재는 `.env`를 통한 키 입력이 필요하나, **공개 배포 시 앱 다운로드 링크로 대체 예정**입니다.  
+> App Store 링크  삽입 예정
+
+---
+
+## 🚀 기술 스택
+
+| 구분 | 사용 기술 |
+| --- | --- |
+| **Architecture** | **`Clean Architecture`**  |
+| State Management | **`Riverpod`**  |
+| Configuration | `dot_env` |
+| Authentication | `firebase_auth` `google_sign_in` `sign_in_with_apple` |
+| Firebase | `firebase_core`  `cloud_firestore` |
+| Async Task | **`Future`** |
+| Localize | `syncfusion_localizations`  `flutter_localization`  `intl` |
+| Calendar | `syncfusion_flutter_calendar`   |
+| AI | `gemini-2.0-flash` |
+| Network | `http` |
+| Test | `flutter_test` |
+| Design | **`Figma` `Photoshop`** |
+| UI | `flutter`  |
+
+---
+
+## 🧭 기술 선정 기준
+
+- **MVP 개발 속도 확보**
+- **유지보수성과 구조적 확장성**
+- **테스트 가능한 구조**
+- **Firebase 기반 서버리스 운영**
+- **UI/기능 단위의 독립적 확장 가능성**
+
+---
+
+## 🛠 기술적 의사결정 
+
+## 🏗 Architecture — `Clean Architecture`
+
+**역할**
+
+- Presentation, Domain, Data 레이어를 명확하게 분리하여 **모듈화된 구조**를 제공합니다.
+
+**선정 이유**
+
+- 기능 단위 확장이 예상되는 프로젝트 특성상, **UI/비즈니스 로직/데이터 소스의 독립성 확보**가 필요했습니다.
+- Firebase, 향후 Local Storage, AI API 등 **Data Source 변경 또는 추가가 용이한 구조**가 요구되었습니다.
+- **의존성 흐름이 단방향**으로 유지되도록 설계하여 테스트와 유지보수가 수월해집니다.
+
+---
+
+## 🔄 State Management — `Riverpod`
+
+**역할**
+
+- 전역 상태 관리 및 의존성 주입(Dependency Injection)을 담당합니다.
+
+**선정 이유**
+
+- ProviderScope 기반 구조로 **Clean Architecture 내 DI 패턴을 자연스럽게 적용 가능**합니다.
+- **Lifecycle 및 State 추적이 명확**하고, 테스트 코드 작성 시에도 주입 구조를 유지할 수 있습니다.
+- Bloc에 비해 **보일러플레이트 코드가 적고 초기 구축 속도가 빠릅니다.**
+
+---
+
+## 🔐 Authentication — `Firebase Auth` / `Google Sign-In` / `Apple Sign-In`
+
+**역할**
+
+- 사용자 계정 인증 및 OAuth 기반 로그인 플로우를 처리합니다.
+
+**선정 이유**
+
+- 별도의 백엔드 API 구축 없이 **Google / Apple 계정 연동만으로 인증 기능 구현 가능**합니다.
+- Firebase Authentication과 Firestore의 사용자 데이터 구조를 연결하여 **로그인 → 데이터 관리 플로우 정합성**을 확보할 수 있습니다.
+- 토큰 갱신, 사용자 세션 관리 등 **보안 요소가 자동 관리**되는 점을 고려했습니다.
+
+---
+
+## ☁️ Database — `Cloud Firestore`
+
+**역할**
+
+- 사용자 기록 데이터 저장 및 실시간 동기화를 담당합니다.
+
+**선정 이유**
+
+- Firestore의 실시간 Listener를 활용하여 **캘린더 UI와 데이터가 자동 동기화**되도록 구성할 수 있습니다.
+- NoSQL 구조를 활용해 `users/{userId}/records/{recordId}` 형태로 **유저별 데이터 분리 구조 설계**가 가능합니다.
+- 서버 구축 없이 빠른 **MVP 운영 및 배포 사이클**을 지원합니다.
+
+---
+
+## 🤖 AI — `Gemini 2.0 Flash`
+
+**역할**
+
+- 기록 요약, 회고 분석, 사용자 패턴 파악 등 **AI 기반 피드백 기능**을 제공합니다.
+
+**선정 이유**
+
+- Google Cloud 기반 생태계 내부에서 Firestore와 함께 사용할 수 있어 **데이터 흐름 통합성이 좋습니다.**
+- 속도와 비용을 고려하여 고성능 모델 대비 **경량화된 Flash 모델을 선택**했습니다.
+- 대화 기반 응답 구조를 통해 **챗 인터랙션 UI 구성 시 자연스러운 연결**이 가능합니다.
+
+---
+
+## 📅 Calendar — `Syncfusion Flutter Calendar`
+
+**역할**
+
+- 사용자 기록을 **날짜 단위로 시각화하고 상호작용 가능한 UI**로 제공합니다.
+
+**선정 이유**
+
+- Flutter의 기본 DatePicker 위젯보다 **커스터마이징 범위(마커, 타일 구성, 이벤트 표시)가 넓습니다.**
+- Firestore 데이터와 **직접적으로 바인딩 가능한 구조**를 제공하여 개발 속도가 향상됩니다.
+- 일정 UI 확장을 고려했을 때, **커뮤니티 지원과 생태계 안정성이 있는 패키지**를 우선했습니다.
+
+---
+
+## 🌐 Network — `HTTP`
+
+**역할**
+
+- 서버와의 REST 통신 또는 외부 API 호출을 담당합니다.
+
+**선정 이유**
+
+- 통신 방식이 단순하고, 상태 관리 및 예외 핸들링을 **Riverpod과 함께 구조화하기 용이합니다.**
+- Dio 대비 초기 설정이 가볍고 **MVP 단계에서 불필요한 옵션 오버헤드를 줄일 수 있습니다.**
+
+---
+
+## 🧵 Async Handling — `Future` 기반 처리
+
+**역할**
+
+- Firestore 요청, AI 응답 처리 등 **비동기 데이터 흐름을 통제**합니다.
+
+**선정 이유**
+
+- 단일 요청-응답 구조가 대부분이므로 Stream보다는 **Future 기반 Task 핸들링이 구조적으로 명확합니다.**
+- 예외 처리 및 로딩 상태 관리를 **StateNotifier / AsyncValue 패턴으로 통합**하기 용이합니다.
+
+---
+
+## 🌍 Localization — `intl`, `flutter_localization`, `syncfusion_localizations`
+
+**역할**
+
+- 날짜/숫자 포맷 및 텍스트 다국어 지원을 제공합니다.
+
+**선정 이유**
+
+- Syncfusion 캘린더와 시스템 로케일을 **동기화하기 위해 필요한 조합**입니다.
+- 국제화 대응 가능성을 미리 반영하여 **UI 레벨에서 로케일 변경 구조**를 구축합니다.
+
+---
+
+## 🎨 Design Tools — `Figma` / `Photoshop`
+
+**역할**
+
+- UI/UX 설계(Figma) 및 이미지/아이콘 리소스 제작(Photoshop)을 분리하여 사용합니다.
+
+**선정 이유**
+
+- Figma를 통해 **컴포넌트 기반 UI 가이드라인과 디자인 시스템을 관리**합니다.
+- Photoshop은 **비트맵 기반 에셋 제작(앱 아이콘, 섬네일 등)을 위한 도구**로 활용합니다.
+- 역할을 분리하여 **디자인 리소스 관리 흐름을 명확하게 유지**합니다.
+
+---
+
+## 📸 스크린샷
+
+<img width="300" alt="image" src="https://github.com/user-attachments/assets/9e15465b-8777-425a-8b1b-964f483641de" />   <img width="300" alt="image" src="https://github.com/user-attachments/assets/a4abb670-32b9-4b5f-a3ad-2bba915bad33" /></br>
+### 🔁 로고와 슬로건
+- 앱 로고와 함께 지향점을 담은 슬로건, 로딩 진척도를 확인할 수 있습니다.
+
+### 🔗 소셜 로그인
+- 구글과 애플 소셜 로그인 기능을 제공하여, 사용자가 간편하게 회원가입 및 로그인을 진행하도록 돕습니다.
+
+---
+
+<img width="300" alt="image" src="https://github.com/user-attachments/assets/8a69c14b-9bae-4ae0-aa39-794b4fa046bf" /></br>
+### 📅 기록 캘린더
+- 나의 기록 작성 여부를 캘린더에서 한눈에 확인하고, 해당 날짜에 작성한 기록을 모아 볼 수 있습니다.
+- 기록들은 작성 타입과 기록 제목을 보여주며, 선택 시 내가 작성한 기록을 확인할 수 있습니다.
+- 기록이 없는 날짜를 선택할 경우 자동으로 기록을 작성하기 위한 타입 팝업을 제공하여, 사용자의 기록 작성을 돕습니다.
+
+---
+
+<img width="300" alt="image" src="https://github.com/user-attachments/assets/dd1e9b64-215d-40cb-9817-75d9741b00d6" /></br>
+### 📊 AI와 기록 분석
+- 항상 AI가 건네는 따뜻한 응원의 한마디를 확인할 수 있습니다.
+- 할 일 목록 타입의 기록을 작성했을 때, 얼마나 완수하였는지 할 일 진척도를 제공하여 사용자에게 리마인드합니다.
+- 감정 일기 타입의 기록을 작성했을 때, 나의 기분이 주로 어떠한지 나를 되돌아볼 수 있는 기분 분포도를 제공합니다.
+- 내가 선호하는 기록 타입은 어떤 것이 있는지, 얼마나 선택되었는지 타입별 기록 분포도를 제공합니다.
+
+---
+
+<img width="300" alt="image" src="https://github.com/user-attachments/assets/8571bbbf-c591-44a3-ae94-fb7036acf857" /></br>
+### 🗂️ 폴더와 내 기록들의 목록
+- 내가 생성한 폴더들을 한눈에 확인하고, 새로운 폴더를 생성하거나, 생성된 폴더의 이름을 수정하고, 폴더를 삭제할 수 있습니다.
+- 기록이 담긴 폴더를 삭제할 경우, 자동으로 기본 폴더로 이동하도록 하여, 시리즈 타입의 기록 관리를 편리하도록 하였습니다.
+- 원하는 폴더를 선택하면 해당 폴더에 작성한 내 기록들을 한눈에 모아볼 수 있습니다.
+- 아래에서는 내가 작성한 기록들을 시간순으로 한눈에 확인할 수 있습니다.
+- 기록들의 총 개수와 기록 타입 및 제목을 제공하며, 선택 시 작성한 기록을 확인할 수 있는 페이지로 이동합니다.
+
+---
+
+<img width="300" alt="image" src="https://github.com/user-attachments/assets/5ca2c46c-c713-4709-8a28-c01a77bb88a9" /></br>
+### ✅ 할일 목록 기록 타입
+- 할일 목록 등을 작성할 수 있는 체크 리스트를 제공하는 기록 타입입니다.
+- 해당되는 제목을 설정하고, 관련된 할 일 목록들을 작성하여 기록할 수 있습니다.
+- 좌측의 네모 박스를 선택하면 체크 표시, 즉 완료 여부를 설정할 수 있으며, 하단의 + 버튼을 누를 시 할일 목록을 계속하여 추가할 수 있습니다.
+- 잘못 생성된 목록은 우측의 x 버튼을 눌러 삭제할 수 있으며, 아무 내용도 들어가지 않은 할 일 목록은 허용되지 않아 제한을 둡니다.
+- 제목과 1개 이상의 할일 목록을 필수로 입력하여야 기록을 저장할 수 있습니다.
+
+---
+
+<img width="300" alt="image" src="https://github.com/user-attachments/assets/ca592cae-eed3-472b-9dee-dd9f35574f55" /></br>
+### 😀 감정과 함께하는 일기 타입
+- 매우 나쁨, 나쁨, 평범함, 좋음, 매우 좋음으로 총 5단계로 나누어진 감정을 선택할 수 있습니다.
+- 감정은 평범함으로 기본 설정이 되어있으며, 터치 시 해당 감정을 선택할 수 있습니다.
+- 감정과 함께 나의 생각들을 적으며, 정리할 수 있는 일기와 같은 감정 기록 타입을 제공합니다.
+- 제목과 함께 내용을 필수로 작성해야 저장할 수 있습니다.
+
+---
+
+<img width="300" alt="image" src="https://github.com/user-attachments/assets/d8268d36-cde8-4e34-9a6f-504a792b779e" /></br>
+### 📁 기록을 폴더로 관리하는 시리즈 타입
+- 시리즈 타입의 기록을 작성 시 자동으로 기본 폴더로 설정되어있으며, 폴더를 선택하여 새로운 폴더를 생성하거나, 폴더명을 수정하고, 폴더를 삭제할 수 있습니다.
+- 삭제된 폴더의 기록들은 자동으로 기본 폴더로 이동하여 기록들의 분실이나 각 기록을 편집하지 않고도 한번에 이동이 가능하도록 하여 사용자에게 편리함을 제공합니다.
+- 운동 루틴, 식단 관리, 소설과 같은 작문 등 다양하게 사용자가 주제를 선정하고 폴더를 생성하여, 관련된 기록을 작성하게 되고, 그 기록들을 해당 폴더로 한번에 관리할 수 있습니다.
+- 루틴의 일차나 소설의 부제목 등을 제목으로 설정하여 편리하게 사용 가능하며, 내용까지 입력을 완료해야 저장이 가능합니다.
+
+---
+
+<img width="300" alt="image" src="https://github.com/user-attachments/assets/35aa8d34-6689-41b3-ad9a-de91549aa24a" /></br>
+### 📝 부담없이 간단한 메모 타입
+- 앞의 선택하는 기록 타입에 해당하지 않거나, 간단하게 작성하는 메모를 위한 기록 타입입니다.
+- 제목과 내용을 작성하여 비워두지 않았다면 저장할 수 있습니다.
+
+---
+
+<img width="300"  alt="image" src="https://github.com/user-attachments/assets/73a00ac3-100d-4da7-be45-8095342d2a57" /></br>
+### 👤 계정 변경과 탈퇴
+- 로그아웃 시 초기 로그인 화면으로 이동하여, 새로운 계정 로그인 등 계정 전환이 편리하도록 돕습니다.
+- 계정 탈퇴 시 계정을 삭제하겠냐는 확인 팝업을 출력하여, 잘못된 터치로부터 사용자의 계정과 데이터를 보호합니다.
+- 삭제 진행 시 계정 뿐만 아니라 데이터, 즉 기록도 삭제된다는 사실을 고지하여 사용자가 해당 내용을 인지하고 진행할 수 있도록 하나의 안전 장치를 더 추가하였습니다.
+
+---
+
+## 📆 앞으로의 계획
+
+🪛 유지 및 보수
+- 배포 후 유저 테스트를 통한 UIUX 개선
+- 성능 최적화를 위한 코드 리펙토링
+
+---
+
+## 📖 문서
+
+[**📖 프로젝트 작업 노션**](https://www.notion.so/teamsparta/6-_-_-26a2dc3ef51480c68341d72115ad2276?source=copy_link)</br>
+[**📜 프로젝트 브로셔**](https://www.notion.so/teamsparta/6-28e2dc3ef51480e5a309e2e06c300d5c?source=copy_link)</br>
+[**📚 프로젝트 Velog**](https://velog.io/@dudals9696/series/Flutter-7%EA%B8%B0-%EA%B8%B0%EB%A1%9D%EC%9D%B4)</br>
+
+---
+
+📄 라이선스</br>
+© hayanmini
+

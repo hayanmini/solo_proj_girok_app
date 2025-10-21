@@ -310,8 +310,9 @@ lib/
 
 [**📖 프로젝트 작업 노션**](https://www.notion.so/teamsparta/6-_-_-26a2dc3ef51480c68341d72115ad2276?source=copy_link)</br>
 [**📜 프로젝트 브로셔**](https://www.notion.so/teamsparta/6-28e2dc3ef51480e5a309e2e06c300d5c?source=copy_link)</br>
-[**📚 프로젝트 Velog**](https://velog.io/@dudals9696/series/Flutter-7%EA%B8%B0-%EA%B8%B0%EB%A1%9D%EC%9D%B4)</br>
+[**📹 앱 시연 영상 URL**](https://youtu.be/RN7ptVjDYs0)</br>
 [**🎨 프로젝트 Figma**](https://www.figma.com/design/8H8T9p3UYMUt0SwYgaQv5s/solo_proj?node-id=5-183&t=2pm1UFhTHzadCIQa-1)</br>
+[**📚 프로젝트 Velog**](https://velog.io/@dudals9696/series/Flutter-7%EA%B8%B0-%EA%B8%B0%EB%A1%9D%EC%9D%B4)</br>
 
 ---
 
